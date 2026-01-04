@@ -89,7 +89,8 @@ VitaFuel/
 ├── server/                # Backend files
 │   ├── main.py           # FastAPI application entry point
 │   ├── config/           # Configuration files
-│   │   ├── db.py         # Database configuration
+│   │   ├── db.py
+        ├── atlas_config.py # Database configuration
 │   │   └── settings.py   # Application settings
 │   ├── routes/           # API route handlers
 │   │   ├── auth.py       # Authentication routes
@@ -140,13 +141,13 @@ All API calls in the frontend are configured to use port 8005. Make sure no othe
    ```
 
 4. **Configure environment variables**
-   Create a `.env` file in the server directory:
-   ```env
-   MONGODB_URL=mongodb://localhost:27017
-   SECRET_KEY=your-secret-key-here
-   ALGORITHM=HS256
+   ## Environment Setup
+
+   Create a `.env` file with:
+   MONGO_URI=your-mongodb-connection-string
+   MONGO_DB=vitafuel
+   SECRET_KEY=your-secret-key
    FRONTEND_ORIGIN=http://localhost:3000
-   ```
 
 5. **Start MongoDB**
    Make sure MongoDB is running on your system:
