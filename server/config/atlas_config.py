@@ -1,18 +1,12 @@
-# MongoDB Atlas Configuration
-# Replace these values with your actual MongoDB Atlas credentials
+import os
 
-# Your MongoDB Atlas connection string
-# Format: mongodb+srv://username:password@cluster.mongodb.net/
-MONGO_URI = "YOUR_MONGODB_CONNECTION_STRING"
+# MongoDB
+MONGO_URI = os.getenv("MONGO_URI")
+MONGO_DB = os.getenv("MONGO_DB", "vitafuel")
 
-# Database name
-MONGO_DB = "DbName"
-
-# JWT Configuration
-SECRET_KEY = "your_super_secret_key_here_change_in_production"
+# JWT
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
-# Frontend Configuration
-FRONTEND_ORIGIN = "http://localhost:3000"
-
-
+# Frontend
+FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")
