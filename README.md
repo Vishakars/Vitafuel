@@ -142,12 +142,7 @@ All API calls in the frontend are configured to use port 8005. Make sure no othe
 
 4. **Configure environment variables**
    ## Environment Setup
-
-   Create a `.env` file with:
-   MONGO_URI=your-mongodb-connection-string
-   MONGO_DB=vitafuel
-   SECRET_KEY=your-secret-key
-   FRONTEND_ORIGIN=http://localhost:3000
+   Environment variables can be configured either via a `.env` file or directly in the configuration files under `server/config/`(depending on deployment environment).
 
 5. **Start MongoDB**
    Make sure MongoDB is running on your system:
@@ -187,7 +182,7 @@ If you prefer to start servers manually:
    ```
 
 3. **Access the application**
-   Open your browser and go to: bp-high
+   Open your browser and go to: http://127.0.0.1:3000
 
 ## 📖 API Documentation
 
@@ -330,16 +325,6 @@ pip install -r requirements.txt
 4. **Security**: Enable HTTPS and secure headers
 5. **Monitoring**: Set up logging and error tracking
 
-### Docker Deployment (Optional)
-```dockerfile
-FROM python:3.9-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8005"]
-```
-
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -369,3 +354,10 @@ For support and questions:
 ---
 
 **VitaFuel** - Empowering Healthy Lives Through Technology 🏃‍♂️💪🍎
+
+## Team Members
+- Misha T Shekhar
+- Shravana N
+- Varsha A Hajare
+- Vishaka R S 
+
