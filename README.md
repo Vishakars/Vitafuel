@@ -154,26 +154,6 @@ All API calls in the frontend are configured to use port 8005. Make sure no othe
    mongod
    ```
 
-### 🚀 Quick Start (Recommended)
-
-**Use the automated startup scripts:**
-
-#### Windows Batch Script
-```bash
-.\start_servers.bat
-```
-
-#### Windows PowerShell Script
-```bash
-.\start_servers.ps1
-```
-
-These scripts will:
-- ✅ Start the backend server on port 8005
-- ✅ Start the frontend server on port 3000
-- ✅ Automatically open the login page in your browser
-- ✅ Display all direct access links
-
 ### 🔗 Direct Access Links
 
 Once the servers are running, you can access these pages directly:
@@ -366,10 +346,6 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8005"]
 3. Make your changes
 4. Test thoroughly
 5. Submit a pull request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## 🆘 Support
 
