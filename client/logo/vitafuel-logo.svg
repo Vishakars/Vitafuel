@@ -1,0 +1,31 @@
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="iconGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f39c12;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e67e22;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Energy Bolt Icon -->
+  <g transform="translate(10, 15)">
+    <path d="M15 5 L25 5 L20 15 L30 15 L15 35 L20 25 L10 25 Z" 
+          fill="url(#iconGradient)" 
+          stroke="#fff" 
+          stroke-width="1"/>
+  </g>
+  
+  <!-- VitaFuel Text -->
+  <text x="50" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="url(#logoGradient)">Vita</text>
+  <text x="50" y="45" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="url(#logoGradient)">Fuel</text>
+  
+  <!-- Health Heart Icon -->
+  <g transform="translate(150, 20)">
+    <path d="M12,21.35l-1.45-1.32C5.4,15.36,2,12.28,2,8.5 C2,5.42,4.42,3,7.5,3c1.74,0,3.41,0.81,4.5,2.09C13.09,3.81,14.76,3,16.5,3 C19.58,3,22,5.42,22,8.5c0,3.78-3.4,6.86-8.55,11.54L12,21.35z" 
+          fill="#e74c3c" 
+          opacity="0.8"/>
+  </g>
+</svg>

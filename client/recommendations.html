@@ -1,0 +1,2350 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VitaFuel | Recommendations</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/commonstyles.css" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .personalized-card {
+      border: 2px solid #b07a47d9;
+      box-shadow: 0 12px 35px rgba(161, 94, 50, 0.25);
+      background: linear-gradient(135deg, rgba(213, 176, 128, 0.25) 0%, rgba(161, 94, 50, 0.25) 100%);
+      backdrop-filter: blur(6px);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .personalized-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 40px rgba(161, 94, 50, 0.3);
+    }
+
+
+    .health-score-display {
+      background: #b48251d9;
+      box-shadow: 0 12px 35px rgba(161, 94, 50, 0.25);
+      color: white;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .health-score-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .health-score-label {
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .insight-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 18px 0 8px;
+    }
+
+    .insight-chip {
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(161, 94, 50, 0.3);
+      background: rgba(255, 255, 255, 0.85);
+      color: #a15e32;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      box-shadow: 0 4px 16px rgba(161, 94, 50, 0.12);
+    }
+
+    .insight-chip.positive {
+      border-color: rgba(140, 94, 42, 0.4);
+      color: #8c5e2a;
+      background: rgba(245, 230, 201, 0.6);
+    }
+
+    .insight-chip.warning {
+      border-color: rgba(161, 94, 50, 0.5);
+      color: #a15e32;
+      background: rgba(245, 230, 201, 0.8);
+    }
+
+    .interactive-card {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .interactive-card .card-toggle {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      border: none;
+      background: rgba(161, 94, 50, 0.12);
+      color: #a15e32;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      transition: transform 0.2s ease;
+    }
+
+    .interactive-card.expanded .card-toggle {
+      transform: rotate(180deg);
+    }
+
+    .interactive-card .rec-context {
+      margin-top: 8px;
+      font-size: 0.9rem;
+      color: #7b4a24;
+      background: rgba(161, 94, 50, 0.08);
+      padding: 8px 12px;
+      border-radius: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .interactive-card .rec-details {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      border-top: 1px dashed rgba(161, 94, 50, 0.2);
+      margin-top: 12px;
+    }
+
+    .interactive-card.expanded .rec-details {
+      max-height: 400px;
+      padding-top: 12px;
+    }
+
+    .rec-actions {
+      padding-left: 18px;
+      margin: 8px 0;
+      color: #5c3a22;
+    }
+
+    .rec-actions li {
+      margin-bottom: 6px;
+    }
+
+    .rec-details-note {
+      font-size: 0.9rem;
+      color: #6c4a2f;
+      margin-top: 8px;
+    }
+
+    .critical-priority {
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.7;
+      }
+    }
+
+    .recommendations-heading {
+      font-size: 2.5rem;
+      color: #a15e32;
+      font-style: italic;
+      text-shadow: 0 0 20px rgba(161, 94, 50, 0.5);
+      animation: glow 3s ease-in-out infinite alternate;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 20px rgba(161, 94, 50, 0.5);
+      }
+
+      to {
+        text-shadow: 0 0 30px rgba(161, 94, 50, 0.8), 0 0 40px rgba(161, 94, 50, 0.4);
+      }
+    }
+
+    .guidance-banner {
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(161, 94, 50, 0.25);
+      box-shadow: 0 12px 35px rgba(161, 94, 50, 0.1);
+      border-radius: 16px;
+      padding: 18px 22px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+
+    .guidance-banner.hidden {
+      display: none;
+    }
+
+    .guidance-banner .banner-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    .guidance-banner button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .guidance-banner .primary-action {
+      background: #a15e32;
+      color: #fff;
+    }
+
+    .guidance-banner .secondary-action {
+      background: rgba(161, 94, 50, 0.12);
+      color: #a15e32;
+      border: 1px solid rgba(161, 94, 50, 0.2);
+    }
+
+    body.high-contrast-mode {
+      background: #fff !important;
+      color: #121212;
+    }
+
+    body.high-contrast-mode .recommendations-heading {
+      color: #1f2937;
+      text-shadow: none;
+    }
+
+    .recommendation-card {
+      background: white;
+      border-radius: 16px;
+      padding: 0;
+      box-shadow: 0 4px 20px rgba(161, 94, 50, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+      border: 2px solid transparent;
+      overflow: hidden;
+    }
+
+    .recommendation-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(161, 94, 50, 0.3);
+      border-color: rgba(161, 94, 50, 0.3);
+    }
+
+    .nav-tabs-container {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(250, 248, 245, 0.95) 100%);
+      border-radius: 16px;
+      padding: 8px;
+      box-shadow: 0 4px 16px rgba(161, 94, 50, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .nav-tab {
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+      background: rgba(255, 255, 255, 0.8);
+      color: #6b4b2f;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .nav-tab:hover {
+      background: rgba(161, 94, 50, 0.1);
+      border-color: rgba(161, 94, 50, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .nav-tab.active {
+      background: linear-gradient(135deg, #a15e32 0%, #8b4e28 100%);
+      color: white;
+      border-color: #a15e32;
+      box-shadow: 0 4px 12px rgba(161, 94, 50, 0.3);
+    }
+
+    .info-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid rgba(161, 94, 50, 0.2);
+      background: rgba(161, 94, 50, 0.08);
+      color: #a15e32;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .info-btn:hover {
+      background: rgba(161, 94, 50, 0.15);
+      border-color: rgba(161, 94, 50, 0.4);
+      transform: scale(1.1);
+    }
+
+    .stat-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-subtext {
+      color: #6b4b2f;
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    .animated-heading {
+      animation: fadeInDown 0.5s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    body.high-contrast-mode .recommendation-card {
+      border: 2px solid #1f2937;
+      box-shadow: none;
+    }
+
+    body.high-contrast-mode .guidance-banner {
+      border-color: #1f2937;
+    }
+
+    body.high-contrast-mode .nav-tab.active {
+      box-shadow: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="hero-img1">
+      <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="health-insights.html">Wellness Hub</a>
+      <a href="recommendations.html" class="active">Recommendations</a>
+      <a href="chatbot.html">Chatbot</a>
+      <a href="shopping-list.html">Shopping List</a>
+      <div class="profile-container">
+        <div class="profile-circle" id="user-profile">V</div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="profile.html">My Profile</a>
+          <a href="settings.html">Settings</a>
+          <a href="about.html">About</a>
+          <a href="logout.html">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Enhanced Header Section -->
+    <div class="text-center mb-8">
+      <h1 class="recommendations-heading mb-3">Personalized Recommendations <i class="fa-solid fa-sparkles"></i></h1>
+      <p class="text-lg text-gray-600 mb-6 max-w-2xl mx-auto">
+        Smart, data-driven suggestions tailored to your health profile and daily habits
+      </p>
+      
+      <!-- Quick Stats Cards -->
+      <div id="quick-stats" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6 max-w-5xl mx-auto">
+        <div class="stat-card bg-gradient-to-br from-[#f5e6c9] to-[#e8d4b3] border border-[#a15e32]/30 rounded-xl p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-[#8c5e2a] font-medium mb-1">Health Score</p>
+              <p class="text-2xl font-bold text-[#a15e32]" id="health-score-display">--</p>
+            </div>
+            <i class="fa-solid fa-heart-pulse text-3xl text-[#a15e32]/60"></i>
+          </div>
+        </div>
+        <div class="stat-card bg-gradient-to-br from-[#fffdf7] to-[#f5e8d3] border border-[#a15e32]/30 rounded-xl p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-[#8c5e2a] font-medium mb-1">Active Goals</p>
+              <p class="text-2xl font-bold text-[#a15e32]" id="active-goals-display">--</p>
+            </div>
+            <i class="fa-solid fa-bullseye text-3xl text-[#a15e32]/60"></i>
+          </div>
+        </div>
+        <div class="stat-card bg-gradient-to-br from-[#f5e6c9] to-[#e8d4b3] border border-[#a15e32]/30 rounded-xl p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-[#8c5e2a] font-medium mb-1">This Week</p>
+              <p class="text-2xl font-bold text-[#a15e32]" id="weekly-progress-display">--</p>
+            </div>
+            <i class="fa-solid fa-chart-line text-3xl text-[#a15e32]/60"></i>
+          </div>
+        </div>
+        <div class="stat-card bg-gradient-to-br from-[#fffdf7] to-[#f5e8d3] border border-[#a15e32]/30 rounded-xl p-4 shadow-sm">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-[#8c5e2a] font-medium mb-1">Recommendations</p>
+              <p class="text-2xl font-bold text-[#a15e32]" id="total-recs-display">--</p>
+            </div>
+            <i class="fa-solid fa-lightbulb text-3xl text-[#a15e32]/60"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Tab Navigation -->
+    <div class="nav-tabs-container mb-6">
+      <div class="nav-tabs">
+        <button class="nav-tab active" data-tab="diet" title="Nutrition and diet recommendations">
+          <i class="fa-solid fa-bowl-food"></i> 
+          <span>Diet & Nutrition</span>
+        </button>
+        <button class="nav-tab" data-tab="workout" title="Exercise and fitness recommendations">
+          <i class="fa-solid fa-dumbbell"></i> 
+          <span>Workout</span>
+        </button>
+        <button class="nav-tab" data-tab="remedies" title="Natural remedies and wellness tips">
+          <i class="fa-solid fa-house-medical"></i> 
+          <span>Remedies</span>
+        </button>
+        <button class="nav-tab" data-tab="meals" title="Meal suggestions and recipes">
+          <i class="fa-solid fa-utensils"></i> 
+          <span>Meals</span>
+        </button>
+        <button class="nav-tab" data-tab="tips" title="General health and wellness tips">
+          <i class="fa-solid fa-lightbulb"></i> 
+          <span>Tips</span>
+        </button>
+        <button class="nav-tab" data-tab="personalized" title="Personalized recommendations based on your data">
+          <i class="fa-solid fa-bullseye"></i> 
+          <span>Personalized</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="recommendations-content" class="animate-fadeIn px-6 py-4">
+      <!-- Enhanced Section Header -->
+      <div class="mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h2 id="section-title" class="text-2xl font-bold text-gray-800 mb-2">
+              <i class="fa-solid fa-sparkles text-[#a15e32] mr-2"></i>
+              <span id="section-title-text">Wellness Recommendations</span>
+            </h2>
+            <p id="section-description" class="text-gray-600">
+              Based on your health data and goals
+            </p>
+          </div>
+          <button class="info-btn" id="helpBtn" title="Learn how to use recommendations">
+            <i class="fa-solid fa-circle-question"></i>
+          </button>
+        </div>
+        
+        <!-- Insight Chips -->
+        <div id="insight-chips" class="insight-chips mb-4"></div>
+        
+        <!-- Help Banner -->
+        <div class="guidance-banner hidden" id="guidanceBanner">
+          <div class="flex items-start gap-3">
+            <i class="fa-solid fa-info-circle text-[#a15e32] text-xl mt-1"></i>
+            <div>
+              <strong class="text-gray-800">How to use recommendations:</strong>
+              <ul class="mt-2 space-y-1 text-sm text-gray-700">
+                <li>• Click any card to see detailed information and actionable steps</li>
+                <li>• Use "Track This" to save recommendations you want to follow</li>
+                <li>• View your tracked items in "View My Progress" below</li>
+                <li>• Recommendations update based on your daily health data</li>
+              </ul>
+            </div>
+          </div>
+          <div class="banner-actions">
+            <button class="secondary-action" id="contrastToggleBtn">
+              <i class="fa-solid fa-adjust"></i> High Contrast
+            </button>
+            <button class="primary-action" id="bannerDismissBtn">
+              Got it
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="loading-state" class="text-center py-12">
+        <div class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-gray-200 border-t-[#a15e32] mb-4"></div>
+        <p class="text-gray-600 font-medium text-lg">Loading personalized recommendations...</p>
+        <p class="text-sm text-gray-500 mt-2">Analyzing your health data to provide the best suggestions</p>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden text-center py-12">
+        <i class="fa-solid fa-inbox text-6xl text-gray-300 mb-4"></i>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2">No recommendations yet</h3>
+        <p class="text-gray-500 mb-4">Start tracking your health data to get personalized recommendations</p>
+        <a href="dashboard.html" class="inline-block px-6 py-2 bg-[#a15e32] text-white rounded-lg hover:bg-[#8b4e28] transition">
+          Go to Dashboard
+        </a>
+      </div>
+
+      <!-- Recommendations Grid -->
+      <div id="recommendations-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+      </div>
+    </div>
+
+    <div class="progress-prompt bg-gradient-to-br from-[#f5e6c9]/50 to-[#f5e8d3]/50 rounded-2xl p-8 mt-12 border border-[#a15e32]/20">
+      <div class="text-center max-w-3xl mx-auto">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-[#a15e32] to-[#8c5e2a] text-white mb-4 shadow-lg">
+          <i class="fa-solid fa-chart-line text-2xl"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-[#8c5e2a] mb-3">Track Your Health Journey</h3>
+        <p class="text-[#5a4533] mb-6 text-lg">
+          Monitor your progress and see how these personalized recommendations are helping you achieve your wellness goals. 
+          Track the recommendations you're following and watch your health improve over time.
+        </p>
+        <div class="flex flex-wrap justify-center gap-4">
+          <button onclick="viewTrackedRecommendations()" class="px-6 py-3 bg-gradient-to-r from-[#a15e32] to-[#8c5e2a] text-white rounded-lg font-semibold hover:shadow-lg transition-all duration-200 transform hover:-translate-y-1 flex items-center gap-2">
+            <i class="fa-solid fa-eye"></i> 
+            <span>View My Progress</span>
+          </button>
+          <button onclick="exportRecommendations()" class="px-6 py-3 bg-white text-[#a15e32] border-2 border-[#a15e32] rounded-lg font-semibold hover:bg-[#a15e32] hover:text-white transition-all duration-200 flex items-center gap-2">
+            <i class="fa-solid fa-file-export"></i> 
+            <span>Export Recommendations</span>
+          </button>
+        </div>
+        <div class="mt-6 pt-6 border-t border-[#a15e32]/20">
+          <p class="text-sm text-[#8b6c58]">
+            <i class="fa-solid fa-lightbulb mr-2"></i>
+            <strong>Tip:</strong> Click "Track This" on any recommendation card to save it to your personal list
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Progress Tracking Modal -->
+    <div id="progressModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
+      <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-lg max-w-2xl w-full max-h-96 overflow-y-auto">
+          <div class="p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-xl font-semibold">Your Tracked Recommendations</h3>
+              <button onclick="closeProgressModal()" class="text-gray-500 hover:text-gray-700">
+                <i data-lucide="x" class="h-5 w-5"></i>
+              </button>
+            </div>
+            <div id="trackedRecommendationsList">
+              <!-- Tracked recommendations will be populated here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+  </footer>
+
+
+  <script>
+    // Get current user and access token
+    const currentUser = localStorage.getItem('userEmail');
+    const accessToken = localStorage.getItem('accessToken');
+    let userHealthData = {};
+    let personalizedRecommendations = {};
+    let activeTab = 'diet';
+    let isRecommendationsLoading = true;
+    let recommendationsError = null;
+    let highContrastEnabled = localStorage.getItem('vitafuel_high_contrast') === '1';
+    let hasSeenRecommendationsIntro = localStorage.getItem('vitafuel_rec_intro_seen') === '1';
+
+    const getApiBaseUrl = () => window.API_BASE_URL || deriveApiBase();
+
+    function deriveApiBase() {
+      if (window.location.port && window.location.port !== '3000') {
+        return `${window.location.origin}/api`;
+      }
+      return `${window.location.protocol}//${window.location.hostname}:8005/api`;
+    }
+
+    function summarizeNutritionData(summary = []) {
+      if (!Array.isArray(summary) || summary.length === 0) return null;
+
+      const validDays = summary.filter(day => day && day.totals);
+      if (validDays.length === 0) return null;
+
+      const latest = validDays[0];
+      const totals = validDays.reduce((acc, day) => {
+        acc.calories += day.totals?.calories || 0;
+        acc.protein += day.totals?.protein || 0;
+        acc.carbs += day.totals?.carbs || 0;
+        acc.fat += day.totals?.fat || 0;
+        acc.fiber += day.totals?.fiber || 0;
+        return acc;
+      }, { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
+
+      const averages = {
+        calories: Math.round(totals.calories / validDays.length),
+        protein: +(totals.protein / validDays.length).toFixed(1),
+        carbs: +(totals.carbs / validDays.length).toFixed(1),
+        fat: +(totals.fat / validDays.length).toFixed(1),
+        fiber: +(totals.fiber / validDays.length).toFixed(1)
+      };
+
+      return {
+        latest,
+        averages,
+        daysTracked: validDays.length,
+        goals: latest.goals || {},
+        lowProtein: latest.totals?.protein < (latest.goals?.daily_protein || 50) * 0.8,
+        lowCalories: latest.totals?.calories < (latest.goals?.daily_calories || 2000) * 0.75,
+        highCalories: latest.totals?.calories > (latest.goals?.daily_calories || 2000) * 1.25
+      };
+    }
+
+    function getUserDietInfo() {
+      const lifestyle =
+        userHealthData &&
+          userHealthData.profileData &&
+          userHealthData.profileData.profile &&
+          userHealthData.profileData.profile.lifestyle
+          ? userHealthData.profileData.profile.lifestyle
+          : {};
+
+      const preference = (lifestyle.dietaryPreference && lifestyle.dietaryPreference.trim() !== "")
+        ? lifestyle.dietaryPreference.toLowerCase()
+        : 'none';
+
+      const restrictions = lifestyle.foodRestrictions || '';
+      return { preference, restrictions };
+    }
+
+    function addDietPreferenceRecommendations(recommendations, dietInfo, nutritionStats) {
+      const pref = dietInfo.preference;
+      if (!pref || pref === 'none') {
+        if (dietInfo.restrictions) {
+          recommendations.diet.push({
+            title: 'Respect Food Restrictions',
+            description: `Noted dietary restriction(s): ${dietInfo.restrictions}. Build meals that honor these preferences while maintaining balance.`,
+            priority: 'medium',
+            duration: 'Ongoing'
+          });
+        }
+        return;
+      }
+
+      const hints = {
+        'vegetarian': 'Include legumes, paneer, tofu, and nuts in every meal to hit protein targets. Pair iron-rich foods with vitamin C for better absorption.',
+        'vegan': 'Focus on lentils, chickpeas, quinoa, and fortified plant milks. Consider B12 and omega-3 supplements from algae or flax.',
+        'non-vegetarian': 'Choose lean proteins like chicken, fish, or eggs, and balance them with colorful veggies.',
+        'keto': 'Keep net carbs below 25-30g. Build plates with healthy fats (avocado, olive oil) and moderate protein.',
+        'low-carb': 'Prioritize fibrous veggies and lean proteins. Save carbs for workouts or early meals.',
+        'intermittent-fasting': 'During eating windows, prioritize nutrient-dense meals with balanced macros and stay hydrated with electrolytes.'
+      };
+
+      if (hints[pref]) {
+        recommendations.diet.push({
+          title: `Optimize ${pref.replace('-', ' ')} nutrition`,
+          description: hints[pref],
+          priority: 'high',
+          duration: 'Daily',
+          context: `Diet preference saved: ${pref}.`,
+          actions: [
+            'Plan protein source for each meal in advance.',
+            'Pair iron-rich foods with vitamin C for better absorption.'
+          ]
+        });
+      }
+
+      if (dietInfo.restrictions) {
+        recommendations.diet.push({
+          title: 'Honor cultural/medical restrictions',
+          description: `Plan weekly menus that stay within: ${dietInfo.restrictions}. Use the meal tab for compliant ideas.`,
+          priority: 'medium',
+          duration: 'Weekly',
+          context: `Restriction(s): ${dietInfo.restrictions}`,
+          actions: [
+            'Build a grocery list around approved ingredients.',
+            'Use the Meals tab filters to find compliant dishes.'
+          ]
+        });
+      }
+
+      if (nutritionStats && pref === 'vegan' && nutritionStats.latest?.totals?.protein < 45) {
+        recommendations.diet.push({
+          title: 'Plant-based protein boost',
+          description: 'Blend pea protein smoothies, add chickpeas to salads, and sprinkle hemp seeds to raise daily protein intake.',
+          priority: 'high',
+          duration: 'Daily',
+          context: `Protein trend < 45g on recent vegan logs.`,
+          actions: [
+            'Batch-cook lentils/beans to add to bowls.',
+            'Include chia or hemp seeds in breakfast bowls.'
+          ]
+        });
+      }
+    }
+
+    function getMealsByDiet(preference = 'none') {
+      const library = {
+        'vegetarian': [
+          { title: 'Chickpea Spinach Buddha Bowl', description: 'Roasted chickpeas, quinoa, spinach, cucumber, tahini dressing', priority: 'high', duration: 'Daily' },
+          { title: 'Paneer Veggie Stir Fry', description: 'Paneer cubes, bell peppers, broccoli, light ginger-soy sauce', priority: 'medium', duration: 'Daily' },
+          { title: 'Masoor Dal with Brown Rice', description: 'Protein-rich red lentils paired with whole grains and salad', priority: 'medium', duration: 'Daily' }
+        ],
+        'vegan': [
+          { title: 'Tofu Scramble with Greens', description: 'Turmeric tofu, kale, mushrooms, nutritional yeast', priority: 'high', duration: 'Daily' },
+          { title: 'Quinoa Black Bean Salad', description: 'Quinoa, beans, avocado, lime-cilantro dressing', priority: 'medium', duration: 'Daily' },
+          { title: 'Creamy Coconut Chickpea Curry', description: 'Chickpeas simmered in coconut milk with cauliflower rice', priority: 'medium', duration: 'Daily' }
+        ],
+        'non-vegetarian': [
+          { title: 'Grilled Chicken Quinoa Plate', description: 'Lean chicken, quinoa, roasted veggies, olive oil drizzle', priority: 'high', duration: 'Daily' },
+          { title: 'Salmon Asparagus Sheet Pan', description: 'Omega-3 rich salmon with asparagus and sweet potato wedges', priority: 'high', duration: 'Daily' },
+          { title: 'Egg Bhurji with Multigrain Roti', description: 'Spiced scrambled eggs with fiber-rich rotis and salad', priority: 'medium', duration: 'Daily' }
+        ],
+        'keto': [
+          { title: 'Avocado Omelette', description: 'Eggs, avocado, spinach, feta cooked in ghee', priority: 'high', duration: 'Daily' },
+          { title: 'Zucchini Noodles Pesto Chicken', description: 'Low-carb zoodles tossed with basil pesto and grilled chicken', priority: 'medium', duration: 'Daily' },
+          { title: 'Paneer Tikka Lettuce Wraps', description: 'Paneer cubes with bell peppers wrapped in lettuce', priority: 'medium', duration: 'Daily' }
+        ],
+        'low-carb': [
+          { title: 'Cauliflower Upma', description: 'Low-carb cauliflower rice cooked with veggies and peanuts', priority: 'medium', duration: 'Daily' },
+          { title: 'Greek Yogurt Power Bowl', description: 'Yogurt, chia seeds, nuts, berries (moderate carbs)', priority: 'medium', duration: 'Daily' },
+          { title: 'Stir-fried Prawns & Veggies', description: 'Protein-rich prawns with broccoli, beans, and peppers', priority: 'high', duration: 'Daily' }
+        ],
+        'intermittent-fasting': [
+          { title: 'Refeed Bowl', description: 'Large composite meal: sweet potato, chicken/tofu, greens, hummus', priority: 'high', duration: 'Daily' },
+          { title: 'Electrolyte Smoothie', description: 'Coconut water, greens, chia, protein powder for window opening', priority: 'medium', duration: 'Daily' },
+          { title: 'Closing Meal: Lentil Soup & Avocado Toast', description: 'Digestible yet nutrient-dense option before fasting window', priority: 'medium', duration: 'Daily' }
+        ],
+        'default': [
+          { title: 'Protein Smoothie Bowl', description: 'Spinach, banana, protein powder, almond milk, chia seeds', priority: 'high', duration: 'Daily' },
+          { title: 'Quinoa Buddha Bowl', description: 'Mixed greens, quinoa, grilled protein, avocado, tahini dressing', priority: 'high', duration: 'Daily' },
+          { title: 'Lean Protein & Veggies', description: 'Grilled chicken/fish/tofu with roasted veggies', priority: 'high', duration: 'Daily' },
+          { title: 'Greek Yogurt Bowl', description: 'Yogurt with nuts, seeds, berries for balanced macros', priority: 'medium', duration: 'Daily' }
+        ]
+      };
+
+      const normalizedPref = (preference || 'none').toLowerCase().trim();
+      return library[normalizedPref] || library['default'];
+    }
+
+    function summarizeActivityData(activity = {}) {
+      if (!activity || typeof activity !== 'object') return null;
+      const totalDuration = activity.total_duration_minutes ?? activity.total_duration ?? 0;
+      const totalCalories = activity.total_calories_burned ?? activity.total_calories ?? 0;
+      const activityCount = activity.activity_count ?? activity.activities_count ?? 0;
+      const totalDistance = activity.total_distance_km ?? activity.total_distance ?? 0;
+
+      const hasData = totalDuration > 0 || totalCalories > 0 || activityCount > 0;
+      if (!hasData) return null;
+
+      return {
+        totalDuration,
+        totalCalories,
+        activityCount,
+        totalDistance,
+        date: activity.date
+      };
+    }
+
+    function formatNumber(value, decimals = 0) {
+      if (value === undefined || value === null || isNaN(Number(value))) return '0';
+      return Number(value).toFixed(decimals);
+    }
+
+    // Update quick stats display
+    function updateQuickStats(totalRecs = 0) {
+      const healthScoreEl = document.getElementById('health-score-display');
+      const activeGoalsEl = document.getElementById('active-goals-display');
+      const weeklyProgressEl = document.getElementById('weekly-progress-display');
+      const totalRecsEl = document.getElementById('total-recs-display');
+
+      if (healthScoreEl) {
+        const healthAnalysis = analyzeAllHealthDomains();
+        healthScoreEl.textContent = `${healthAnalysis.overallHealthScore}/100`;
+      }
+
+      if (activeGoalsEl) {
+        const profile = userHealthData?.profileData?.profile;
+        const goals = profile?.goals?.primary || [];
+        activeGoalsEl.textContent = goals.length || '0';
+      }
+
+      if (weeklyProgressEl) {
+        const activityStats = userHealthData?.activityStats;
+        const daysActive = activityStats?.activityCount > 0 ? 'Active' : 'Start';
+        weeklyProgressEl.textContent = daysActive;
+      }
+
+      if (totalRecsEl) {
+        totalRecsEl.textContent = totalRecs || '0';
+      }
+    }
+
+    function renderInsightChips() {
+      const container = document.getElementById('insight-chips');
+      if (!container) return;
+
+      const chips = [];
+
+      const nutritionStats = userHealthData?.nutritionStats;
+      const healthMetrics = userHealthData?.healthData?.healthData;
+      const activityStats = userHealthData?.activityStats;
+
+      if (nutritionStats?.latest?.totals) {
+        const totals = nutritionStats.latest.totals;
+        const goals = nutritionStats.goals || {};
+        const proteinGoal = goals.daily_protein || 50;
+        const caloriesGoal = goals.daily_calories || 2000;
+
+        chips.push({
+          label: 'Protein',
+          value: `${Math.round(totals.protein || 0)}g / ${proteinGoal}g`,
+          icon: 'fa-drumstick-bite',
+          variant: totals.protein >= proteinGoal ? 'positive' : 'warning'
+        });
+
+        chips.push({
+          label: 'Calories',
+          value: `${Math.round(totals.calories || 0)} / ${caloriesGoal} kcal`,
+          icon: 'fa-fire-flame-curved',
+          variant: totals.calories >= caloriesGoal * 0.8 && totals.calories <= caloriesGoal * 1.2 ? 'positive' : 'warning'
+        });
+      }
+
+      if (healthMetrics?.water) {
+        chips.push({
+          label: 'Hydration',
+          value: `${healthMetrics.water} / 10 glasses`,
+          icon: 'fa-droplet',
+          variant: healthMetrics.water >= 8 ? 'positive' : 'warning'
+        });
+      }
+
+      if (activityStats?.totalDuration !== undefined) {
+        chips.push({
+          label: 'Activity',
+          value: `${Math.round(activityStats.totalDuration)} min today`,
+          icon: 'fa-person-running',
+          variant: activityStats.totalDuration >= 30 ? 'positive' : 'warning'
+        });
+      }
+
+      if (chips.length === 0) {
+        container.innerHTML = `
+          <span class="insight-chip">
+            <i class="fa-regular fa-lightbulb"></i>
+            Log meals & habits to unlock personalized insights ✨
+          </span>`;
+        return;
+      }
+
+      container.innerHTML = chips.map(chip => `
+        <span class="insight-chip ${chip.variant}">
+          <i class="fa-solid ${chip.icon}"></i>
+          ${chip.label}: ${chip.value}
+        </span>
+      `).join('');
+    }
+
+    function applyHighContrastState() {
+      document.body.classList.toggle('high-contrast-mode', highContrastEnabled);
+      const contrastBtn = document.getElementById('contrastToggleBtn');
+      if (contrastBtn) {
+        contrastBtn.innerHTML = highContrastEnabled
+          ? '<i class="fa-solid fa-eye-dropper"></i> Standard Mode'
+          : '<i class="fa-solid fa-adjust"></i> High Contrast';
+      }
+    }
+
+    function toggleHighContrastMode() {
+      highContrastEnabled = !highContrastEnabled;
+      localStorage.setItem('vitafuel_high_contrast', highContrastEnabled ? '1' : '0');
+      applyHighContrastState();
+    }
+
+    function maybeShowGuidanceBanner() {
+      const banner = document.getElementById('guidanceBanner');
+      if (!banner) return;
+      if (hasSeenRecommendationsIntro) {
+        banner.classList.add('hidden');
+      } else {
+        banner.classList.remove('hidden');
+      }
+    }
+
+    function dismissGuidanceBanner() {
+      hasSeenRecommendationsIntro = true;
+      localStorage.setItem('vitafuel_rec_intro_seen', '1');
+      const banner = document.getElementById('guidanceBanner');
+      banner?.classList.add('hidden');
+    }
+
+    // Load user health data for personalized recommendations
+    async function loadUserHealthData() {
+      if (!currentUser || !accessToken) {
+        console.log('No current user or access token available');
+        return;
+      }
+
+      try {
+        console.log('Loading user health data...');
+        isRecommendationsLoading = true;
+        recommendationsError = null;
+        showTab(activeTab);
+        const baseUrl = getApiBaseUrl();
+        const [healthData, nutritionData, activityData, profileData] = await Promise.all([
+          fetch(`${baseUrl}/health/me`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+          }).then(r => r.ok ? r.json() : {}),
+          fetch(`${baseUrl}/nutrition/me/nutrition/summary?days=7`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+          }).then(r => r.ok ? r.json() : {}).catch(() => ({})),
+          fetch(`${baseUrl}/activity/me/activities/summary`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+          }).then(r => r.ok ? r.json() : {}).catch(() => ({})),
+          fetch(`${baseUrl}/profile/me`, {
+            headers: { 'Authorization': `Bearer ${accessToken}` }
+          }).then(r => r.ok ? r.json() : {})
+        ]);
+
+        userHealthData = {
+          healthData,
+          profileData,
+          rawNutritionSummary: Array.isArray(nutritionData) ? nutritionData : [],
+          rawActivitySummary: activityData || {}
+        };
+
+        userHealthData.nutritionStats = summarizeNutritionData(userHealthData.rawNutritionSummary);
+        userHealthData.activityStats = summarizeActivityData(userHealthData.rawActivitySummary);
+
+        console.log('User health data loaded:', userHealthData);
+        generatePersonalizedRecommendations();
+        isRecommendationsLoading = false;
+        updateQuickStats();
+        showTab(activeTab);
+        console.log('Personalized recommendations generated:', personalizedRecommendations);
+      } catch (error) {
+        console.error('Error loading user health data:', error);
+        recommendationsError = 'Unable to load your personalized data right now. Showing default suggestions.';
+        isRecommendationsLoading = false;
+        showTab(activeTab);
+      }
+    }
+
+    // Generate personalized recommendations based on user data
+    function generatePersonalizedRecommendations() {
+    const recommendations = { diet: [], workout: [], remedies: [], meals: [], tips: [], personalized: [] };
+
+    if (!userHealthData) {
+        console.error("generatePersonalizedRecommendations called before userHealthData was loaded.");
+        recommendations.diet = getDefaultDietRecommendations();
+        recommendations.workout = getDefaultWorkoutRecommendations();
+        recommendations.remedies = getDefaultRemediesRecommendations();
+        recommendations.meals = getDefaultMealsRecommendations();
+        recommendations.tips = getDefaultTipsRecommendations();
+        personalizedRecommendations = recommendations;
+        return;
+    }
+
+    const nutritionStats = userHealthData.nutritionStats;
+    const activityStats = userHealthData.activityStats;
+    const health = userHealthData.healthData?.healthData;
+    const dietInfo = getUserDietInfo();
+    const healthAnalysis = analyzeAllHealthDomains();
+
+    // --- Generate recommendations ---
+
+    // Diet
+    if (nutritionStats) {
+        const latestTotals = nutritionStats.latest?.totals || {};
+        const goals = nutritionStats.goals || {};
+        const calorieGoal = goals.dailycalories || 2000;
+        const proteinGoal = goals.dailyprotein || 50;
+
+        if (latestTotals.calories && latestTotals.calories < calorieGoal * 0.8) {
+            recommendations.diet.push({
+              title: 'Increase Calorie Intake',
+              description: `Yesterday you logged ${latestTotals.calories} calories, which is below your target of ${calorieGoal}. Add an extra balanced snack or meal.`,
+              priority: 'high',
+              duration: 'Daily',
+              context: `Logged ${Math.round(latestTotals.calories)} / ${calorieGoal} kcal yesterday.`,
+              actions: [
+                'Add a 250 kcal evening snack (nuts, yogurt, smoothie).',
+                'Blend healthy fats (olive oil, nut butter) into meals.'
+              ]
+            });
+        }
+        if (latestTotals.calories && latestTotals.calories > calorieGoal * 1.25) {
+            recommendations.diet.push({
+              title: 'Moderate Calorie Intake',
+              description: `Calorie intake (${latestTotals.calories} kcal) exceeded your goal (${calorieGoal} kcal). Focus on nutrient-dense meals and portion control.`,
+              priority: 'medium',
+              duration: 'Daily',
+              context: `Logged ${Math.round(latestTotals.calories)} / ${calorieGoal} kcal yesterday.`,
+              actions: [
+                'Swap one sugary drink for infused water or tea.',
+                'Fill half your plate with veggies first.'
+              ]
+            });
+        }
+        if (latestTotals.protein && latestTotals.protein < proteinGoal * 0.8) {
+            recommendations.diet.push({
+              title: 'Boost Protein Intake',
+              description: `Protein intake was ${latestTotals.protein}g vs. your goal of ${proteinGoal}g. Add lean protein to each meal.`,
+              priority: 'high',
+              duration: 'Daily',
+              context: `Protein logged: ${Math.round(latestTotals.protein)}g / goal ${proteinGoal}g.`,
+              actions: [
+                'Add 1 palm of protein to each meal (paneer, tofu, eggs).',
+                'Blend protein powder or Greek yogurt into smoothies.'
+              ]
+            });
+        }
+    }
+
+    // Workout
+    if (activityStats) {
+        if (activityStats.totalDuration < 30) {
+            recommendations.workout.push({
+              title: 'Increase Daily Activity',
+              description: `Yesterday you logged ${activityStats.totalDuration} min of movement. Aim for at least 30 minutes daily.`,
+              priority: 'high',
+              duration: 'Daily',
+              intensity: 'moderate',
+              equipment: 'none',
+              category: 'cardio',
+              context: `Only ${Math.round(activityStats.totalDuration)} min recorded yesterday.`,
+              actions: [
+                'Schedule two 10-minute brisk walks (morning & evening).',
+                'Use a timer to stand/stretch every 60 minutes.'
+              ]
+            });
+        }
+        if (activityStats.activityCount < 2) {
+            recommendations.workout.push({
+              title: 'Diversify Activities',
+              description: 'Try different types of exercises to work various muscle groups.',
+              priority: 'medium',
+              duration: '30-45 minutes',
+              intensity: 'moderate',
+              equipment: 'varies',
+              category: 'mixed',
+              context: `Only ${activityStats.activityCount} activity type logged recently.`,
+              actions: [
+                'Alternate between cardio, strength, and mobility days.',
+                'Bookmark a quick HIIT or yoga video for variety.'
+              ]
+            });
+        }
+    }
+
+    // Remedies
+    if (health) {
+        if (health.water < 8) {
+            recommendations.remedies.push({
+              title: 'Increase Water Intake',
+              description: `You're drinking ${health.water} glasses today. Aim for 8-10 glasses daily.`,
+              priority: 'high',
+              duration: 'Daily',
+              context: `Logged ${health.water} glasses so far today.`,
+              actions: [
+                'Keep a 1L bottle at your desk and finish twice.',
+                'Pair every caffeinated drink with a glass of water.'
+              ]
+            });
+        }
+        if (health.mood < 6) {
+            recommendations.remedies.push({
+              title: 'Mood Enhancement',
+              description: 'Practice stress-relief techniques like meditation or deep breathing.',
+              priority: 'high',
+              duration: 'Daily',
+              context: `Mood logged at ${health.mood}/10.`,
+              actions: [
+                'Try a 5-minute box-breathing session.',
+                'Write down one win + gratitude before bed.'
+              ]
+            });
+        }
+    }
+
+    // --- Fill Defaults ---
+    addDietPreferenceRecommendations(recommendations, dietInfo, nutritionStats);
+    if (recommendations.diet.length === 0) recommendations.diet = getDefaultDietRecommendations();
+    if (recommendations.workout.length === 0) recommendations.workout = getDefaultWorkoutRecommendations();
+    if (recommendations.remedies.length === 0) recommendations.remedies = getDefaultRemediesRecommendations();
+    
+    // Force fill meals using diet preference
+    if (recommendations.meals.length === 0) {
+        const meals = getMealsByDiet(dietInfo.preference);
+        recommendations.meals = (meals && meals.length > 0) ? meals : getDefaultMealsRecommendations();
+    }
+
+    if (recommendations.tips.length === 0) recommendations.tips = getDefaultTipsRecommendations();
+
+    // Personalized
+    recommendations.personalized = generateCrossDomainRecommendations(healthAnalysis);
+    if (recommendations.personalized.length === 0) {
+        recommendations.personalized.push(
+            { title: 'Start Your Health Journey', description: 'Begin by tracking your daily habits for more personalized recommendations.', priority: 'high', duration: 'Daily', category: 'foundation', impact: 'high' },
+            { title: 'Complete Your Profile', description: 'Add your health goals to your profile for more accurate recommendations.', priority: 'medium', duration: 'One-time', category: 'setup', impact: 'medium' }
+        );
+    }
+
+    personalizedRecommendations = recommendations;
+    renderInsightChips();
+    console.log("Personalized recommendations generated:", personalizedRecommendations);
+}
+
+    // Analyze all health domains for comprehensive insights
+    function analyzeAllHealthDomains() {
+      const analysis = {
+        overallHealthScore: 0,
+        criticalIssues: [],
+        improvementAreas: [],
+        strengths: [],
+        correlations: [],
+        riskFactors: [],
+        opportunities: []
+      };
+
+      // Health data analysis
+      if (userHealthData.healthData && userHealthData.healthData.healthData) {
+        const health = userHealthData.healthData.healthData;
+
+        // Water intake analysis
+        if (health.water !== undefined) {
+          if (health.water < 4) {
+            analysis.criticalIssues.push('Severe dehydration risk');
+            analysis.riskFactors.push('Low water intake');
+          } else if (health.water < 6) {
+            analysis.improvementAreas.push('Increase hydration');
+          } else {
+            analysis.strengths.push('Good hydration habits');
+          }
+        }
+
+        // Mood analysis
+        if (health.mood !== undefined) {
+          if (health.mood < 4) {
+            analysis.criticalIssues.push('Low mood - consider professional support');
+            analysis.riskFactors.push('Mental health concerns');
+          } else if (health.mood < 6) {
+            analysis.improvementAreas.push('Mood enhancement needed');
+          } else {
+            analysis.strengths.push('Positive mood');
+          }
+        }
+
+        // Weight analysis
+        if (health.weight && health.weight > 0) {
+          analysis.strengths.push('Weight tracking active');
+          if (health.weight < 50 || health.weight > 120) {
+            analysis.riskFactors.push('Weight outside healthy range');
+          }
+        }
+      }
+
+      // Nutrition analysis
+      if (userHealthData.nutritionStats) {
+        const nutrition = userHealthData.nutritionStats;
+        const latest = nutrition.latest?.totals || {};
+
+        if (latest.calories) {
+          if (latest.calories < 1000) {
+            analysis.criticalIssues.push('Severely low calorie intake');
+            analysis.riskFactors.push('Undernutrition risk');
+          } else if (latest.calories < (nutrition.goals?.daily_calories || 2000) * 0.8) {
+            analysis.improvementAreas.push('Increase calorie intake');
+          } else if (latest.calories > (nutrition.goals?.daily_calories || 2000) * 1.2) {
+            analysis.riskFactors.push('High calorie intake');
+          } else {
+            analysis.strengths.push('Balanced calorie intake');
+          }
+        }
+
+        if (latest.protein && latest.protein < (nutrition.goals?.daily_protein || 50) * 0.8) {
+          analysis.improvementAreas.push('Increase protein intake');
+        } else if (latest.protein && latest.protein >= (nutrition.goals?.daily_protein || 50)) {
+          analysis.strengths.push('Adequate protein intake');
+        }
+      }
+
+      // Activity analysis
+      if (userHealthData.activityStats) {
+        const activity = userHealthData.activityStats;
+
+        if (activity.totalDuration !== undefined) {
+          if (activity.totalDuration < 10) {
+            analysis.criticalIssues.push('Very low activity level');
+            analysis.riskFactors.push('Sedentary lifestyle');
+          } else if (activity.totalDuration < 30) {
+            analysis.improvementAreas.push('Increase physical activity');
+          } else {
+            analysis.strengths.push('Good activity level');
+          }
+        }
+      }
+
+      // Profile analysis
+      if (userHealthData.profileData && userHealthData.profileData.profile) {
+        const profile = userHealthData.profileData.profile;
+
+        if (profile.healthDomains && profile.healthDomains.length >= 3) {
+          analysis.strengths.push('Comprehensive health tracking');
+        } else if (profile.healthDomains && profile.healthDomains.length < 2) {
+          analysis.improvementAreas.push('Expand health domain tracking');
+        }
+      }
+
+      // Calculate overall health score
+      analysis.overallHealthScore = calculateOverallHealthScore(analysis);
+
+      return analysis;
+    }
+
+    // Calculate overall health score based on analysis
+    function calculateOverallHealthScore(analysis) {
+      let score = 50; // Base score
+
+      // Add points for strengths
+      score += analysis.strengths.length * 10;
+
+      // Subtract points for critical issues
+      score -= analysis.criticalIssues.length * 15;
+
+      // Subtract points for improvement areas
+      score -= analysis.improvementAreas.length * 5;
+
+      // Subtract points for risk factors
+      score -= analysis.riskFactors.length * 8;
+
+      return Math.max(0, Math.min(100, score));
+    }
+
+    // Generate cross-domain personalized recommendations
+    function generateCrossDomainRecommendations(analysis) {
+      const recommendations = [];
+
+      // Critical issues recommendations
+      if (analysis.criticalIssues.length > 0) {
+        recommendations.push({
+          title: ' Priority Health Concerns',
+          description: `Address these critical issues: ${analysis.criticalIssues.join(', ')}. Consider consulting healthcare professionals.`,
+          priority: 'critical',
+          duration: 'Immediate',
+          category: 'health-urgent',
+          impact: 'high',
+          context: `Flagged: ${analysis.criticalIssues.join(', ')}`,
+          actions: [
+            'Book a consultation or telehealth visit.',
+            'Log symptoms daily to share with your provider.'
+          ]
+        });
+      }
+
+      // Risk factor recommendations
+      if (analysis.riskFactors.length > 0) {
+        recommendations.push({
+          title: ' Risk Factor Management',
+          description: `Monitor these risk factors: ${analysis.riskFactors.join(', ')}. Implement preventive measures.`,
+          priority: 'high',
+          duration: 'Ongoing',
+          category: 'prevention',
+          impact: 'high',
+          context: `Risk drivers: ${analysis.riskFactors.join(', ')}`,
+          actions: [
+            'Schedule weekly check-ins on this page.',
+            'Pair trackers (nutrition + activity) to spot improvements.'
+          ]
+        });
+      }
+
+      // Improvement area recommendations
+      if (analysis.improvementAreas.length > 0) {
+        recommendations.push({
+          title: ' Focus Areas for Improvement',
+          description: `Work on these areas: ${analysis.improvementAreas.join(', ')}. Small consistent changes yield big results.`,
+          priority: 'high',
+          duration: '2-4 weeks',
+          category: 'improvement',
+          impact: 'medium',
+          context: `Next focus: ${analysis.improvementAreas.join(', ')}`,
+          actions: [
+            'Pick one habit to upgrade each week.',
+            'Use the tracking modal to log progress.'
+          ]
+        });
+      }
+
+      // Strength-based recommendations
+      if (analysis.strengths.length > 0) {
+        recommendations.push({
+          title: ' Build on Your Strengths',
+          description: `You're doing well with: ${analysis.strengths.join(', ')}. Continue these positive habits and expand them.`,
+          priority: 'medium',
+          duration: 'Ongoing',
+          category: 'maintenance',
+          impact: 'medium',
+          context: `Strengths: ${analysis.strengths.join(', ')}`,
+          actions: [
+            'Celebrate the win—log how you feel today.',
+            'Teach/share this routine with a friend for accountability.'
+          ]
+        });
+      }
+
+      // Overall health score recommendations
+      if (analysis.overallHealthScore < 40) {
+        recommendations.push({
+          title: ' Comprehensive Health Reset',
+          description: `Your overall health score is ${analysis.overallHealthScore}/100. Focus on basic health fundamentals: sleep, nutrition, hydration, and movement.`,
+          priority: 'high',
+          duration: '4-6 weeks',
+          category: 'foundation',
+          impact: 'high',
+          context: `Health score: ${analysis.overallHealthScore}/100`,
+          actions: [
+            'Set reminders for sleep, meals, movement, and water.',
+            'Revisit goals in the Profile section weekly.'
+          ]
+        });
+      } else if (analysis.overallHealthScore < 70) {
+        recommendations.push({
+          title: ' Targeted Health Optimization',
+          description: `Your health score is ${analysis.overallHealthScore}/100. Focus on your weakest areas while maintaining current strengths.`,
+          priority: 'medium',
+          duration: '2-3 weeks',
+          category: 'optimization',
+          impact: 'medium',
+          context: `Health score: ${analysis.overallHealthScore}/100`,
+          actions: [
+            'Pick one domain (nutrition/activity) to upgrade this week.',
+            'Use chips above to monitor daily improvements.'
+          ]
+        });
+      } else {
+        recommendations.push({
+          title: ' Advanced Health Enhancement',
+          description: `Great job! Your health score is ${analysis.overallHealthScore}/100. Focus on fine-tuning and advanced optimization strategies.`,
+          priority: 'low',
+          duration: '1-2 weeks',
+          category: 'enhancement',
+          impact: 'low',
+          context: `Health score: ${analysis.overallHealthScore}/100`,
+          actions: [
+            'Experiment with new training styles or recipes.',
+            'Share your routine via the export button for accountability.'
+          ]
+        });
+      }
+
+      // Add specific cross-domain recommendations
+      recommendations.push(...generateSpecificCrossDomainRecommendations(analysis));
+
+      // Always add some general personalized recommendations if we have few
+      if (recommendations.length < 3) {
+        recommendations.push({
+          title: '💧 Hydration Optimization',
+          description: 'Aim for 8-10 glasses of water daily. Proper hydration improves energy, mood, and overall health.',
+          priority: 'high',
+          duration: 'Daily',
+          category: 'hydration',
+          impact: 'high'
+        });
+
+        recommendations.push({
+          title: '🏃‍♀️ Daily Movement Goal',
+          description: 'Incorporate 30 minutes of moderate activity daily. This can be walking, stretching, or any movement you enjoy.',
+          priority: 'high',
+          duration: 'Daily',
+          category: 'activity',
+          impact: 'high'
+        });
+
+        recommendations.push({
+          title: '🍎 Balanced Nutrition',
+          description: 'Focus on whole foods, lean proteins, and plenty of fruits and vegetables for optimal nutrition.',
+          priority: 'medium',
+          duration: 'Daily',
+          category: 'nutrition',
+          impact: 'medium'
+        });
+
+        recommendations.push({
+          title: '😴 Quality Sleep',
+          description: 'Aim for 7-9 hours of quality sleep nightly. Good sleep is crucial for recovery and health.',
+          priority: 'high',
+          duration: 'Daily',
+          category: 'sleep',
+          impact: 'high'
+        });
+      }
+
+      return recommendations;
+    }
+
+    // Generate specific cross-domain recommendations
+    function generateSpecificCrossDomainRecommendations(analysis) {
+      const recommendations = [];
+
+      // Hydration + Activity correlation
+      if (analysis.improvementAreas.includes('Increase hydration') &&
+        analysis.improvementAreas.includes('Increase physical activity')) {
+        recommendations.push({
+          title: '💧 Hydration + Activity Combo',
+          description: 'Drink water before, during, and after exercise. Proper hydration enhances workout performance and recovery.',
+          priority: 'high',
+          duration: 'Daily',
+          category: 'synergy',
+          impact: 'high',
+          context: 'Hydration and movement both need attention this week.',
+          actions: [
+            'Sip 300ml water before pressing Start on any workout.',
+            'Log water intake right after finishing each session.'
+          ]
+        });
+      }
+
+      // Mood + Nutrition correlation
+      if (analysis.improvementAreas.includes('Mood enhancement needed') &&
+        userHealthData.nutritionStats && userHealthData.nutritionStats.latest?.totals?.protein < 40) {
+        recommendations.push({
+          title: '🧠 Mood-Boosting Nutrition',
+          description: 'Increase protein and omega-3 rich foods. These nutrients support brain health and mood regulation.',
+          priority: 'high',
+          duration: 'Daily',
+          category: 'nutrition-mental',
+          impact: 'medium',
+          context: 'Mood low + protein trend under 40g.',
+          actions: [
+            'Add fatty fish/chia/walnuts to meals 3x per week.',
+            'Ice-blend protein shake when afternoon slump hits.'
+          ]
+        });
+      }
+
+      // Sleep + Recovery correlation
+      if (userHealthData.activityStats && userHealthData.activityStats.totalDuration > 45) {
+        recommendations.push({
+          title: '😴 Recovery Optimization',
+          description: 'With your activity level, prioritize 7-9 hours of quality sleep for optimal recovery and performance.',
+          priority: 'medium',
+          duration: 'Daily',
+          category: 'recovery',
+          impact: 'medium',
+          context: `High activity minutes (${activity.totalDuration} min) demand deeper rest.`,
+          actions: [
+            'Wind down with screens off 30 min before bed.',
+            'Stack magnesium-rich foods (leafy greens, nuts) at dinner.'
+          ]
+        });
+      }
+
+      // Stress + Exercise correlation
+      if (analysis.improvementAreas.includes('Mood enhancement needed') &&
+        userHealthData.activityStats && userHealthData.activityStats.totalDuration < 20) {
+        recommendations.push({
+          title: '🏃‍♀️ Exercise for Stress Relief',
+          description: 'Regular exercise is one of the most effective stress relievers. Start with 20-30 minutes of moderate activity.',
+          priority: 'high',
+          duration: 'Daily',
+          category: 'stress-relief',
+          impact: 'high',
+          context: 'Mood is low & activity < 20 min/day.',
+          actions: [
+            'Schedule a calming walk right after work.',
+            'Use a short guided yoga/stretch video to close the day.'
+          ]
+        });
+      }
+
+      return recommendations;
+    }
+
+    // Default recommendation sets
+    function getDefaultDietRecommendations() {
+      return [
+        {
+          title: 'Balanced Nutrition',
+          description: 'Include all food groups with emphasis on whole foods and nutrient density. A balanced diet provides essential vitamins, minerals, and energy your body needs to function optimally.',
+          priority: 'high',
+          duration: 'Ongoing',
+          details: 'A well-balanced diet supports immune function, maintains healthy weight, improves mood, and reduces risk of chronic diseases. Each food group provides unique nutrients your body can\'t produce on its own.',
+          actions: [
+            'Fill half your plate with colorful veggies at every meal.',
+            'Pair carbs with protein/fat to slow glucose spikes and maintain energy.',
+            'Include whole grains, lean proteins, healthy fats, and fruits daily.'
+          ]
+        },
+        {
+          title: 'Stay Hydrated',
+          description: 'Drink 8-10 glasses of water daily for optimal body function. Proper hydration is essential for digestion, circulation, temperature regulation, and cognitive function.',
+          priority: 'high',
+          duration: 'Daily',
+          details: 'Water makes up about 60% of your body weight. Even mild dehydration can cause fatigue, headaches, and reduced concentration. Staying hydrated helps your body flush toxins and maintain healthy skin.',
+          actions: [
+            'Keep a refillable water bottle within sight throughout the day.',
+            'Set 3 reminders (morning/noon/evening) to drink water.',
+            'Drink a glass of water before each meal to aid digestion.'
+          ]
+        },
+        {
+          title: 'Increase Protein Intake',
+          description: 'Aim for 0.8-1g protein per kg body weight to maintain muscle mass, support metabolism, and keep you feeling full longer.',
+          priority: 'high',
+          duration: 'Ongoing',
+          details: 'Protein is essential for building and repairing tissues, producing enzymes and hormones, and maintaining muscle mass. Adequate protein intake also helps with weight management by increasing satiety.',
+          actions: [
+            'Add a palm-sized portion of protein to each meal (eggs, chicken, fish, beans, tofu).',
+            'Use Greek yogurt or nuts for snack upgrades.',
+            'Include protein in breakfast to start your day right.'
+          ]
+        },
+        {
+          title: 'Reduce Processed Foods',
+          description: 'Replace packaged snacks with whole foods like fruits and nuts. Processed foods often contain added sugars, unhealthy fats, and preservatives.',
+          priority: 'medium',
+          duration: '1-2 weeks',
+          details: 'Whole foods are naturally rich in nutrients and fiber, while processed foods often have empty calories. Reducing processed foods can improve energy levels, digestion, and overall health.',
+          actions: [
+            'Swap chips for roasted chickpeas or mixed nuts.',
+            'Batch-slice fruit to keep at eye level in the fridge for easy access.',
+            'Read labels and choose items with fewer ingredients and no added sugars.'
+          ]
+        },
+        {
+          title: 'Mindful Eating',
+          description: 'Eat slowly and pay attention to hunger and fullness cues. Mindful eating helps you enjoy food more and prevents overeating.',
+          priority: 'medium',
+          duration: 'Ongoing',
+          details: 'Eating mindfully improves digestion, helps you recognize true hunger vs. emotional eating, and allows you to savor your food. It can lead to better food choices and improved relationship with food.',
+          actions: [
+            'Take 3 deep breaths before your first bite to center yourself.',
+            'Put utensils down between bites to slow your eating pace.',
+            'Chew each bite thoroughly and notice the flavors and textures.'
+          ]
+        }
+      ];
+    }
+
+    function getDefaultWorkoutRecommendations() {
+      return [
+        {
+          title: 'Start with Walking',
+          description: 'Begin with 15-20 minute walks daily to build cardiovascular foundation. Walking is low-impact, accessible, and provides numerous health benefits.',
+          priority: 'high',
+          duration: '15-20 minutes',
+          intensity: 'low',
+          equipment: 'none',
+          category: 'cardio',
+          details: 'Regular walking improves heart health, strengthens bones, reduces stress, and helps maintain a healthy weight. It\'s one of the safest and most sustainable forms of exercise.',
+          actions: [
+            'Schedule a post-meal walk on your calendar as a non-negotiable appointment.',
+            'Track steps with your phone/watch for motivation and progress tracking.',
+            'Start with 10 minutes and gradually increase to 20-30 minutes daily.'
+          ]
+        },
+        {
+          title: 'Basic Bodyweight Exercises',
+          description: 'Learn fundamental movements like squats, push-ups, and planks. These exercises build strength, improve posture, and require no equipment.',
+          priority: 'high',
+          duration: '20-30 minutes',
+          intensity: 'low-medium',
+          equipment: 'none',
+          category: 'strength',
+          details: 'Bodyweight exercises improve muscle strength, bone density, and functional movement. They can be done anywhere and help prevent injuries by strengthening stabilizing muscles.',
+          actions: [
+            'Perform 3 rounds: 10 squats, 8 push-ups, 20s plank with 1-minute rest between rounds.',
+            'Record your reps to track progress and beat your previous session.',
+            'Focus on proper form over speed - quality matters more than quantity.'
+          ]
+        },
+        {
+          title: 'Gentle Stretching',
+          description: 'Daily stretching routine to improve flexibility and reduce stiffness. Regular stretching helps maintain range of motion and prevents injuries.',
+          priority: 'medium',
+          duration: '10-15 minutes',
+          intensity: 'low',
+          equipment: 'yoga mat',
+          category: 'flexibility',
+          details: 'Stretching improves flexibility, reduces muscle tension, enhances circulation, and can help relieve stress. It\'s especially important if you sit for long periods.',
+          actions: [
+            'Follow a 10-minute YouTube mobility flow in the morning or evening.',
+            'Stretch tight areas after every shower when muscles are warm.',
+            'Hold each stretch for 20-30 seconds without bouncing.'
+          ]
+        },
+        {
+          title: 'Find Activities You Enjoy',
+          description: 'Explore different physical activities to make exercise sustainable and fun. When you enjoy what you do, you\'re more likely to stick with it long-term.',
+          priority: 'medium',
+          duration: 'varies',
+          intensity: 'varies',
+          equipment: 'varies',
+          category: 'variety',
+          details: 'Enjoyment is key to exercise adherence. When you find activities you love, exercise becomes a reward rather than a chore, leading to better consistency and results.',
+          actions: [
+            'List 3 activities you enjoyed as a kid and try them again.',
+            'Invite a friend to try a new class/trail weekly.'
+          ]
+        }
+      ];
+    }
+
+    function getDefaultRemediesRecommendations() {
+      return [
+        {
+          title: 'Adequate Sleep',
+          description: '7-9 hours nightly helps regulate hormones and recovery. Quality sleep is essential for physical and mental health, immune function, and cognitive performance.',
+          priority: 'high',
+          duration: 'Daily',
+          details: 'During sleep, your body repairs tissues, consolidates memories, and regulates hormones. Chronic sleep deprivation increases risk of obesity, diabetes, and heart disease.',
+          actions: [
+            'Set a bedtime alarm 30 minutes before lights out to start winding down.',
+            'Dim lights and avoid screens 1 hour before bed to signal melatonin release.',
+            'Keep your bedroom cool (65-68°F) and dark for optimal sleep quality.'
+          ]
+        },
+        {
+          title: 'Green Tea Benefits',
+          description: 'Drink 2-3 cups daily for antioxidants and metabolism boost. Green tea contains powerful antioxidants called catechins that support overall health.',
+          priority: 'medium',
+          duration: 'Daily',
+          details: 'Green tea is rich in EGCG, an antioxidant that may help reduce inflammation, support brain health, and aid in weight management. It also contains L-theanine, which promotes calm alertness.',
+          actions: [
+            'Swap your afternoon coffee for green tea to reduce caffeine while staying alert.',
+            'Add lemon or ginger for extra flavor and vitamin C boost.',
+            'Steep for 3-5 minutes at 175°F to maximize antioxidant extraction.'
+          ]
+        },
+        {
+          title: 'Stress Management',
+          description: 'Practice meditation, deep breathing, or yoga daily. Managing stress is crucial for both physical and mental well-being.',
+          priority: 'high',
+          duration: 'Daily',
+          details: 'Chronic stress can lead to high blood pressure, weakened immune system, and mental health issues. Regular stress management techniques can improve mood, sleep, and overall health.',
+          actions: [
+            'Block a 5-minute breathing break after lunch using box breathing (4-4-4-4).',
+            'Use a guided meditation app before bedtime to calm your mind.',
+            'Practice progressive muscle relaxation to release physical tension.'
+          ]
+        },
+        {
+          title: 'Vitamin D Support',
+          description: 'Get sunlight exposure or consider supplements if deficient. Vitamin D is essential for bone health, immune function, and mood regulation.',
+          priority: 'medium',
+          duration: 'Daily',
+          details: 'Vitamin D helps your body absorb calcium, supports immune function, and may reduce risk of depression. Many people are deficient, especially in winter months or with limited sun exposure.',
+          actions: [
+            'Take a 10-minute sunshine walk before noon (when UVB rays are strongest).',
+            'Pair vitamin D supplements with meals containing healthy fat for better absorption.',
+            'Get your levels tested annually to determine if supplementation is needed.'
+          ]
+        },
+        {
+          title: 'Gut Health with Probiotics',
+          description: 'Support gut health with fermented foods or supplements. A healthy gut microbiome supports digestion, immunity, and even mental health.',
+          priority: 'medium',
+          duration: 'Daily',
+          details: 'Your gut contains trillions of bacteria that influence digestion, immune function, and mood. Probiotics help maintain a healthy balance of beneficial bacteria.',
+          actions: [
+            'Add a spoon of yogurt, kefir, or kimchi to one meal daily.',
+            'Rotate fermented foods weekly for bacterial diversity.',
+            'Include prebiotic foods (garlic, onions, bananas) to feed good bacteria.'
+          ]
+        }
+      ];
+    }
+
+    function getDefaultMealsRecommendations() {
+      return [
+        {
+          title: 'Breakfast: Protein Smoothie',
+          description: 'Blend spinach, banana, protein powder, almond milk, and berries. A nutrient-dense breakfast that provides protein, fiber, and vitamins to start your day right.',
+          priority: 'high',
+          duration: 'Daily',
+          details: 'Starting your day with protein helps stabilize blood sugar, keeps you full longer, and provides sustained energy. This smoothie packs multiple servings of fruits and vegetables in one convenient drink.',
+          actions: [
+            'Freeze smoothie packs (spinach, berries, banana) for grab-and-blend convenience.',
+            'Add chia seeds or flax seeds for extra fiber and omega-3 fatty acids.',
+            'Use Greek yogurt or protein powder to boost protein content to 20-30g.'
+          ]
+        },
+        {
+          title: 'Lunch: Quinoa Buddha Bowl',
+          description: 'Mixed greens, quinoa, grilled protein, avocado, and tahini dressing. A balanced meal with complex carbs, protein, healthy fats, and plenty of vegetables.',
+          priority: 'high',
+          duration: 'Daily',
+          details: 'Buddha bowls combine multiple food groups in one meal, providing a wide range of nutrients. Quinoa is a complete protein, and the variety of vegetables ensures you get different vitamins and minerals.',
+          actions: [
+            'Batch-cook quinoa and roast vegetables on Sunday for easy weekday assembly.',
+            'Rotate proteins (chicken, tofu, chickpeas, salmon) for variety and different nutrients.',
+            'Make a large batch of tahini dressing to use throughout the week.'
+          ]
+        },
+        {
+          title: 'Dinner: Lean Protein & Vegetables',
+          description: 'Grilled chicken, fish, or legumes with roasted vegetables. A light, nutritious dinner that supports recovery and doesn\'t disrupt sleep.',
+          priority: 'high',
+          duration: 'Daily',
+          details: 'A protein-rich dinner with vegetables provides essential amino acids for muscle repair and recovery. Keeping dinner lighter helps with digestion and promotes better sleep quality.',
+          actions: [
+            'Fill half your dinner plate with colorful roasted or steamed vegetables.',
+            'Marinate protein in advance (overnight or morning) to simplify evening cooking.',
+            'Include a small portion of whole grains like brown rice or sweet potato for sustained energy.'
+          ]
+        },
+        {
+          title: 'Snack: Greek Yogurt Bowl',
+          description: 'Greek yogurt with nuts, seeds, and fresh berries. A protein-rich snack that satisfies hunger between meals and provides probiotics.',
+          priority: 'medium',
+          duration: 'Daily',
+          details: 'Greek yogurt is high in protein and probiotics, which support muscle maintenance and gut health. Adding nuts and berries provides healthy fats, fiber, and antioxidants.',
+          actions: [
+            'Keep portioned toppings (nuts, seeds, berries) ready to sprinkle for quick assembly.',
+            'Drizzle honey or sprinkle cinnamon in place of added sugars.',
+            'Choose plain Greek yogurt and add your own sweeteners to control sugar intake.'
+          ]
+        },
+        {
+          title: 'Breakfast Alternative: Oatmeal',
+          description: 'Steel-cut oats with Greek yogurt, nuts, and banana. A fiber-rich breakfast that provides sustained energy and supports heart health.',
+          priority: 'medium',
+          duration: 'Daily',
+          details: 'Oats are rich in beta-glucan, a type of soluble fiber that helps lower cholesterol and stabilize blood sugar. Combined with protein and healthy fats, this breakfast keeps you satisfied until lunch.',
+          actions: [
+            'Prepare overnight oats the night before for grab-and-go convenience on busy mornings.',
+            'Top with flaxseed or chia seeds for extra fiber and omega-3 fatty acids.',
+            'Add Greek yogurt or protein powder to boost protein content to 15-20g.'
+          ]
+        }
+      ];
+    }
+
+    function getDefaultTipsRecommendations() {
+      return [
+        {
+          title: 'Track Your Progress',
+          description: 'Monitor your habits and celebrate small victories. Tracking helps you stay accountable and see patterns in your health journey.',
+          priority: 'high',
+          duration: 'Ongoing',
+          details: 'Research shows that people who track their progress are more likely to achieve their goals. Regular monitoring helps identify what works, what doesn\'t, and when to adjust your approach.',
+          actions: [
+            'Use the "Track This" button on recommendations you want to follow.',
+            'Review your tracked items every Sunday evening to plan the week ahead.',
+            'Celebrate small wins - every step forward counts toward your bigger goals.'
+          ]
+        },
+        {
+          title: 'Prioritize Sleep',
+          description: 'Maintain consistent sleep schedule and create bedtime routine. Quality sleep is the foundation of good health and affects every aspect of your well-being.',
+          priority: 'high',
+          duration: 'Daily',
+          details: 'Sleep affects your immune system, metabolism, mood, and cognitive function. Inconsistent sleep patterns can disrupt your circadian rhythm and lead to health issues over time.',
+          actions: [
+            'Aim for the same wake-up time even on weekends to maintain your body clock.',
+            'Keep your phone in another room overnight.'
+          ]
+        },
+        {
+          title: 'Stay Consistent',
+          description: 'Small daily habits compound into significant results over time. Consistency is more powerful than intensity when building lasting change.',
+          priority: 'high',
+          duration: 'Ongoing',
+          details: 'Research shows it takes an average of 66 days to form a new habit. Small, consistent actions are more sustainable than occasional intense efforts. Focus on showing up daily, even if it\'s just for a few minutes.',
+          actions: [
+            'Tie new habits to existing routines (habit stacking) - e.g., "After I brush my teeth, I will do 10 squats."',
+            'Track streaks to build momentum - don\'t break the chain!',
+            'Start with tiny habits (2 minutes) and gradually increase as they become automatic.'
+          ]
+        },
+        {
+          title: 'Listen to Your Body',
+          description: 'Rest when needed and adjust intensity based on how you feel. Your body gives important signals about recovery and stress levels.',
+          priority: 'medium',
+          duration: 'Daily',
+          details: 'Overtraining and ignoring fatigue can lead to injuries, burnout, and decreased performance. Learning to balance activity with rest is key to long-term success and injury prevention.',
+          actions: [
+            'Use RPE (Rate of Perceived Exertion) scale (1-10) to adjust workout intensity based on how you feel.',
+            'Schedule at least one lighter "recovery" day weekly for active rest.',
+            'Pay attention to signs of overtraining: persistent fatigue, mood changes, or decreased performance.'
+          ]
+        },
+        {
+          title: 'Stay Social',
+          description: 'Maintain meaningful relationships and social connections',
+          priority: 'medium',
+          duration: 'Ongoing',
+          actions: [
+            'Book a walk or workout date with a friend.',
+            'Share a healthy recipe screenshot in your group chat.'
+          ]
+        }
+      ];
+    }
+
+    function getPriorityColor(priority) {
+      switch (priority) {
+        case 'high': return 'bg-[#a15e32]/20 text-[#8c5e2a] border-[#a15e32]/40';
+        case 'medium': return 'bg-[#f5e6c9] text-[#8c5e2a] border-[#a15e32]/30';
+        case 'low': return 'bg-[#fffdf7] text-[#8b6c58] border-[#a15e32]/20';
+        default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      }
+    }
+
+    function showTab(tabName) {
+      activeTab = tabName;
+      const sectionTitleText = document.getElementById('section-title-text');
+      const sectionDescription = document.getElementById('section-description');
+      const loadingState = document.getElementById('loading-state');
+      const emptyState = document.getElementById('empty-state');
+      const grid = document.getElementById('recommendations-grid');
+      
+      const tabInfo = {
+          'diet': { 
+            title: 'Diet & Nutrition', 
+            icon: 'fa-bowl-food',
+            description: 'Personalized nutrition advice based on your eating habits and goals',
+            color: 'text-[#a15e32]'
+          },
+          'workout': { 
+            title: 'Workout & Fitness', 
+            icon: 'fa-dumbbell',
+            description: 'Exercise recommendations tailored to your activity level and fitness goals',
+            color: 'text-[#8c5e2a]'
+          },
+          'remedies': { 
+            title: 'Natural Remedies', 
+            icon: 'fa-house-medical',
+            description: 'Holistic wellness tips and natural solutions for your health concerns',
+            color: 'text-[#a66f3f]'
+          },
+          'meals': { 
+            title: 'Meal Suggestions', 
+            icon: 'fa-utensils',
+            description: 'Delicious meal ideas that align with your dietary preferences and goals',
+            color: 'text-[#a15e32]'
+          },
+          'tips': { 
+            title: 'Health Tips', 
+            icon: 'fa-lightbulb',
+            description: 'Expert advice and best practices for maintaining optimal health',
+            color: 'text-[#8c5e2a]'
+          },
+          'personalized': { 
+            title: 'Personalized Insights', 
+            icon: 'fa-bullseye',
+            description: 'AI-powered recommendations based on your complete health profile',
+            color: 'text-[#a15e32]'
+          }
+      };
+
+      const info = tabInfo[tabName] || tabInfo['diet'];
+      sectionTitleText.innerHTML = `<i class="fa-solid ${info.icon} ${info.color} mr-2"></i>${info.title}`;
+      sectionDescription.textContent = info.description;
+
+      document.querySelectorAll('.nav-tab').forEach(button => {
+          button.classList.remove('active');
+          if (button.dataset.tab === tabName) button.classList.add('active');
+      });
+
+      grid.innerHTML = '';
+      loadingState.classList.add('hidden');
+      emptyState.classList.add('hidden');
+
+      if (isRecommendationsLoading) {
+        loadingState.classList.remove('hidden');
+        grid.classList.add('hidden');
+        emptyState.classList.add('hidden');
+        return;
+      } else {
+        loadingState.classList.add('hidden');
+        grid.classList.remove('hidden');
+      }
+
+      if (recommendationsError) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-6 bg-[#f5e6c9] rounded-xl border border-[#a15e32]/30 mb-4">
+            <i class="fa-solid fa-exclamation-triangle text-[#a15e32] text-2xl mb-2"></i>
+            <p class="text-[#8c5e2a] font-medium">${recommendationsError}</p>
+          </div>`;
+        recommendationsError = null;
+      }
+
+      let recommendationsToShow = [];
+
+      // Try getting from personalized list first
+      if (personalizedRecommendations && 
+          Array.isArray(personalizedRecommendations[tabName]) && 
+          personalizedRecommendations[tabName].length > 0) {
+          recommendationsToShow = personalizedRecommendations[tabName];
+      } else {
+          // Fallback
+          switch (tabName) {
+              case 'diet': recommendationsToShow = getDefaultDietRecommendations(); break;
+              case 'workout': recommendationsToShow = getDefaultWorkoutRecommendations(); break;
+              case 'remedies': recommendationsToShow = getDefaultRemediesRecommendations(); break;
+              case 'meals': {
+                const dietInfo = getUserDietInfo();
+                // 1. Try personalized meals (from user data generation)
+                if (personalizedRecommendations && 
+                    Array.isArray(personalizedRecommendations.meals) && 
+                    personalizedRecommendations.meals.length > 0) {
+                    recommendationsToShow = personalizedRecommendations.meals;
+                } else {
+                    // 2. Fallback to diet-based library lookup
+                    const mealsFromDiet = getMealsByDiet(dietInfo.preference);
+                    if (mealsFromDiet && mealsFromDiet.length > 0) {
+                        recommendationsToShow = mealsFromDiet;
+                    } else {
+                        // 3. Absolute final fallback
+                        recommendationsToShow = getDefaultMealsRecommendations();
+                    }
+                }
+                break;
+              }
+
+              case 'tips': recommendationsToShow = getDefaultTipsRecommendations(); break;
+              case 'personalized': break; // handled below
+              default: recommendationsToShow = [];
+          }
+      }
+
+    // Personalized Tab Special Logic
+    if (tabName === 'personalized') {
+        const healthAnalysis = analyzeAllHealthDomains();
+        const healthScoreCard = document.createElement('div');
+        healthScoreCard.className = 'col-span-full';
+        
+        const scoreColor = healthAnalysis.overallHealthScore >= 70 ? 'from-[#a15e32] to-[#8c5e2a]' :
+                          healthAnalysis.overallHealthScore >= 50 ? 'from-[#a66f3f] to-[#a15e32]' :
+                          'from-[#8b6c58] to-[#a66f3f]';
+        
+        const scoreMessage = healthAnalysis.overallHealthScore >= 70 ? 
+            { icon: 'fa-star', text: 'Excellent! You\'re doing great!', color: 'text-[#f5e6c9]' } :
+            healthAnalysis.overallHealthScore >= 50 ? 
+            { icon: 'fa-thumbs-up', text: 'Good progress! Keep it up!', color: 'text-[#fffdf7]' } :
+            { icon: 'fa-arrow-up', text: 'Room for improvement - let\'s work on it!', color: 'text-[#f5e8d3]' };
+        
+        healthScoreCard.innerHTML = `
+            <div class="bg-gradient-to-br ${scoreColor} rounded-2xl p-8 text-white shadow-xl mb-6">
+                <div class="text-center">
+                    <div class="text-6xl font-bold mb-2">${healthAnalysis.overallHealthScore}</div>
+                    <div class="text-xl font-semibold mb-4">Overall Health Score</div>
+                    <div class="flex items-center justify-center gap-2 text-lg ${scoreMessage.color}">
+                        <i class="fa-solid ${scoreMessage.icon}"></i>
+                        <span>${scoreMessage.text}</span>
+                    </div>
+                    <div class="mt-6 pt-6 border-t border-white/20">
+                        <p class="text-sm opacity-90 mb-3">This score is calculated based on:</p>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                            <div class="text-center">
+                                <i class="fa-solid fa-droplet text-2xl mb-2 opacity-80"></i>
+                                <div>Hydration</div>
+                            </div>
+                            <div class="text-center">
+                                <i class="fa-solid fa-apple-whole text-2xl mb-2 opacity-80"></i>
+                                <div>Nutrition</div>
+                            </div>
+                            <div class="text-center">
+                                <i class="fa-solid fa-person-running text-2xl mb-2 opacity-80"></i>
+                                <div>Activity</div>
+                            </div>
+                            <div class="text-center">
+                                <i class="fa-solid fa-face-smile text-2xl mb-2 opacity-80"></i>
+                                <div>Wellness</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        grid.appendChild(healthScoreCard);
+        
+        // If personalized list is empty, regenerate cross-domain recs or show defaults
+        if (!recommendationsToShow || recommendationsToShow.length === 0) {
+             const crossDomain = generateCrossDomainRecommendations(healthAnalysis);
+             recommendationsToShow = (crossDomain.length > 0) ? crossDomain : [
+                { title: 'Start Your Health Journey', description: 'Begin tracking daily habits.', priority: 'high', duration: 'Daily', category: 'foundation', impact: 'high' }
+             ];
+        }
+    }
+
+    // Final safety check
+    if (!recommendationsToShow || recommendationsToShow.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+    }
+
+    // Update total recommendations count
+    updateQuickStats(recommendationsToShow.length);
+
+    // Render Cards
+    recommendationsToShow.forEach((rec, i) => {
+        const card = document.createElement('div');
+        const isPersonalized = tabName === 'personalized';
+        card.className = isPersonalized ? 'recommendation-card personalized-card interactive-card' : 'recommendation-card interactive-card';
+        card.style.animationDelay = `${i * 100}ms`;
+
+        // Get icon based on category/type
+        const getCategoryIcon = () => {
+          if (rec.category === 'cardio') return 'fa-heart-pulse';
+          if (rec.category === 'strength') return 'fa-dumbbell';
+          if (rec.category === 'yoga') return 'fa-om';
+          if (tabName === 'diet') return 'fa-apple-whole';
+          if (tabName === 'workout') return 'fa-person-running';
+          if (tabName === 'remedies') return 'fa-leaf';
+          if (tabName === 'meals') return 'fa-utensils';
+          return 'fa-circle-check';
+        };
+
+        const categoryIcon = getCategoryIcon();
+        const intensityBadge = rec.intensity ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#f5e6c9] text-[#8c5e2a] border border-[#a15e32]/30 flex items-center gap-1"><i class="fa-solid fa-fire text-xs"></i>${rec.intensity}</span>` : '';
+        const equipmentBadge = rec.equipment ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#fffdf7] text-[#a66f3f] border border-[#a15e32]/30 flex items-center gap-1"><i class="fa-solid fa-toolbox text-xs"></i>${rec.equipment}</span>` : '';
+        const categoryBadge = rec.category ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-[#f5e8d3] text-[#8c5e2a] border border-[#a15e32]/30">${rec.category}</span>` : '';
+        const impactBadge = rec.impact ? `<span class="px-2.5 py-1 rounded-full text-xs font-semibold ${rec.impact === 'high' ? 'bg-[#a15e32]/20 text-[#8c5e2a] border-[#a15e32]/40' : 'bg-[#f5e6c9] text-[#8c5e2a] border-[#a15e32]/30'}"><i class="fa-solid ${rec.impact === 'high' ? 'fa-arrow-up' : 'fa-check'} text-xs mr-1"></i>${rec.impact} impact</span>` : '';
+        
+        // Priority badge with better styling
+        const getPriorityBadge = () => {
+          const priority = rec.priority || 'medium';
+          const colors = {
+            'critical': 'bg-[#a15e32]/20 text-[#8c5e2a] border-[#a15e32]/50 animate-pulse',
+            'high': 'bg-[#a15e32]/15 text-[#a15e32] border-[#a15e32]/40',
+            'medium': 'bg-[#f5e6c9] text-[#8c5e2a] border-[#a15e32]/30',
+            'low': 'bg-[#fffdf7] text-[#8b6c58] border-[#a15e32]/20'
+          };
+          const icons = {
+            'critical': 'fa-exclamation-triangle',
+            'high': 'fa-arrow-up',
+            'medium': 'fa-equals',
+            'low': 'fa-arrow-down'
+          };
+          return `<span class="px-2.5 py-1 rounded-full text-xs font-semibold border ${colors[priority]} flex items-center gap-1">
+            <i class="fa-solid ${icons[priority]} text-xs"></i>${priority}
+          </span>`;
+        };
+
+        const contextIcon = rec.contextIcon || 'fa-circle-info';
+        const contextLine = rec.context ? `<div class="rec-context"><i class="fa-solid ${contextIcon}"></i>${rec.context}</div>` : '';
+        const actionsList = Array.isArray(rec.actions) ? rec.actions : [];
+        let detailsHtml = rec.details ? `<p class="rec-details-note"><strong>Why this matters:</strong> ${rec.details}</p>` : '';
+        if (actionsList.length) {
+          detailsHtml += `<div class="mt-3"><strong class="text-sm font-semibold text-gray-700 mb-2 block"><i class="fa-solid fa-list-check mr-1"></i>Action Steps:</strong><ul class="rec-actions">${actionsList.map(action => `<li><i class="fa-solid fa-chevron-right text-xs mr-2 text-[#a15e32]"></i>${action}</li>`).join('')}</ul></div>`;
+        }
+
+        const detailsBlock = detailsHtml ? `<div class="rec-details">${detailsHtml}</div>` : '';
+        const hasInteractiveContent = Boolean(contextLine || detailsBlock);
+
+        card.innerHTML = `
+        <div class="p-6 h-full flex flex-col ${isPersonalized ? 'bg-gradient-to-br from-orange-50/70 to-stone-100/60' : 'bg-white'} rounded-xl border border-gray-200 hover:border-[#a15e32] transition-all duration-300 shadow-sm hover:shadow-md">
+          ${hasInteractiveContent ? `<button class="card-toggle" type="button" aria-label="Toggle details">
+            <i class="fa-solid fa-chevron-down"></i>
+          </button>` : ''}
+          
+          <!-- Icon and Title Section -->
+          <div class="flex items-start gap-3 mb-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-[#a15e32] to-[#8c5e2a] flex items-center justify-center text-white text-xl shadow-md">
+              <i class="fa-solid ${categoryIcon}"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+              <h3 class="text-lg font-bold text-gray-900 mb-1 leading-tight">${rec.title}</h3>
+              <div class="flex items-center gap-2 flex-wrap">
+                ${getPriorityBadge()}
+                <div class="flex items-center gap-1 text-gray-500 text-xs">
+                  <i class="fa-solid fa-clock text-xs"></i>
+                  <span>${rec.duration}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <p class="text-gray-700 leading-relaxed mb-4 text-sm ${isPersonalized ? 'font-medium' : ''}">${rec.description}</p>
+
+          <!-- Badges -->
+          ${(intensityBadge || equipmentBadge || categoryBadge || impactBadge) ? `<div class="flex flex-wrap gap-2 mb-4">${intensityBadge}${equipmentBadge}${categoryBadge}${impactBadge}</div>` : ''}
+          
+          <!-- Context Info -->
+          ${contextLine}
+          
+          <!-- Expandable Details -->
+          ${detailsBlock}
+          
+          <!-- Action Button -->
+          <div class="mt-auto pt-4 border-t border-[#a15e32]/10">
+            <button class="track-btn w-full px-4 py-2.5 bg-gradient-to-r from-[#a15e32] to-[#8c5e2a] text-white text-sm font-semibold rounded-lg transition-all duration-200 hover:from-[#8c5e2a] hover:to-[#a15e32] hover:shadow-lg transform hover:-translate-y-0.5 flex items-center justify-center gap-2" onclick="trackRecommendation('${rec.title.replace(/'/g, "\\'")}', '${tabName}')">
+              <i class="fa-solid fa-bookmark text-white"></i>
+              <span class="text-white">Track This Recommendation</span>
+            </button>
+            <p class="text-xs text-[#8b6c58] text-center mt-2">Save to track your progress</p>
+          </div>
+        </div>`;
+
+        if (hasInteractiveContent) {
+          const toggleBtn = card.querySelector('.card-toggle');
+          toggleBtn?.addEventListener('click', (event) => {
+            event.stopPropagation();
+            card.classList.toggle('expanded');
+          });
+
+          card.addEventListener('click', () => {
+            card.classList.toggle('expanded');
+          });
+        }
+
+        const trackBtn = card.querySelector('.track-btn');
+        trackBtn?.addEventListener('click', (event) => event.stopPropagation());
+
+        grid.appendChild(card);
+    });
+    lucide.createIcons();
+}
+
+    // Add recommendation tracking functionality
+    function trackRecommendation(recommendationId, tabName) {
+      const trackedRecs = JSON.parse(localStorage.getItem('trackedRecommendations') || '{}');
+      if (!trackedRecs[tabName]) {
+        trackedRecs[tabName] = [];
+      }
+
+      if (!trackedRecs[tabName].includes(recommendationId)) {
+        trackedRecs[tabName].push(recommendationId);
+        localStorage.setItem('trackedRecommendations', JSON.stringify(trackedRecs));
+
+        // Show success message
+        showNotification('Pinned! Open "View My Progress" below to review it anytime.', 'success');
+      } else {
+        showNotification('This recommendation is already being tracked!', 'info');
+      }
+    }
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 p-4 rounded-lg shadow-lg z-50 ${type === 'success' ? 'bg-green-500 text-white' :
+        type === 'error' ? 'bg-red-500 text-white' :
+          'bg-blue-500 text-white'
+        }`;
+      notification.textContent = message;
+
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // View tracked recommendations
+    function viewTrackedRecommendations() {
+      const trackedRecs = JSON.parse(localStorage.getItem('trackedRecommendations') || '{}');
+      const modal = document.getElementById('progressModal');
+      const list = document.getElementById('trackedRecommendationsList');
+
+      if (Object.keys(trackedRecs).length === 0) {
+        list.innerHTML = '<p class="text-gray-500 text-center py-4">No recommendations tracked yet. Start tracking some recommendations to see your progress here!</p>';
+      } else {
+        let html = '';
+        Object.entries(trackedRecs).forEach(([category, recommendations]) => {
+          html += `<div class="mb-4">
+            <h4 class="font-semibold text-lg mb-2 capitalize">${category} Recommendations</h4>
+            <ul class="space-y-2">`;
+
+          recommendations.forEach(rec => {
+            html += `<li class="flex items-center justify-between p-2 bg-gray-50 rounded">
+              <span>${rec}</span>
+              <button onclick="removeTrackedRecommendation('${rec.replace(/'/g, "\\'")}', '${category}')" 
+                      class="text-red-500 hover:text-red-700 text-sm">
+                Remove
+              </button>
+            </li>`;
+          });
+
+          html += '</ul></div>';
+        });
+
+        list.innerHTML = html;
+      }
+
+      modal.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    // Close progress modal
+    function closeProgressModal() {
+      document.getElementById('progressModal').classList.add('hidden');
+    }
+
+    // Remove tracked recommendation
+    function removeTrackedRecommendation(recommendation, category) {
+      const trackedRecs = JSON.parse(localStorage.getItem('trackedRecommendations') || '{}');
+      if (trackedRecs[category]) {
+        trackedRecs[category] = trackedRecs[category].filter(rec => rec !== recommendation);
+        if (trackedRecs[category].length === 0) {
+          delete trackedRecs[category];
+        }
+        localStorage.setItem('trackedRecommendations', JSON.stringify(trackedRecs));
+        showNotification('Recommendation removed from tracking!', 'info');
+        viewTrackedRecommendations(); // Refresh the modal
+      }
+    }
+
+    // Export recommendations
+    function exportRecommendations() {
+      const trackedRecs = JSON.parse(localStorage.getItem('trackedRecommendations') || '{}');
+
+      if (Object.keys(trackedRecs).length === 0) {
+        showNotification('No recommendations to export. Start tracking some recommendations first!', 'info');
+        return;
+      }
+
+      let exportText = 'VitaFuel - My Health Recommendations\n';
+      exportText += 'Generated on: ' + new Date().toLocaleDateString() + '\n\n';
+
+      Object.entries(trackedRecs).forEach(([category, recommendations]) => {
+        exportText += `${category.toUpperCase()} RECOMMENDATIONS:\n`;
+        recommendations.forEach((rec, index) => {
+          exportText += `${index + 1}. ${rec}\n`;
+        });
+        exportText += '\n';
+      });
+
+      // Create and download file
+      const blob = new Blob([exportText], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `vitafuel-recommendations-${new Date().toISOString().split('T')[0]}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+
+      showNotification('Recommendations exported successfully!', 'success');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!currentUser || !accessToken) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      initializeNavigation();
+
+      const contrastToggleBtn = document.getElementById('contrastToggleBtn');
+      contrastToggleBtn?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        toggleHighContrastMode();
+      });
+
+      const bannerDismissBtn = document.getElementById('bannerDismissBtn');
+      bannerDismissBtn?.addEventListener('click', (event) => {
+        event.stopPropagation();
+        dismissGuidanceBanner();
+      });
+
+      const helpBtn = document.getElementById('helpBtn');
+      helpBtn?.addEventListener('click', () => {
+        const banner = document.getElementById('guidanceBanner');
+        if (banner) {
+          banner.classList.remove('hidden');
+          banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      });
+
+      applyHighContrastState();
+      maybeShowGuidanceBanner();
+      renderInsightChips();
+
+      loadUserHealthData();
+
+      document.querySelectorAll('.nav-tab').forEach(btn => {
+        btn.addEventListener('click', () => showTab(btn.dataset.tab));
+      });
+
+      showTab('diet');
+    });
+
+    // Navigation functionality is handled by navigation.js
+
+    // Direct profile dropdown fix
+    document.addEventListener('DOMContentLoaded', function () {
+      const profileCircle = document.getElementById('user-profile');
+      const profileDropdown = document.getElementById('profileDropdown');
+
+      if (profileCircle && profileDropdown) {
+        // Add click handler
+        profileCircle.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Toggle dropdown
+          if (profileDropdown.style.display === 'block') {
+            profileDropdown.style.display = 'none';
+          } else {
+            profileDropdown.style.display = 'block';
+            profileDropdown.style.position = 'absolute';
+            profileDropdown.style.right = '0';
+            profileDropdown.style.top = '100%';
+            profileDropdown.style.backgroundColor = '#fff';
+            profileDropdown.style.zIndex = '9999';
+            profileDropdown.style.minWidth = '150px';
+            profileDropdown.style.border = '1px solid #ddd';
+            profileDropdown.style.borderRadius = '10px';
+            profileDropdown.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+            profileDropdown.style.padding = '10px 0';
+          }
+        });
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+          if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+            profileDropdown.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
+  <script src="scripts/navigation.js"></script>
+</body>
+
+</html>

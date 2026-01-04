@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login | VitaFuel</title>
+    <script src="port-redirect.js"></script>
+    <script src="scripts/navigation.js"></script>
+    <link rel="stylesheet" href="css/login.css" />
+</head>
+
+<body>
+  <!-- Dynamic Background Elements -->
+  <div class="bg-elements">
+    <!-- Morphing Shapes -->
+    <div class="morph-shape morph-1"></div>
+    <div class="morph-shape morph-2"></div>
+    <div class="morph-shape morph-3"></div>
+
+    <!-- Floating Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+
+    <!-- Ripple Effects -->
+    <div class="ripple ripple-1"></div>
+    <div class="ripple ripple-2"></div>
+
+    <!-- Particle Trail -->
+    <div class="particle-trail" id="particleTrail"></div>
+  </div>
+
+  <div class="login-container">
+    <div class="auth-box">
+      <h2>Login to VitaFuel</h2>
+      <form id="loginForm">
+        <div class="input-group">
+          <label>Email</label>
+          <div class="input-wrapper email-wrapper">
+            <input type="email" id="email" name="email" required placeholder="Enter your email address">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Password</label>
+          <div class="input-wrapper password-wrapper">
+            <input type="password" id="password" required placeholder="Enter your password">
+            <span class="toggle-password" onclick="togglePasswordVisibility()">👁️</span>
+          </div>
+        </div>
+
+        <button type="submit" class="login-btn">Sign In</button>
+
+        <p class="forgotlink">
+          <a href="#" onclick="showForgotPassword()">Forgot Password?</a>
+        </p>
+
+        <p class="link">Not registered? <a href="register.html">Create an account</a></p>
+      </form>
+    </div>
+  </div>
+<script>
+    // --- All your animation functions (createParticleTrail, togglePasswordVisibility, etc.) remain exactly the same. ---
+
+    // Create dynamic particle trails
+    function createParticleTrail() {
+        const trail = document.getElementById('particleTrail');
+        if (!trail) return;
+        const particleCount = 20;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'trail-particle';
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.animationDelay = `${Math.random() * 6}s`;
+            particle.style.animationDuration = `${Math.random() * 3 + 4}s`;
+            trail.appendChild(particle);
+        }
+    }
+    setTimeout(createParticleTrail, 1000);
+
+    // Toggle password visibility
+    function togglePasswordVisibility() {
+        const passwordField = document.getElementById("password");
+        const toggleIcon = document.querySelector(".toggle-password");
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            toggleIcon.textContent = "🙈";
+        } else {
+            passwordField.type = "password";
+            toggleIcon.textContent = "👁️";
+        }
+        toggleIcon.style.transform = 'translateY(-50%) scale(0.8) rotate(360deg)';
+        setTimeout(() => {
+            toggleIcon.style.transform = 'translateY(-50%) scale(1) rotate(0deg)';
+        }, 200);
+    }
+    
+    // --- (Include your other animation and UI functions here if they exist) ---
+
+
+    // Forgot Password Functionality
+    function showForgotPassword() {
+        const email = prompt("Enter your email address to reset your password:");
+        if (email && email.trim()) {
+            resetPassword(email.trim());
+        }
+    }
+
+    async function resetPassword(email) {
+        try {
+            const apiOrigin = window.API_BASE_ORIGIN || (window.location.port && window.location.port !== '3000' 
+                ? window.location.origin 
+                : `${window.location.protocol}//${window.location.hostname}:8005`);
+            const response = await fetch(`${apiOrigin}/auth/forgot-password`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                alert("Password reset instructions have been sent to your email. Please check your email and follow the instructions.");
+            } else {
+                alert("Error: " + (result.detail || "Failed to send reset email"));
+            }
+        } catch (error) {
+            console.error("Reset password error:", error);
+            alert("Error sending reset email. Please try again.");
+        }
+    }
+
+    // --- THE CORRECTED LOGIN FORM SUBMISSION LOGIC ---
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginForm = document.getElementById("loginForm");
+        if (!loginForm) return;
+
+        loginForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const emailInput = document.getElementById("email");
+            const passwordInput = document.getElementById("password");
+            const btn = document.querySelector('.login-btn');
+
+            const email = emailInput.value.trim().toLowerCase();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                alert("Email and password are required.");
+                return;
+            }
+
+            btn.innerHTML = '<span style="opacity: 0.7;">Authenticating...</span>';
+            btn.style.background = 'linear-gradient(45deg, #666, #888)';
+            btn.disabled = true;
+
+            try {
+                // Get API base URL from centralized config
+                const apiOrigin = window.API_BASE_ORIGIN || (window.location.port && window.location.port !== '3000' 
+                    ? window.location.origin 
+                    : `${window.location.protocol}//${window.location.hostname}:8005`);
+                
+                const loginData = {
+                    email: email,
+                    password: password
+                };
+
+                const res = await fetch(`${apiOrigin}/auth/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(loginData)
+                });
+
+                const result = await res.json();
+                if (!res.ok) {
+                    // Use the detailed error message from the FastAPI backend
+                    throw new Error(result.detail || "Login failed due to an unknown error.");
+                }
+
+                console.log("✅ Login successful, token received:", result.access_token);
+                btn.innerHTML = '✨ Welcome! ✨';
+                btn.style.background = 'linear-gradient(45deg, #4caf50, #81c784)';
+                
+                // On success, store the token and email for future use
+                localStorage.setItem("accessToken", result.access_token);
+                localStorage.setItem("token", result.access_token); // For backward compatibility
+                localStorage.setItem("userEmail", email);
+
+                // Redirect to the home page
+                setTimeout(() => {
+                    // Redirect to the home page
+                    window.location.href = "index.html";
+                }, 1200);
+
+            } catch (err) {
+                console.error("❌ Login Error:", err);
+                btn.innerHTML = 'Sign In';
+                btn.style.background = 'linear-gradient(45deg, var(--primary), var(--secondary))';
+                btn.disabled = false;
+                alert("Login failed: " + err.message);
+            }
+        });
+    });
+</script>
+</body>
+
+</html>

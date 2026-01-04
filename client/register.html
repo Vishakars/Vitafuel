@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <script src="scripts/navigation.js"></script>
+  <link rel="stylesheet" href="css/register.css">
+  <title>Register | VitaFuel</title>
+</head>
+<body>
+  <!-- Dynamic Background Elements -->
+  <div class="bg-elements">
+    <!-- Morphing Shapes -->
+    <div class="morph-shape morph-1"></div>
+    <div class="morph-shape morph-2"></div>
+    <div class="morph-shape morph-3"></div>
+    
+    <!-- Floating Orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+    
+    <!-- Ripple Effects -->
+    <div class="ripple ripple-1"></div>
+    <div class="ripple ripple-2"></div>
+    
+    <!-- Particle Trail -->
+    <div class="particle-trail" id="particleTrail"></div>
+  </div>
+
+  <div class="register-container">
+    <div class="auth-box">
+      <h2>Join VitaFuel</h2>
+      <form id="registerForm">
+        <div class="input-group">
+          <label>Full Name</label>
+          <div class="input-wrapper name-wrapper">
+            <input type="text" name="name" id="name" required placeholder="Enter your full name">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Email</label>
+          <div class="input-wrapper email-wrapper">
+            <input type="email" name="email" id="email" required placeholder="Enter your email address"
+                  pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
+                  title="Enter a valid email (e.g., user@example.com)">
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>Password</label>
+          <div class="input-wrapper password-wrapper">
+            <input type="password" id="password" required placeholder="Create a secure password">
+            <span class="toggle-password" onclick="toggleRegisterPasswordVisibility()">👁️</span>
+          </div>
+        </div>
+
+        <button type="submit" class="register-btn">Create Account</button>
+
+        <p class="link">Already have an account? <a href="login.html">Sign In</a></p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Create dynamic particle trails
+    function createParticleTrail() {
+      const trail = document.getElementById('particleTrail');
+      const particleCount = 20;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'trail-particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 6 + 's';
+        particle.style.animationDuration = (Math.random() * 3 + 4) + 's';
+        trail.appendChild(particle);
+      }
+    }
+
+    // Initialize particles
+    createParticleTrail();
+
+    function toggleRegisterPasswordVisibility() {
+      const passwordField = document.getElementById("password");
+      const toggleIcon = document.querySelector(".toggle-password");
+      
+      if (passwordField.type === "password") {
+        passwordField.type = "text";
+        toggleIcon.textContent = "🙈";
+      } else {
+        passwordField.type = "password";
+        toggleIcon.textContent = "👁️";
+      }
+      
+      // Add click effect
+      toggleIcon.style.transform = 'translateY(-50%) scale(0.8) rotate(360deg)';
+      setTimeout(() => {
+        toggleIcon.style.transform = 'translateY(-50%) scale(1) rotate(0deg)';
+      }, 200);
+    }
+
+    // Create success particles effect
+    function createSuccessParticles() {
+      const colors = ['#4CAF50', '#45a049', '#66BB6A'];
+      
+      for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        particle.style.width = Math.random() * 8 + 4 + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.background = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.borderRadius = '50%';
+        particle.style.left = '50%';
+        particle.style.top = '50%';
+        particle.style.pointerEvents = 'none';
+        particle.style.zIndex = '1000';
+        
+        document.body.appendChild(particle);
+        
+        const angle = (Math.PI * 2 * i) / 15;
+        const velocity = Math.random() * 100 + 50;
+        
+        particle.animate([
+          { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
+          { transform: `translate(calc(-50% + ${Math.cos(angle) * velocity}px), calc(-50% + ${Math.sin(angle) * velocity}px)) scale(1)`, opacity: 0 }
+        ], {
+          duration: 1000,
+          easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)'
+        }).onfinish = () => particle.remove();
+      }
+    }
+
+    // Add mouse trail effect
+    let mouseTrail = [];
+    document.addEventListener('mousemove', (e) => {
+      mouseTrail.push({ x: e.clientX, y: e.clientY, time: Date.now() });
+      
+      if (mouseTrail.length > 20) {
+        mouseTrail.shift();
+      }
+      
+      // Create subtle mouse trail particles occasionally
+      if (Math.random() < 0.1) {
+        const trail = document.createElement('div');
+        trail.style.position = 'fixed';
+        trail.style.left = e.clientX + 'px';
+        trail.style.top = e.clientY + 'px';
+        trail.style.width = '3px';
+        trail.style.height = '3px';
+        trail.style.background = 'rgba(140, 94, 42, 0.6)';
+        trail.style.borderRadius = '50%';
+        trail.style.pointerEvents = 'none';
+        trail.style.zIndex = '5';
+        document.body.appendChild(trail);
+        
+        trail.animate([
+          { opacity: 1, transform: 'scale(1)' },
+          { opacity: 0, transform: 'scale(0)' }
+        ], {
+          duration: 500,
+          easing: 'ease-out'
+        }).onfinish = () => trail.remove();
+      }
+    });
+
+    // Add interactive focus effects
+    document.querySelectorAll('input').forEach(input => {
+      input.addEventListener('focus', function() {
+        // Create focus ripple effect
+        const ripple = document.createElement('div');
+        const rect = this.getBoundingClientRect();
+        ripple.style.position = 'absolute';
+        ripple.style.left = rect.left + rect.width / 2 + 'px';
+        ripple.style.top = rect.top + rect.height / 2 + 'px';
+        ripple.style.width = '10px';
+        ripple.style.height = '10px';
+        ripple.style.background = 'rgba(140, 94, 42, 0.3)';
+        ripple.style.borderRadius = '50%';
+        ripple.style.transform = 'translate(-50%, -50%)';
+        ripple.style.pointerEvents = 'none';
+        ripple.style.zIndex = '1';
+        document.body.appendChild(ripple);
+        
+        ripple.animate([
+          { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
+          { transform: 'translate(-50%, -50%) scale(10)', opacity: 0 }
+        ], {
+          duration: 600,
+          easing: 'ease-out'
+        }).onfinish = () => ripple.remove();
+      });
+    });
+
+    // Corrected Register form submission
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
+e.preventDefault();
+
+const name = document.getElementById("name").value.trim();
+const email = document.getElementById("email").value.trim().toLowerCase();
+const password = document.getElementById("password").value.trim();
+const btn = document.querySelector(".register-btn");
+
+if (!name || !email || !password) {
+alert("Full Name, Email, and Password are required.");
+return;
+}
+
+btn.textContent = "Creating Account...";
+
+// Get API base URL from centralized config
+const apiOrigin = window.API_BASE_ORIGIN || (window.location.port && window.location.port !== '3000' 
+    ? window.location.origin 
+    : `${window.location.protocol}//${window.location.hostname}:8005`);
+
+const regRes = await fetch(`${apiOrigin}/auth/register`, {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ name, email, password })
+});
+const regJson = await regRes.json();
+if (!regRes.ok) {
+btn.textContent = "Create Account";
+alert(`Registration failed: ${regJson.detail || "Unknown error"}`);
+return;
+}
+
+const loginRes = await fetch(`${apiOrigin}/auth/login`, {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({ email, password })
+});
+const loginJson = await loginRes.json();
+if (!loginRes.ok || !loginJson.access_token) {
+btn.textContent = "Create Account";
+alert(`Login failed after registration: ${loginJson.detail || "No token"}`);
+return;
+}
+
+localStorage.setItem("accessToken", loginJson.access_token);
+localStorage.setItem("userEmail", email);
+localStorage.setItem("fullName", name);
+
+const [firstName, ...rest] = name.split(" ");
+const lastName = rest.join(" ");
+const profilePayload = {
+email: email,
+demographics: {
+firstName: firstName || "",
+lastName: lastName,
+dob: null,
+gender: null,
+height: null,
+weight: null
+},
+healthDomains: []
+};
+
+const apiBaseUrl = window.API_BASE_URL || `${apiOrigin}/api`;
+const profRes = await fetch(`${apiBaseUrl}/profile/`, {
+method: "POST",
+headers: {
+"Content-Type": "application/json",
+"Authorization": `Bearer ${loginJson.access_token}`
+},
+body: JSON.stringify(profilePayload)
+});
+const profJson = await profRes.json().catch(() => ({}));
+if (!profRes.ok) {
+btn.textContent = "Create Account";
+const errorMsg = profJson.detail || profJson.message || JSON.stringify(profJson) || "Unknown error";
+alert(`Profile save failed: ${errorMsg}`);
+return;
+}
+
+btn.textContent = "✨ Account Created!";
+// Store the email for the next step
+localStorage.setItem("registrationEmail", email);
+// Add a small delay to ensure localStorage is written
+setTimeout(() => {
+    window.location.href = "register1.html?v=" + Date.now();
+}, 1000);
+});
+
+
+
+</script>
+</body>
+</html>

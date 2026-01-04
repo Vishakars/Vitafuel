@@ -1,0 +1,2559 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | Anemia Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/anemia.css" />
+    <link rel="stylesheet" href="css/commonstyles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/user-auth.js"></script>
+    <script src="js/health-domain-common.js"></script>
+    <script src="js/mongodb-integration.js"></script>
+</head>
+
+<body>
+    <div class="floating-icon"><i class="fa-solid fa-droplet"></i></div>
+
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">U</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Loading Placeholder - Shows immediately -->
+    <div id="loadingPlaceholder"
+        style="display: block; padding: 20px; text-align: center; color: #a15e32; background: #fdf6ec;">
+        <div style="font-size: 1.2rem; margin-bottom: 10px;"><i class="fa-solid fa-droplet"></i> Anemia Tracker</div>
+        <div style="font-size: 0.9rem; opacity: 0.7;">Loading your anemia data...</div>
+    </div>
+
+    <div class="container" id="mainContent" style="display: none;">
+        <div class="header">
+            <h1><i class="fa-solid fa-droplet"></i> Anemia Tracker</h1>
+            <p>Monitor your iron levels and manage anemia symptoms - Start fresh and build your health journey</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Hemoglobin Level</h3>
+                        <div class="stat-value" id="hemoglobin-level">-- g/dL</div>
+                        <div class="stat-goal">Target: 12-15 g/dL</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-droplet"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="hemoglobin-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Iron Intake Today</h3>
+                        <div class="stat-value" id="iron-intake">0mg</div>
+                        <div class="stat-goal">Goal: 18mg daily</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-bolt"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="iron-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Energy Level</h3>
+                        <div class="stat-value" id="energy-level">--/10</div>
+                        <div class="stat-goal">Not recorded yet</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-battery-three-quarters"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="energy-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Supplement Streak</h3>
+                        <div class="stat-value" id="supplement-streak">0 days</div>
+                        <div class="stat-goal">Start your journey!</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-capsules"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="supplement-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Ferritin Level</h3>
+                        <div class="stat-value" id="ferritin-level">-- ng/mL</div>
+                        <div class="stat-goal">Target: 15-150 ng/mL</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-microscope"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="ferritin-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Vitamin C Intake</h3>
+                        <div class="stat-value" id="vitamin-c-intake">0mg</div>
+                        <div class="stat-goal">Goal: 75-90mg daily</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-lemon"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="vitamin-c-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tracking-section">
+            <h2><i class="fa-solid fa-chart-line"></i> Track Your Progress</h2>
+
+            <div class="food-tracker">
+                <h3><i class="fa-solid fa-bowl-food"></i> Iron-Rich Foods Consumed Today</h3>
+                <div class="iron-foods-grid" id="iron-foods-grid">
+                    <div class="iron-food-item" data-iron="3.6" onclick="toggleFood(this)">
+                        <div><i class="fa-solid fa-bowl-food"></i> Spinach</div>
+                        <small>3.6mg iron</small>
+                    </div>
+                    <div class="iron-food-item" data-iron="2.7" onclick="toggleFood(this)">
+                        <div><i class="fa-solid fa-drumstick-bite"></i> Red Meat</div>
+                        <small>2.7mg iron</small>
+                    </div>
+                    <div class="iron-food-item" data-iron="1.8" onclick="toggleFood(this)">
+                        <div><i class="fa-solid fa-seedling"></i> Lentils</div>
+                        <small>1.8mg iron</small>
+                    </div>
+                    <div class="iron-food-item" data-iron="1.6" onclick="toggleFood(this)">
+                        <div><i class="fa-solid fa-fish"></i> Tuna</div>
+                        <small>1.6mg iron</small>
+                    </div>
+                    <div class="iron-food-item" data-iron="1.5" onclick="toggleFood(this)">
+                        <div><i class="fa-solid fa-bean"></i><i class="fa-solid fa-jar"></i> Chickpeas</div>
+                        <small>1.5mg iron</small>
+                    </div>
+                    <div class="iron-food-item" data-iron="6.9" onclick="toggleFood(this)">
+                        <div><i class="fa-solid fa-wheat-awn"></i> Fortified Cereal</div>
+                        <small>6.9mg iron</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tracking-form">
+                <div class="form-group">
+                    <label class="form-label">Hemoglobin Level (g/dL)</label>
+                    <input type="number" class="form-input" id="hemoglobin-input" step="0.1" min="0" max="20"
+                        placeholder="e.g., 12.5">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Ferritin Level (ng/mL)</label>
+                    <input type="number" class="form-input" id="ferritin-input" step="0.1" min="0"
+                        placeholder="e.g., 25.0">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Vitamin C Intake (mg)</label>
+                    <input type="number" class="form-input" id="vitamin-c-input" step="1" min="0" max="2000"
+                        placeholder="e.g., 85">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Iron Supplement Taken</label>
+                    <select class="form-input" id="supplement-input">
+                        <option value="">Select...</option>
+                        <option value="yes">Yes - On time</option>
+                        <option value="late">Yes - Late</option>
+                        <option value="no">No</option>
+                        <option value="missed">Forgot/Missed</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="medication-section">
+                <h3><i class="fa-solid fa-capsules"></i> Medications & Supplements</h3>
+                <div class="form-group">
+                    <label class="form-label">Additional Supplements/Medications</label>
+                    <input type="text" class="form-input" id="medications-input"
+                        placeholder="e.g., Vitamin C, B12, Folic Acid">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Energy Level (1-10)</label>
+                <input type="range" class="form-input" id="energy-level-slider" min="1" max="10" value="5">
+                <span id="energy-level-value">5</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Symptoms Experienced Today</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="fatigue" name="symptoms" value="fatigue">
+                        <label for="fatigue"><i class="fa-solid fa-bed"></i> Fatigue</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="dizziness" name="symptoms" value="dizziness">
+                        <label for="dizziness"><i class="fa-solid fa-rotate"></i> Dizziness</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cold-hands" name="symptoms" value="cold-hands">
+                        <label for="cold-hands"><i class="fa-solid fa-icicles"></i> Cold Hands/Feet</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="pale-skin" name="symptoms" value="pale-skin">
+                        <label for="pale-skin"><i class="fa-regular fa-face-meh-blank"></i> Pale Skin</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="breathlessness" name="symptoms" value="breathlessness">
+                        <label for="breathlessness"><i class="fa-solid fa-wind"></i> Shortness of Breath</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="weakness" name="symptoms" value="weakness">
+                        <label for="weakness"><i class="fa-solid fa-dumbbell"></i> Weakness</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="headache" name="symptoms" value="headache">
+                        <label for="headache"><i class="fa-solid fa-head-side-virus"></i> Headache</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="restless-legs" name="symptoms" value="restless-legs">
+                        <label for="restless-legs"><i class="fa-solid fa-person-walking"></i> Restless Legs</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="rapid-heartbeat" name="symptoms" value="rapid-heartbeat">
+                        <label for="rapid-heartbeat"><i class="fa-solid fa-heart-pulse"></i> Rapid Heartbeat</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="brittle-nails" name="symptoms" value="brittle-nails">
+                        <label for="brittle-nails"><i class="fa-solid fa-hand-sparkles"></i> Brittle Nails</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="hair-loss" name="symptoms" value="hair-loss">
+                        <label for="hair-loss"><i class="fa-solid fa-scissors"></i> Hair Loss</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="difficulty-concentrating" name="symptoms"
+                            value="difficulty-concentrating">
+                        <label for="difficulty-concentrating"><i class="fa-solid fa-brain"></i> Difficulty
+                            Concentrating</label>
+                    </div>
+                </div>
+
+            </div>
+
+            <button class="btn btn-primary" onclick="addAnemiaEntry()">
+                <i class="fa-solid fa-pen-to-square"></i> Add Today's Entry
+            </button>
+
+            <div id="insight-panel" class="insight-box" style="display:none;"></div>
+        </div>
+
+        
+
+        <div id="symptom-decoder" class="edu-card" style="display:none;">
+            <div id="symptom-message"></div>
+        </div>
+
+        <div class="tips-section">
+            <h2><i class="fa-solid fa-lightbulb"></i> Enhanced Anemia Management Tips</h2>
+            <div class="tip-card"><i class="fa-solid fa-seedling"></i> Eat iron-rich foods like spinach, red meat,
+                beans, and fortified cereals daily.</div>
+            <div class="tip-card"><i class="fa-solid fa-lemon"></i> Combine iron-rich foods with vitamin C sources
+                (citrus fruits, bell peppers) to enhance absorption.</div>
+            <div class="tip-card"><i class="fa-solid fa-mug-hot"></i> Avoid tea, coffee, or milk with iron-rich meals as
+                they can inhibit absorption.</div>
+            <div class="tip-card"><i class="fa-solid fa-capsules"></i> Take iron supplements on an empty stomach for
+                better absorption.</div>
+            <div class="tip-card"><i class="fa-solid fa-stethoscope"></i> Regular blood tests help monitor your
+                hemoglobin and ferritin levels.</div>
+            <div class="tip-card"><i class="fa-solid fa-droplet"></i> Stay hydrated to support healthy blood
+                circulation.</div>
+            <div class="tip-card"><i class="fa-solid fa-person-running"></i> Light exercise helps improve circulation,
+                but rest when fatigued.</div>
+            <div class="tip-card"><i class="fa-solid fa-bed"></i> Ensure 7–9 hours of sleep for recovery.</div>
+            <div class="tip-card"><i class="fa-solid fa-mobile-screen-button"></i> Keep a consistent supplement
+                schedule.</div>
+        </div>
+    </div>
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+
+
+    <script>
+        // Initialize anemia tracker with MongoDB integration
+        const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+        const anemiaManager = new HealthDomainManager('anemia', currentUser);
+
+        let entries = [];
+        let selectedFoods = [];
+        let totalIronToday = 0;
+
+        const anemiaTips = [
+            "Iron from meat (heme iron) absorbs better than iron from plants — but vitamin C increases both!",
+            "Avoid drinking tea or coffee right after meals — they reduce iron absorption.",
+            "Vitamin C rich foods like oranges, amla, bell peppers, and strawberries boost iron absorption.",
+            "Consistent small improvements matter more than big changes — track your supplements.",
+            "Low ferritin means low stored iron — even if hemoglobin is normal.",
+            "Dark leafy greens, beans, jaggery, lentils, eggs, and pumpkin seeds are great iron sources.",
+            "Fatigue and cold hands can be early warning signs of iron deficiency.",
+            "Calcium-rich foods can block iron absorption when eaten together.",
+            "Restless legs syndrome is sometimes related to low iron levels.",
+            "Hydration helps your blood transport oxygen efficiently — drink enough water."
+        ];
+
+        function loadRandomTip() {
+            const text = document.getElementById("edu-text");
+            const randomTip = anemiaTips[Math.floor(Math.random() * anemiaTips.length)];
+
+            text.innerHTML = `<i class="fa-solid fa-lightbulb"></i> ${randomTip}`;
+
+            // Save to localStorage for persistence
+            localStorage.setItem("anemia_tip", randomTip);
+        }
+
+        const symptomPatterns = [
+            {
+                symptoms: ["fatigue", "cold hands"],
+                message: "😴 Fatigue + cold hands can indicate poor iron absorption. Try pairing iron foods with Vitamin C tonight."
+            },
+            {
+                symptoms: ["headache", "dizziness"],
+                message: "🤕 Headache + dizziness may be linked to low hemoglobin levels. Ensure you're hydrated and consistent with supplements."
+            },
+            {
+                symptoms: ["hair loss"],
+                message: "💇 Hair thinning? Low ferritin levels can contribute. Include lentils, spinach, pumpkin seeds, and vitamin C foods."
+            },
+            {
+                symptoms: ["restless legs"],
+                message: "🦵 Restless legs syndrome is sometimes linked to low iron. Monitor ferritin and keep your supplement routine steady."
+            }
+        ];
+
+        function decodeSymptoms(latestEntry) {
+            const userSymptoms = latestEntry.symptoms || [];
+            let output = "✨ No concerning combinations detected today — keep tracking!";
+
+            for (let pattern of symptomPatterns) {
+                if (pattern.symptoms.every(s => userSymptoms.includes(s))) {
+                    output = pattern.message;
+                    break;
+                }
+            }
+
+            document.getElementById("symptom-decoder").style.display = "block";
+            document.getElementById("symptom-message").innerHTML = output;
+
+            // persist
+            localStorage.setItem("symptom_tip", output);
+        }
+
+        const motivationalAlerts = [
+            `<i class="fa-solid fa-capsules"></i> Time for your supplement — future you approves.`,
+            `<i class="fa-solid fa-leaf"></i> One spinach leaf won’t save you... but a plate will.`,
+            `<i class="fa-solid fa-rocket"></i> Progress > perfection. Little habits win.`,
+            `<i class="fa-solid fa-lemon"></i> Vitamin C check! Your iron depends on it.`,
+            `<i class="fa-solid fa-fire"></i> You're doing great — don’t break the streak!`
+        ];
+
+        function randomMotivation() {
+            return motivationalAlerts[Math.floor(Math.random() * motivationalAlerts.length)];
+        }
+
+        // Initialize the manager and load data
+        async function initializeAnemiaManager() {
+            console.log('Initializing anemia manager...');
+
+            try {
+                // First, try to load today's data from localStorage (fastest)
+                const today = new Date().toISOString().split('T')[0];
+                const localData = localStorage.getItem(`${currentUser}_anemiaData_${today}`);
+
+                if (localData) {
+                    console.log('Found localStorage data, loading immediately...');
+                    const data = JSON.parse(localData);
+                    loadDataIntoForm(data);
+                    updateDisplay();
+                    console.log('✅ Data loaded from localStorage immediately');
+                }
+
+                // Then initialize the health domain manager
+                entries = await anemiaManager.initialize();
+                console.log('Anemia data loaded:', entries);
+
+                // Load today's data (this will sync with API if available)
+                await loadTodayData();
+
+                // Final display update
+                setTimeout(() => {
+                    updateDisplay();
+                    updateIronDisplay(); // Ensure iron display is updated
+
+                    // Force iron display update after initialization
+                    setTimeout(() => {
+                        console.log('🔄 Force updating iron display after initialization...');
+                        updateIronDisplay();
+                    }, 200);
+
+                    console.log('✅ Final display update complete');
+                }, 100);
+
+            } catch (error) {
+                console.error('Error initializing anemia manager:', error);
+                // Fallback: just update display with empty values
+                updateDisplay();
+            }
+        }
+
+        // Helper function to load data into form
+        function loadDataIntoForm(data) {
+            console.log('Loading data into form:', data);
+
+            if (data.hemoglobin && data.hemoglobin !== 'undefined') {
+                document.getElementById('hemoglobin-input').value = data.hemoglobin;
+            }
+            if (data.ferritin && data.ferritin !== 'undefined') {
+                document.getElementById('ferritin-input').value = data.ferritin;
+            }
+            if (data.vitaminC && data.vitaminC !== 'undefined') {
+                document.getElementById('vitamin-c-input').value = data.vitaminC;
+            }
+            if (data.energy !== undefined && data.energy !== 'undefined' && data.energy !== null) {
+                document.getElementById('energy-level-slider').value = data.energy;
+                document.getElementById('energy-level-value').textContent = data.energy;
+            }
+            if (data.supplement && data.supplement !== 'undefined') {
+                document.getElementById('supplement-input').value = data.supplement;
+            }
+            if (data.medications && data.medications !== 'undefined') {
+                document.getElementById('medications-input').value = data.medications;
+            }
+            if (data.symptoms && Array.isArray(data.symptoms)) {
+                document.querySelectorAll('input[name="symptoms"]').forEach(cb => cb.checked = false);
+                data.symptoms.forEach(symptom => {
+                    const checkbox = document.querySelector(`input[name="symptoms"][value="${symptom}"]`);
+                    if (checkbox) checkbox.checked = true;
+                });
+            }
+            if (data.selectedFoods && Array.isArray(data.selectedFoods)) {
+                selectedFoods = [...data.selectedFoods];
+                totalIronToday = data.totalIronToday || 0;
+
+                // Restore food selections
+                document.querySelectorAll('.iron-food-item').forEach(item => {
+                    const foodName = item.querySelector('div').textContent.trim();
+                    if (selectedFoods.includes(foodName)) {
+                        item.classList.add('selected');
+                    } else {
+                        item.classList.remove('selected');
+                    }
+                });
+
+                console.log('Restored food selections:', selectedFoods);
+                console.log('Restored total iron:', totalIronToday);
+
+                // Update iron display after restoring food selections
+                setTimeout(() => {
+                    updateIronDisplay();
+                    console.log('✅ Iron display updated after restoring food selections');
+                }, 50);
+            }
+
+            console.log('✅ Data loaded into form successfully');
+        }
+
+        // Load today's data from API or localStorage
+        async function loadTodayData() {
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                if (accessToken && currentUser) {
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/anemia/me`, {
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('Anemia API data:', data);
+
+                        // Load today's data - look for the most recent entry for today
+                        const today = new Date().toISOString().split('T')[0];
+                        let todayData = {};
+
+                        // Handle different response formats
+                        let anemiaData = [];
+                        if (data.anemia && Array.isArray(data.anemia)) {
+                            anemiaData = data.anemia;
+                        } else if (Array.isArray(data)) {
+                            anemiaData = data;
+                        }
+
+                        console.log('Anemia data array:', anemiaData);
+
+                        if (anemiaData.length > 0) {
+                            // Find the most recent entry for today
+                            todayData = anemiaData
+                                .filter(entry => entry.date === today)
+                                .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0))[0] || {};
+                        }
+
+                        console.log('Today\'s data found:', todayData);
+
+                        // Update all fields with today's data - only if values exist and are not undefined
+                        if (todayData.hemoglobin && todayData.hemoglobin !== 'undefined') {
+                            document.getElementById('hemoglobin-input').value = todayData.hemoglobin;
+                        }
+                        if (todayData.ferritin && todayData.ferritin !== 'undefined') {
+                            document.getElementById('ferritin-input').value = todayData.ferritin;
+                        }
+                        if (todayData.vitaminC && todayData.vitaminC !== 'undefined') {
+                            document.getElementById('vitamin-c-input').value = todayData.vitaminC;
+                        }
+                        if (todayData.energy !== undefined && todayData.energy !== 'undefined' && todayData.energy !== null) {
+                            document.getElementById('energy-level-slider').value = todayData.energy;
+                            document.getElementById('energy-level-value').textContent = todayData.energy;
+                        }
+                        if (todayData.supplement && todayData.supplement !== 'undefined') {
+                            document.getElementById('supplement-input').value = todayData.supplement;
+                        }
+                        if (todayData.medications && todayData.medications !== 'undefined') {
+                            document.getElementById('medications-input').value = todayData.medications;
+                        }
+                        if (todayData.symptoms && Array.isArray(todayData.symptoms)) {
+                            // Clear existing selections
+                            document.querySelectorAll('input[name="symptoms"]').forEach(cb => cb.checked = false);
+                            // Check symptoms from today's data
+                            todayData.symptoms.forEach(symptom => {
+                                const checkbox = document.querySelector(`input[name="symptoms"][value="${symptom}"]`);
+                                if (checkbox) checkbox.checked = true;
+                            });
+                        }
+                        if (todayData.selectedFoods && Array.isArray(todayData.selectedFoods)) {
+                            selectedFoods = [...todayData.selectedFoods];
+                            totalIronToday = todayData.totalIronToday || 0;
+
+                            // Update food selection display
+                            document.querySelectorAll('.iron-food-item').forEach(item => {
+                                const foodName = item.querySelector('div').textContent.trim();
+                                if (selectedFoods.includes(foodName)) {
+                                    item.classList.add('selected');
+                                } else {
+                                    item.classList.remove('selected');
+                                }
+                            });
+
+                            console.log('Restored food selections from API:', selectedFoods);
+                        }
+
+                        console.log('Today\'s anemia data loaded successfully:', todayData);
+
+                        // Force update display after loading data
+                        setTimeout(() => {
+                            updateDisplay();
+                            console.log('Display updated after API data loading');
+                        }, 50);
+                    } else {
+                        console.warn('Failed to load anemia data from API:', response.status);
+                        // Try to load from localStorage as fallback
+                        loadFromLocalStorage();
+                    }
+                } else {
+                    console.warn('No access token or current user, loading from localStorage');
+                    loadFromLocalStorage();
+                }
+            } catch (error) {
+                console.error('Error loading today\'s anemia data:', error);
+                loadFromLocalStorage();
+            }
+        }
+
+        // Fallback function to load from localStorage
+        function loadFromLocalStorage() {
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const storedData = localStorage.getItem(`${currentUser}_anemiaData_${today}`);
+                if (storedData) {
+                    const todayData = JSON.parse(storedData);
+                    console.log('Loading from localStorage:', todayData);
+
+                    // Update fields with localStorage data
+                    if (todayData.hemoglobin) {
+                        document.getElementById('hemoglobin-input').value = todayData.hemoglobin;
+                    }
+                    if (todayData.ferritin) {
+                        document.getElementById('ferritin-input').value = todayData.ferritin;
+                    }
+                    if (todayData.vitaminC) {
+                        document.getElementById('vitamin-c-input').value = todayData.vitaminC;
+                    }
+                    if (todayData.energy) {
+                        document.getElementById('energy-level-slider').value = todayData.energy;
+                        document.getElementById('energy-level-value').textContent = todayData.energy;
+                    }
+                    if (todayData.supplement) {
+                        document.getElementById('supplement-input').value = todayData.supplement;
+                    }
+                    if (todayData.medications) {
+                        document.getElementById('medications-input').value = todayData.medications;
+                    }
+                    if (todayData.symptoms && Array.isArray(todayData.symptoms)) {
+                        document.querySelectorAll('input[name="symptoms"]').forEach(cb => cb.checked = false);
+                        todayData.symptoms.forEach(symptom => {
+                            const checkbox = document.querySelector(`input[name="symptoms"][value="${symptom}"]`);
+                            if (checkbox) checkbox.checked = true;
+                        });
+                    }
+                    if (todayData.selectedFoods && Array.isArray(todayData.selectedFoods)) {
+                        selectedFoods = [...todayData.selectedFoods];
+                        totalIronToday = todayData.totalIronToday || 0;
+
+                        // Restore food selections
+                        document.querySelectorAll('.iron-food-item').forEach(item => {
+                            const foodName = item.querySelector('div').textContent.trim();
+                            if (selectedFoods.includes(foodName)) {
+                                item.classList.add('selected');
+                            } else {
+                                item.classList.remove('selected');
+                            }
+                        });
+
+                        console.log('Restored food selections from localStorage:', selectedFoods);
+                    }
+
+                    // Force update display after loading from localStorage
+                    setTimeout(() => {
+                        updateDisplay();
+                        console.log('Display updated after localStorage data loading');
+                    }, 50);
+                }
+            } catch (error) {
+                console.error('Error loading from localStorage:', error);
+            }
+        }
+
+        /* ------------------ Food Selection ------------------ */
+        function toggleFood(element) {
+            console.log('toggleFood called with element:', element);
+
+            if (!element) {
+                console.error('No element provided to toggleFood');
+                return;
+            }
+
+            const ironContent = parseFloat(element.dataset.iron);
+            console.log('Iron content:', ironContent);
+
+            // Get the food name from the first div (the food name, not the iron amount)
+            const foodNameDiv = element.querySelector('div');
+            if (!foodNameDiv) {
+                console.error('No div found in food element');
+                return;
+            }
+
+            const foodName = foodNameDiv.textContent.trim();
+            console.log('Food name:', foodName);
+
+            if (element.classList.contains('selected')) {
+                // Deselect the food
+                element.classList.remove('selected');
+                totalIronToday -= ironContent;
+                selectedFoods = selectedFoods.filter(food => food !== foodName);
+                console.log('✅ Removed food:', foodName, 'Iron removed:', ironContent);
+            } else {
+                // Select the food
+                element.classList.add('selected');
+                totalIronToday += ironContent;
+                selectedFoods.push(foodName);
+                console.log('✅ Added food:', foodName, 'Iron added:', ironContent);
+            }
+
+            console.log('📊 Selected foods:', selectedFoods);
+            console.log('📊 Total iron today:', totalIronToday);
+
+            // Update the iron display
+            updateIronDisplay();
+
+            // Auto-save when food selection changes
+            autoSave();
+        }
+
+        function updateIronDisplay() {
+            console.log('updateIronDisplay called, totalIronToday:', totalIronToday);
+
+            const ironIntake = document.getElementById('iron-intake');
+            const ironProgress = document.getElementById('iron-progress');
+
+            if (!ironIntake || !ironProgress) {
+                console.error('Iron display elements not found');
+                return;
+            }
+
+            // Recalculate iron from selected foods to ensure accuracy
+            let calculatedIron = 0;
+            const foodItems = document.querySelectorAll('.iron-food-item');
+
+            foodItems.forEach(item => {
+                if (item.classList.contains('selected')) {
+                    const ironContent = parseFloat(item.dataset.iron);
+                    calculatedIron += ironContent;
+                }
+            });
+
+            // Update totalIronToday with calculated value
+            totalIronToday = calculatedIron;
+            console.log('Recalculated iron from selected foods:', totalIronToday);
+
+            // Update display
+            if (totalIronToday && totalIronToday > 0 && !isNaN(totalIronToday)) {
+                ironIntake.textContent = totalIronToday.toFixed(1) + 'mg';
+                const progress = Math.min((totalIronToday / 18) * 100, 100);
+                ironProgress.style.width = progress + '%';
+                console.log('✅ Updated iron intake display:', totalIronToday.toFixed(1) + 'mg', 'Progress:', progress + '%');
+            } else {
+                ironIntake.textContent = '0.0mg';
+                ironProgress.style.width = '0%';
+                console.log('✅ Iron intake display reset to 0.0mg');
+            }
+        }
+
+        // Update display with current data
+        function updateDisplay() {
+            console.log('Updating display...');
+
+            // Update hemoglobin display
+            const hemoglobin = document.getElementById('hemoglobin-input').value;
+            const hemoglobinLevel = document.getElementById('hemoglobin-level');
+            const hemoglobinProgress = document.getElementById('hemoglobin-progress');
+
+            if (hemoglobin && hemoglobin.trim() !== '') {
+                hemoglobinLevel.textContent = hemoglobin + ' g/dL';
+                const progress = Math.min((parseFloat(hemoglobin) / 15) * 100, 100);
+                hemoglobinProgress.style.width = progress + '%';
+                console.log('Updated hemoglobin:', hemoglobin);
+            } else {
+                hemoglobinLevel.textContent = '-- g/dL';
+                hemoglobinProgress.style.width = '0%';
+            }
+
+            // Update ferritin display
+            const ferritin = document.getElementById('ferritin-input').value;
+            const ferritinLevel = document.getElementById('ferritin-level');
+            const ferritinProgress = document.getElementById('ferritin-progress');
+
+            if (ferritin && ferritin.trim() !== '') {
+                ferritinLevel.textContent = ferritin + ' ng/mL';
+                const progress = Math.min((parseFloat(ferritin) / 150) * 100, 100);
+                ferritinProgress.style.width = progress + '%';
+                console.log('Updated ferritin:', ferritin);
+            } else {
+                ferritinLevel.textContent = '-- ng/mL';
+                ferritinProgress.style.width = '0%';
+            }
+
+            // Update vitamin C intake display
+            const vitaminC = document.getElementById('vitamin-c-input').value;
+            const vitaminCIntake = document.getElementById('vitamin-c-intake');
+            const vitaminCProgress = document.getElementById('vitamin-c-progress');
+
+            if (vitaminC && vitaminC.trim() !== '') {
+                vitaminCIntake.textContent = vitaminC + 'mg';
+                const progress = Math.min((parseFloat(vitaminC) / 90) * 100, 100);
+                vitaminCProgress.style.width = progress + '%';
+                console.log('Updated vitamin C:', vitaminC);
+            } else {
+                vitaminCIntake.textContent = '--mg';
+                vitaminCProgress.style.width = '0%';
+            }
+
+            // Update energy level display
+            const energy = document.getElementById('energy-level-slider').value;
+            const energyLevel = document.getElementById('energy-level');
+            const energyLevelValue = document.getElementById('energy-level-value');
+
+            if (energy && energy.trim() !== '') {
+                energyLevel.textContent = energy + '/10';
+                energyLevelValue.textContent = energy;
+                console.log('Updated energy:', energy);
+            } else {
+                energyLevel.textContent = '--/10';
+                energyLevelValue.textContent = '--';
+            }
+
+            // Update supplement display
+            const supplement = document.getElementById('supplement-input').value;
+            const supplementStreak = document.getElementById('supplement-streak');
+
+            if (supplement && supplement.trim() !== '') {
+                supplementStreak.textContent = supplement + ' days';
+                console.log('Updated supplement:', supplement);
+            } else {
+                supplementStreak.textContent = '0 days';
+            }
+
+            // Update iron intake display
+            updateIronDisplay();
+
+            console.log('Display update complete');
+        }
+
+        function generateInsights(latest, previous) {
+            let msg = [];
+
+            const h1 = Number(latest?.hemoglobin);
+            const h0 = Number(previous?.hemoglobin);
+
+            // Hemoglobin Progress
+            if (!isNaN(h1) && !isNaN(h0)) {
+                let diff = (h1 - h0).toFixed(1);
+                if (diff > 0) {
+                    msg.push(`<i class="fa-solid fa-droplet"></i> Hemoglobin improved <b>${diff} g/dL</b> — great job!`);
+                } else if (diff < 0) {
+                    msg.push(`<i class="fa-solid fa-arrow-trend-down"></i> Hemoglobin dropped (<b>${Math.abs(diff)} g/dL</b>). Time for iron-rich meals.`);
+                }
+            }
+
+            // Vitamin C Goal
+            const vc = Number(latest?.vitaminC);
+            if (!isNaN(vc)) {
+                let percent = Math.min((vc / 90) * 100, 100);
+                msg.push(`<i class="fa-solid fa-lemon"></i> Vitamin C intake: <b>${percent.toFixed(0)}%</b> of daily target.`);
+            }
+
+            // Supplement Streak
+            if (latest.supplement === "yes") {
+                let streak = parseInt(localStorage.getItem("supplement_streak") || 0) + 1;
+                localStorage.setItem("supplement_streak", streak);
+
+                msg.push(`<i class="fa-solid fa-capsules"></i> Supplement streak: <b>${streak} days</b>. Keep going!`);
+
+                if (streak === 5) {
+                    msg.push(`<i class="fa-solid fa-trophy"></i> Badge unlocked: <b>Consistency Queen!</b> 👑`);
+                }
+            }
+
+            return msg.length ? msg.join("<br>") : `<i class="fa-solid fa-star"></i> Keep logging to unlock personalized insights!`;
+        }
+
+        function checkEmergencyAlerts(entry) {
+            let warnings = [];
+
+            const hb = Number(entry?.hemoglobin);
+            const ferr = Number(entry?.ferritin);
+
+            if (!isNaN(hb) && hb < 10) {
+                warnings.push(`⚠️ Hemoglobin below <b>10 g/dL</b> — medical attention recommended.`);
+                document.querySelector(".stat-card:nth-child(1)")
+                    ?.classList.add("emergency-alert");
+            }
+
+            if (!isNaN(ferr) && ferr < 10) {
+                warnings.push(`⚠️ Ferritin critically low (<b>${ferr} ng/mL</b>).`);
+                document.querySelector(".stat-card:nth-child(5)")
+                    ?.classList.add("emergency-alert");
+            }
+
+            return warnings.join("<br>");
+        }
+
+        function loadSavedInsights() {
+            const saved = localStorage.getItem("latest_insights");
+            const panel = document.getElementById("insight-panel");
+
+            if (saved && panel) {
+                panel.style.display = "block";
+                panel.innerHTML = saved;
+            }
+        }
+
+        /* ------------------ Add Entry ------------------ */
+        async function addAnemiaEntry() {
+            // Prevent auto-save conflict
+            window.isManualSave = true;
+
+            const hemoglobin = document.getElementById('hemoglobin-input').value;
+            const ferritin = document.getElementById('ferritin-input').value;
+            const vitaminC = document.getElementById('vitamin-c-input').value;
+            const energy = document.getElementById('energy-level-slider').value;
+            const supplement = document.getElementById('supplement-input').value;
+            const medications = document.getElementById('medications-input').value;
+
+            const symptoms = [];
+            document.querySelectorAll('input[name="symptoms"]:checked').forEach(cb => {
+                symptoms.push(cb.value);
+            });
+
+            // Prevent empty entry
+            if (!hemoglobin && !ferritin && !vitaminC && !energy && !supplement && !medications && symptoms.length === 0 && selectedFoods.length === 0) {
+                alert('Please fill in at least one field to add an entry.');
+                return;
+            }
+
+            const today = new Date().toISOString().split("T")[0];
+
+            const entry = {
+                date: today,
+                hemoglobin: hemoglobin ? Number(hemoglobin) : null,
+                ferritin: ferritin ? Number(ferritin) : null,
+                vitaminC: vitaminC ? Number(vitaminC) : null,
+                energy: energy ? Number(energy) : null,
+                supplement: supplement || null,
+                medications: medications || null,
+                symptoms: symptoms,
+                selectedFoods: selectedFoods,
+                totalIronToday: totalIronToday,
+                timestamp: new Date().toISOString()
+            };
+
+            // 🔥 Immediate UI update before server response
+            entries.unshift(entry);
+
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+
+                if (accessToken && currentUser) {
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/anemia/me`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${accessToken}`
+                        },
+                        body: JSON.stringify(entry)
+                    });
+
+                    if (response.ok) {
+                        localStorage.setItem(`${currentUser}_anemiaData_${today}`, JSON.stringify(entry));
+                        showNotification(randomMotivation(), "success");
+                    } else {
+                        // fallback
+                        localStorage.setItem(`${currentUser}_anemiaData_${today}`, JSON.stringify(entry));
+                        anemiaManager.addEntry(entry);
+                        showNotification("⚠️ Saved locally (API unavailable)", "warning");
+                    }
+                } else {
+                    anemiaManager.addEntry(entry);
+                    showNotification("💾 Saved locally", "info");
+                }
+
+            } catch (error) {
+                console.error('Error saving anemia entry:', error);
+                anemiaManager.addEntry(entry);
+                showNotification("💾 Saved locally (offline)", "info");
+            }
+
+            // Refresh UI + logs
+            // Refresh UI + logs
+            updateDisplay();
+            await loadAnemiaEntries();
+            updateLogDisplay();
+
+            // Generate insights
+            const latest = entries[0];
+            const previous = entries[1] || null;
+
+            const insights = generateInsights(latest, previous);
+            const emergency = checkEmergencyAlerts(latest);
+
+            decodeSymptoms(latest); // 👈 ADD THIS LINE HERE
+
+            const panel = document.getElementById("insight-panel");
+            panel.style.display = "block";
+            panel.innerHTML = (emergency ? emergency + "<br><br>" : "") + insights;
+            localStorage.setItem("latest_insights", panel.innerHTML);
+
+            // Smooth scroll to insights
+            panel.scrollIntoView({ behavior: "smooth", block: "center" });
+
+            // Reset manual flag
+            window.isManualSave = false;
+        }
+
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = message; // 👈 supports icons now
+
+            notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 18px;
+        border-radius: 10px;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        opacity: 0;
+        transform: translateY(-10px);
+        transition: all 0.4s ease;
+        z-index: 10000;
+    `;
+
+            // Colors based on type
+            const colors = {
+                success: "#2ecc71",
+                warning: "#f39c12",
+                error: "#e74c3c",
+                info: "#6B7280"
+            };
+
+            notification.style.backgroundColor = colors[type] || colors.info;
+            notification.style.color = "white";
+
+            document.body.appendChild(notification);
+
+            // Fade in animation
+            setTimeout(() => {
+                notification.style.opacity = "1";
+                notification.style.transform = "translateY(0)";
+            }, 10);
+
+            // Stay on screen longer (3s) then fade out
+            setTimeout(() => {
+                notification.style.opacity = "0";
+                notification.style.transform = "translateY(-10px)";
+                setTimeout(() => notification.remove(), 500);
+            }, 3000);
+        }
+
+        // Check if it's a new day and reset data if needed
+        function checkNewDay() {
+            const today = new Date().toISOString().split('T')[0];
+            const lastVisitDate = localStorage.getItem(`${currentUser}_lastVisitDate`);
+
+            if (lastVisitDate && lastVisitDate !== today) {
+                console.log('New day detected, clearing form fields for new day');
+                // Clear form fields for new day (but keep log entries)
+                clearFormForNewDay();
+            }
+
+            // Update last visit date
+            localStorage.setItem(`${currentUser}_lastVisitDate`, today);
+        }
+
+        // Clear form fields for new day (but keep log entries)
+        function clearFormForNewDay() {
+            // Clear all input fields
+            document.getElementById('hemoglobin-input').value = '';
+            document.getElementById('ferritin-input').value = '';
+            document.getElementById('vitamin-c-input').value = '';
+            document.getElementById('energy-level-slider').value = '5';
+            document.getElementById('energy-level-value').textContent = '5';
+            document.getElementById('supplement-input').value = '';
+            document.getElementById('medications-input').value = '';
+
+            // Clear symptoms checkboxes
+            document.querySelectorAll('input[name="symptoms"]').forEach(cb => cb.checked = false);
+
+            // Clear food selections
+            selectedFoods = [];
+            totalIronToday = 0;
+            document.querySelectorAll('.iron-food-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            // Update display
+            updateDisplay();
+
+            console.log('Form cleared for new day');
+
+            // Reset manual save flag
+            window.isManualSave = false;
+        }
+
+        // Test function to manually refresh data (can be called from console)
+        window.refreshAnemiaData = async function () {
+            console.log('Manual refresh triggered...');
+            await loadTodayData();
+            updateDisplay();
+            console.log('Manual refresh complete');
+        };
+
+        // Debug function to check current data state
+        window.debugAnemiaData = function () {
+            console.log('=== ANEMIA DATA DEBUG ===');
+            console.log('Current user:', currentUser);
+            console.log('Total iron today:', totalIronToday);
+            console.log('Selected foods:', selectedFoods);
+            console.log('Hemoglobin input value:', document.getElementById('hemoglobin-input').value);
+            console.log('Ferritin input value:', document.getElementById('ferritin-input').value);
+            console.log('Vitamin C input value:', document.getElementById('vitamin-c-input').value);
+            console.log('Energy slider value:', document.getElementById('energy-level-slider').value);
+            console.log('Supplement input value:', document.getElementById('supplement-input').value);
+            console.log('Medications input value:', document.getElementById('medications-input').value);
+
+            const checkedSymptoms = [];
+            document.querySelectorAll('input[name="symptoms"]:checked').forEach(cb => {
+                checkedSymptoms.push(cb.value);
+            });
+            console.log('Checked symptoms:', checkedSymptoms);
+            console.log('========================');
+        };
+
+        // Test function to create sample data
+        window.createTestData = async function () {
+            console.log('Creating test data...');
+
+            // Fill in some test values
+            document.getElementById('hemoglobin-input').value = '12.5';
+            document.getElementById('ferritin-input').value = '25.0';
+            document.getElementById('vitamin-c-input').value = '85';
+            document.getElementById('energy-level-slider').value = '7';
+            document.getElementById('energy-level-value').textContent = '7';
+            document.getElementById('supplement-input').value = '5';
+            document.getElementById('medications-input').value = 'Iron supplement';
+
+            // Select some symptoms
+            document.querySelector('input[name="symptoms"][value="fatigue"]').checked = true;
+            document.querySelector('input[name="symptoms"][value="weakness"]').checked = true;
+
+            // Select some foods
+            selectedFoods = ['🥬 Spinach', '🥩 Red Meat'];
+            totalIronToday = 6.3; // 3.6 + 2.7
+
+            // Update food selection display
+            document.querySelectorAll('.iron-food-item').forEach(item => {
+                const foodName = item.querySelector('div').textContent.trim();
+                if (selectedFoods.includes(foodName)) {
+                    item.classList.add('selected');
+                }
+            });
+
+            // Update display
+            updateDisplay();
+
+            // Save the test data
+            await autoSave();
+
+            console.log('Test data created and saved!');
+        };
+
+        // Debug function to test data loading
+        window.testDataLoading = async function () {
+            console.log('=== TESTING DATA LOADING ===');
+            console.log('Current user:', currentUser);
+            console.log('Access token exists:', !!localStorage.getItem('accessToken'));
+
+            // Test API call
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/anemia/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                console.log('API response status:', response.status);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('API response data:', data);
+                } else {
+                    console.log('API error:', await response.text());
+                }
+            } catch (error) {
+                console.log('API call failed:', error);
+            }
+
+            // Test localStorage
+            const today = new Date().toISOString().split('T')[0];
+            const localData = localStorage.getItem(`${currentUser}_anemiaData_${today}`);
+            console.log('LocalStorage data for today:', localData);
+
+            // Test current form values
+            console.log('Current form values:');
+            console.log('Hemoglobin:', document.getElementById('hemoglobin-input').value);
+            console.log('Ferritin:', document.getElementById('ferritin-input').value);
+            console.log('Vitamin C:', document.getElementById('vitamin-c-input').value);
+            console.log('Energy:', document.getElementById('energy-level-slider').value);
+            console.log('Supplement:', document.getElementById('supplement-input').value);
+            console.log('Medications:', document.getElementById('medications-input').value);
+            console.log('Selected foods:', selectedFoods);
+            console.log('Total iron today:', totalIronToday);
+            console.log('========================');
+        };
+
+        // Debug function to test saving
+        window.testSaving = async function () {
+            console.log('=== TESTING SAVING ===');
+
+            // Fill in some test data
+            document.getElementById('hemoglobin-input').value = '12.5';
+            document.getElementById('ferritin-input').value = '45';
+            document.getElementById('vitamin-c-input').value = '100';
+            document.getElementById('energy-level-slider').value = '7';
+            document.getElementById('supplement-input').value = 'Iron supplement 18mg';
+            document.getElementById('medications-input').value = 'None';
+
+            // Check some symptoms
+            document.getElementById('fatigue').checked = true;
+            document.getElementById('dizziness').checked = true;
+
+            // Update display
+            updateDisplay();
+
+            // Try to save
+            await autoSave();
+
+            console.log('=== SAVE TEST COMPLETE ===');
+        };
+
+        // Debug function to check log data
+        window.checkLogData = function () {
+            console.log('=== CHECKING LOG DATA ===');
+            console.log('Entries array:', entries);
+            console.log('Entries length:', entries.length);
+
+            if (entries.length > 0) {
+                console.log('First entry:', entries[0]);
+                console.log('First entry keys:', Object.keys(entries[0]));
+            }
+
+            // Force refresh the log display
+            updateLogDisplay();
+            console.log('=== LOG DATA CHECK COMPLETE ===');
+        };
+
+        // Function to refresh log display
+        window.refreshLog = async function () {
+            console.log('=== REFRESHING LOG ===');
+            await loadAnemiaEntries();
+            updateLogDisplay();
+            loadSavedInsights();
+            console.log('=== LOG REFRESHED ===');
+        };
+
+        // Function to force clear all data from API
+        window.forceClearAllData = async function () {
+            if (!confirm("This will delete ALL anemia data from the server. Are you sure?")) {
+                return;
+            }
+
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                if (!accessToken) {
+                    alert("❌ Not authenticated. Please log in again.");
+                    return;
+                }
+
+                console.log('🗑️ Force clearing all data from API...');
+
+                // First, load all entries to get their IDs
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/anemia/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const allEntries = await response.json();
+                    console.log(`Found ${allEntries.length} entries to delete`);
+
+                    if (allEntries.length > 0) {
+                        // Delete each entry
+                        const deletePromises = allEntries.map(async (entry) => {
+                            try {
+                                const entryId = entry.id || entry._id;
+                                if (entryId) {
+                                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                                    const deleteResponse = await fetch(`${apiBaseUrl}/anemia/me/${entryId}`, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Authorization': `Bearer ${accessToken}`
+                                        }
+                                    });
+
+                                    if (deleteResponse.ok) {
+                                        console.log(`✅ Deleted entry ${entryId}`);
+                                        return true;
+                                    } else {
+                                        console.warn(`⚠️ Failed to delete entry ${entryId}`);
+                                        return false;
+                                    }
+                                }
+                            } catch (error) {
+                                console.error(`❌ Error deleting entry:`, error);
+                                return false;
+                            }
+                        });
+
+                        const results = await Promise.all(deletePromises);
+                        const successCount = results.filter(r => r).length;
+                        console.log(`✅ Successfully deleted ${successCount}/${allEntries.length} entries`);
+                    }
+                }
+
+                // Clear local data
+                entries = [];
+                anemiaManager.data = [];
+                updateLogDisplay();
+
+                // Clear localStorage
+                Object.keys(localStorage).forEach(key => {
+                    if (key.includes('anemia') && key.includes(currentUser)) {
+                        localStorage.removeItem(key);
+                    }
+                });
+
+                alert("✅ All data cleared from server and local storage!");
+                console.log('✅ Force clear completed');
+
+            } catch (error) {
+                console.error('❌ Error force clearing data:', error);
+                alert("❌ Error clearing data. Please try again.");
+            }
+        };
+
+        // Function to remove duplicate entries
+        window.removeDuplicates = function () {
+            console.log('=== REMOVING DUPLICATES ===');
+            console.log('Entries before deduplication:', entries.length);
+
+            // Create a map to track unique entries by timestamp and key fields
+            const uniqueEntries = new Map();
+
+            entries.forEach(entry => {
+                // Create a unique key based on timestamp and key fields
+                const key = `${entry.timestamp || entry.date}_${entry.hemoglobin || 'null'}_${entry.ferritin || 'null'}_${entry.energy || 'null'}`;
+
+                if (!uniqueEntries.has(key)) {
+                    uniqueEntries.set(key, entry);
+                } else {
+                    console.log('Removing duplicate entry:', entry);
+                }
+            });
+
+            // Convert back to array
+            entries = Array.from(uniqueEntries.values());
+            console.log('Entries after deduplication:', entries.length);
+
+            // Update the display
+            updateLogDisplay();
+            console.log('✅ Duplicates removed');
+        };
+
+        // Test function to verify persistence
+        window.testPersistence = async function () {
+            console.log('=== TESTING PERSISTENCE ===');
+
+            // Fill some test data
+            document.getElementById('hemoglobin-input').value = '13.5';
+            document.getElementById('ferritin-input').value = '30.0';
+            document.getElementById('vitamin-c-input').value = '95';
+            document.getElementById('energy-level-slider').value = '8';
+            document.getElementById('energy-level-value').textContent = '8';
+            document.getElementById('supplement-input').value = '3';
+            document.getElementById('medications-input').value = 'Iron tablets';
+
+            // Select some symptoms
+            document.querySelector('input[name="symptoms"][value="fatigue"]').checked = true;
+
+            // Select some foods
+            selectedFoods = ['🥬 Spinach', '🥩 Red Meat'];
+            totalIronToday = 6.3;
+
+            // Update food selection display
+            document.querySelectorAll('.iron-food-item').forEach(item => {
+                const foodName = item.querySelector('div').textContent.trim();
+                if (selectedFoods.includes(foodName)) {
+                    item.classList.add('selected');
+                }
+            });
+
+            // Update display
+            updateDisplay();
+
+            // Save the data
+            await autoSave();
+
+            console.log('Test data saved. Now refresh the page and check if data persists.');
+            console.log('========================');
+        };
+
+        // Test function to debug food selection
+        window.testFoodSelection = function () {
+            console.log('=== TESTING FOOD SELECTION ===');
+
+            // Check if food items exist
+            const foodItems = document.querySelectorAll('.iron-food-item');
+            console.log('Found food items:', foodItems.length);
+
+            foodItems.forEach((item, index) => {
+                const foodName = item.querySelector('div').textContent.trim();
+                const ironContent = item.dataset.iron;
+                console.log(`Food ${index + 1}:`, foodName, 'Iron:', ironContent);
+            });
+
+            // Test clicking the first food item
+            if (foodItems.length > 0) {
+                console.log('Testing click on first food item...');
+                toggleFood(foodItems[0]);
+            }
+
+            console.log('========================');
+        };
+
+        // Comprehensive debug function for anemia tracking
+        window.debugAnemiaComplete = function () {
+            console.log('=== COMPLETE ANEMIA DEBUG ===');
+
+            // Check variables
+            console.log('Current user:', currentUser);
+            console.log('Selected foods:', selectedFoods);
+            console.log('Total iron today:', totalIronToday);
+            console.log('Entries:', entries);
+
+            // Check DOM elements
+            const foodItems = document.querySelectorAll('.iron-food-item');
+            console.log('Food items found:', foodItems.length);
+
+            const ironIntake = document.getElementById('iron-intake');
+            const ironProgress = document.getElementById('iron-progress');
+            console.log('Iron display elements:', { ironIntake: !!ironIntake, ironProgress: !!ironProgress });
+
+            // Check form values
+            console.log('Form values:');
+            console.log('Hemoglobin:', document.getElementById('hemoglobin-input')?.value);
+            console.log('Ferritin:', document.getElementById('ferritin-input')?.value);
+            console.log('Vitamin C:', document.getElementById('vitamin-c-input')?.value);
+            console.log('Energy:', document.getElementById('energy-level-slider')?.value);
+            console.log('Supplement:', document.getElementById('supplement-input')?.value);
+            console.log('Medications:', document.getElementById('medications-input')?.value);
+
+            // Check localStorage
+            const today = new Date().toISOString().split('T')[0];
+            const localData = localStorage.getItem(`${currentUser}_anemiaData_${today}`);
+            console.log('LocalStorage data for today:', localData);
+
+            // Test food selection manually
+            if (foodItems.length > 0) {
+                console.log('Testing manual food selection...');
+                const firstFood = foodItems[0];
+                const foodName = firstFood.querySelector('div').textContent.trim();
+                const ironContent = parseFloat(firstFood.dataset.iron);
+
+                console.log('First food details:', { foodName, ironContent });
+                console.log('Is selected:', firstFood.classList.contains('selected'));
+            }
+
+            console.log('========================');
+        };
+
+        // Simple function to manually select foods for testing
+        window.selectFood = function (foodName) {
+            console.log('Manually selecting food:', foodName);
+
+            const foodItems = document.querySelectorAll('.iron-food-item');
+            let found = false;
+
+            foodItems.forEach(item => {
+                const itemFoodName = item.querySelector('div').textContent.trim();
+                if (itemFoodName === foodName) {
+                    toggleFood(item);
+                    found = true;
+                }
+            });
+
+            if (!found) {
+                console.log('Food not found:', foodName);
+                console.log('Available foods:');
+                foodItems.forEach(item => {
+                    console.log('-', item.querySelector('div').textContent.trim());
+                });
+            }
+        };
+
+        // Specific debug function for iron intake persistence
+        window.debugIronIntake = function () {
+            console.log('=== IRON INTAKE DEBUG ===');
+
+            // Check current state
+            console.log('Current totalIronToday:', totalIronToday);
+            console.log('Current selectedFoods:', selectedFoods);
+
+            // Check DOM elements
+            const ironIntake = document.getElementById('iron-intake');
+            const ironProgress = document.getElementById('iron-progress');
+            console.log('Iron intake element:', ironIntake);
+            console.log('Iron progress element:', ironProgress);
+            console.log('Iron intake text:', ironIntake?.textContent);
+            console.log('Iron progress width:', ironProgress?.style.width);
+
+            // Check food selections
+            const foodItems = document.querySelectorAll('.iron-food-item');
+            console.log('Food items and their selection status:');
+            foodItems.forEach((item, index) => {
+                const foodName = item.querySelector('div').textContent.trim();
+                const ironContent = parseFloat(item.dataset.iron);
+                const isSelected = item.classList.contains('selected');
+                console.log(`${index + 1}. ${foodName} - Iron: ${ironContent}mg - Selected: ${isSelected}`);
+            });
+
+            // Check localStorage
+            const today = new Date().toISOString().split('T')[0];
+            const localData = localStorage.getItem(`${currentUser}_anemiaData_${today}`);
+            console.log('LocalStorage data for today:', localData);
+
+            if (localData) {
+                try {
+                    const data = JSON.parse(localData);
+                    console.log('Parsed localStorage data:', data);
+                    console.log('Stored selectedFoods:', data.selectedFoods);
+                    console.log('Stored totalIronToday:', data.totalIronToday);
+                } catch (error) {
+                    console.error('Error parsing localStorage data:', error);
+                }
+            }
+
+            // Test manual update
+            console.log('Testing manual iron display update...');
+            updateIronDisplay();
+
+            console.log('========================');
+        };
+
+        // Function to manually fix iron intake display
+        window.fixIronIntake = function () {
+            console.log('=== FIXING IRON INTAKE ===');
+
+            // Recalculate total iron from selected foods
+            let calculatedIron = 0;
+            const foodItems = document.querySelectorAll('.iron-food-item');
+
+            foodItems.forEach(item => {
+                if (item.classList.contains('selected')) {
+                    const ironContent = parseFloat(item.dataset.iron);
+                    calculatedIron += ironContent;
+                    console.log('Adding iron from selected food:', item.querySelector('div').textContent.trim(), ironContent);
+                }
+            });
+
+            console.log('Calculated total iron:', calculatedIron);
+
+            // Update variables
+            totalIronToday = calculatedIron;
+
+            // Update selectedFoods array
+            selectedFoods = [];
+            foodItems.forEach(item => {
+                if (item.classList.contains('selected')) {
+                    const foodName = item.querySelector('div').textContent.trim();
+                    selectedFoods.push(foodName);
+                }
+            });
+
+            console.log('Updated selectedFoods:', selectedFoods);
+            console.log('Updated totalIronToday:', totalIronToday);
+
+            // Update display
+            updateIronDisplay();
+
+            // Save to localStorage
+            const today = new Date().toISOString().split('T')[0];
+            const entry = {
+                date: today,
+                selectedFoods: selectedFoods,
+                totalIronToday: totalIronToday,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem(`${currentUser}_anemiaData_${today}`, JSON.stringify(entry));
+            console.log('Saved to localStorage:', entry);
+
+            console.log('✅ Iron intake fixed!');
+        };
+
+        // Immediate fix function for iron display
+        window.fixIronDisplayNow = function () {
+            console.log('=== IMMEDIATE IRON DISPLAY FIX ===');
+
+            // Force update iron display
+            updateIronDisplay();
+
+            // Also update the main display
+            updateDisplay();
+
+            console.log('✅ Iron display should now be fixed!');
+            console.log('Check the Iron Intake Today card - it should show the correct value and progress bar.');
+        };
+
+        function resetAnemiaStatCards() {
+            document.getElementById('hemoglobin-level').textContent = '-- g/dL';
+            document.getElementById('hemoglobin-progress').style.width = '0%';
+            document.getElementById('ferritin-level').textContent = '-- ng/mL';
+            document.getElementById('ferritin-progress').style.width = '0%';
+            document.getElementById('energy-level').textContent = '--/10';
+            document.getElementById('energy-progress').style.width = '0%';
+            document.getElementById('vitamin-c-intake').textContent = '--mg';
+            document.getElementById('vitamin-c-progress').style.width = '0%';
+            document.getElementById('iron-intake').textContent = '0mg';
+            document.getElementById('iron-progress').style.width = '0%';
+            document.getElementById('supplement-streak').textContent = '0 days';
+            document.getElementById('supplement-progress').style.width = '0%';
+            localStorage.removeItem('supplement_streak');
+        }
+
+        // Function to delete all anemia logs
+        window.deleteAllAnemiaLogs = async function () {
+            if (!confirm("Are you sure you want to delete ALL anemia logs? This action cannot be undone.")) {
+                return;
+            }
+
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                if (!accessToken) {
+                    alert("❌ Not authenticated. Please log in again.");
+                    return;
+                }
+
+                console.log('🗑️ Starting to delete all anemia logs...');
+
+                let apiCleared = false;
+
+                try {
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const bulkDeleteResponse = await fetch(`${apiBaseUrl}/anemia/me`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    });
+
+                    if (bulkDeleteResponse.ok) {
+                        console.log('✅ Bulk delete succeeded', await bulkDeleteResponse.json().catch(() => ({})));
+                        apiCleared = true;
+                    } else {
+                        console.warn('⚠️ Bulk delete endpoint failed, falling back to entry-by-entry removal');
+                    }
+                } catch (bulkError) {
+                    console.warn('⚠️ Bulk delete request errored:', bulkError);
+                }
+
+                if (!apiCleared) {
+                    console.log('Fetching all entries from API for manual deletion...');
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/anemia/me`, {
+                        headers: { 'Authorization': `Bearer ${accessToken}` }
+                    });
+
+                    if (response.ok) {
+                        const allEntries = await response.json();
+                        console.log(`Found ${Array.isArray(allEntries) ? allEntries.length : 0} total entries in API to delete`);
+
+                        if (Array.isArray(allEntries) && allEntries.length > 0) {
+                            const deletePromises = allEntries.map(async (entry) => {
+                                try {
+                                    const entryId = entry.id || entry._id;
+                                    if (!entryId) return false;
+                                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                                    const deleteResponse = await fetch(`${apiBaseUrl}/anemia/me/${entryId}`, {
+                                        method: 'DELETE',
+                                        headers: { 'Authorization': `Bearer ${accessToken}` }
+                                    });
+                                    if (deleteResponse.ok) {
+                                        console.log(`✅ Deleted entry ${entryId}`);
+                                        return true;
+                                    } else {
+                                        console.warn(`⚠️ Failed to delete entry ${entryId}:`, deleteResponse.status);
+                                        return false;
+                                    }
+                                } catch (error) {
+                                    console.error(`❌ Error deleting entry:`, error);
+                                    return false;
+                                }
+                            });
+
+                            const results = await Promise.all(deletePromises);
+                            const successCount = results.filter(Boolean).length;
+                            console.log(`✅ Successfully deleted ${successCount}/${allEntries.length} entries from API (fallback)`);
+                            apiCleared = successCount === allEntries.length;
+                        } else {
+                            apiCleared = true;
+                        }
+                    } else {
+                        console.warn('⚠️ Failed to fetch entries from API for deletion');
+                    }
+                }
+
+                if (!apiCleared) {
+                    alert("⚠️ Could not delete all entries from the server. Please try again.");
+                    await loadAnemiaEntries();
+                    return;
+                }
+
+                entries = [];
+                anemiaManager.data = [];
+                anemiaManager.initialized = true;
+                updateLogDisplay();
+
+                const today = new Date().toISOString().split('T')[0];
+                localStorage.removeItem(`${currentUser}_anemiaData_${today}`);
+
+                Object.keys(localStorage).forEach(key => {
+                    if (key.includes('anemia') && key.includes(currentUser)) {
+                        localStorage.removeItem(key);
+                    }
+                });
+
+                document.getElementById('hemoglobin-input').value = '';
+                document.getElementById('ferritin-input').value = '';
+                document.getElementById('vitamin-c-input').value = '';
+                document.getElementById('energy-level-slider').value = '5';
+                document.getElementById('energy-level-value').textContent = '5';
+                document.getElementById('supplement-input').value = '';
+                document.getElementById('medications-input').value = '';
+                document.querySelectorAll('input[name="symptoms"]').forEach(cb => cb.checked = false);
+                document.querySelectorAll('.iron-food-item').forEach(item => item.classList.remove('selected'));
+                selectedFoods = [];
+                totalIronToday = 0;
+
+                resetAnemiaStatCards();
+                updateDisplay();
+                await loadAnemiaEntries();
+
+                alert("✅ All anemia logs have been deleted successfully!");
+                console.log('✅ All anemia logs deleted from both API and local storage');
+
+            } catch (error) {
+                console.error('❌ Error deleting anemia logs:', error);
+                alert("❌ Error deleting anemia logs. Please try again.");
+            }
+        };
+
+        // Setup event listeners for real-time updates and auto-save
+        function setupEventListeners() {
+            // Hemoglobin input
+            const hemoglobinInput = document.getElementById('hemoglobin-input');
+            if (hemoglobinInput) {
+                hemoglobinInput.addEventListener('input', updateDisplay);
+                hemoglobinInput.addEventListener('blur', autoSave);
+            }
+
+            // Ferritin input
+            const ferritinInput = document.getElementById('ferritin-input');
+            if (ferritinInput) {
+                ferritinInput.addEventListener('input', updateDisplay);
+                ferritinInput.addEventListener('blur', autoSave);
+            }
+
+            // Vitamin C input
+            const vitaminCInput = document.getElementById('vitamin-c-input');
+            if (vitaminCInput) {
+                vitaminCInput.addEventListener('input', updateDisplay);
+                vitaminCInput.addEventListener('blur', autoSave);
+            }
+
+            // Energy level slider
+            const energySlider = document.getElementById('energy-level-slider');
+            if (energySlider) {
+                energySlider.addEventListener('input', updateDisplay);
+                energySlider.addEventListener('change', autoSave);
+            }
+
+            // Supplement input
+            const supplementInput = document.getElementById('supplement-input');
+            if (supplementInput) {
+                supplementInput.addEventListener('input', updateDisplay);
+                supplementInput.addEventListener('blur', autoSave);
+            }
+
+            // Medications input
+            const medicationsInput = document.getElementById('medications-input');
+            if (medicationsInput) {
+                medicationsInput.addEventListener('input', autoSave);
+            }
+
+            // Symptoms checkboxes
+            document.querySelectorAll('input[name="symptoms"]').forEach(checkbox => {
+                checkbox.addEventListener('change', autoSave);
+            });
+        }
+
+        // Auto-save function
+        async function autoSave() {
+            console.log('🔄 Auto-save triggered');
+
+            const hemoglobin = document.getElementById('hemoglobin-input').value;
+            const ferritin = document.getElementById('ferritin-input').value;
+            const vitaminC = document.getElementById('vitamin-c-input').value;
+            const energy = document.getElementById('energy-level-slider').value;
+            const supplement = document.getElementById('supplement-input').value;
+            const medications = document.getElementById('medications-input').value;
+
+            const symptoms = [];
+            document.querySelectorAll('input[name="symptoms"]:checked').forEach(cb => {
+                symptoms.push(cb.value);
+            });
+
+            console.log('📊 Data to save:', {
+                hemoglobin, ferritin, vitaminC, energy, supplement, medications, symptoms, selectedFoods, totalIronToday
+            });
+
+            // Only auto-save if there's some data AND it's not a manual save
+            if ((hemoglobin || ferritin || vitaminC || energy || supplement || medications || symptoms.length > 0 || selectedFoods.length > 0) && !window.isManualSave) {
+                const today = new Date().toISOString().split("T")[0];
+
+                const entry = {
+                    date: today,
+                    hemoglobin: hemoglobin || null,
+                    ferritin: ferritin || null,
+                    vitaminC: vitaminC || null,
+                    energy: energy || null,
+                    supplement: supplement || null,
+                    medications: medications || null,
+                    symptoms: symptoms,
+                    selectedFoods: selectedFoods,
+                    totalIronToday: totalIronToday,
+                    timestamp: new Date().toISOString()
+                };
+
+                console.log('💾 Saving entry:', entry);
+
+                try {
+                    const accessToken = localStorage.getItem('accessToken');
+                    if (accessToken && currentUser) {
+                        console.log('🔐 Authenticated save to API');
+                        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/anemia/me`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${accessToken}`
+                            },
+                            body: JSON.stringify(entry)
+                        });
+
+                        if (response.ok) {
+                            console.log('✅ Auto-saved anemia data to API');
+                            showNotification("✅ Data saved successfully!", "success");
+                        } else {
+                            console.warn('⚠️ API save failed:', response.status, await response.text());
+                            // Save to localStorage as backup
+                            localStorage.setItem(`${currentUser}_anemiaData_${today}`, JSON.stringify(entry));
+                            showNotification("⚠️ Saved locally (API unavailable)", "warning");
+                        }
+                    } else {
+                        // No authentication, save to localStorage
+                        localStorage.setItem(`${currentUser}_anemiaData_${today}`, JSON.stringify(entry));
+                        console.log('💾 Auto-saved anemia data to localStorage');
+                        showNotification("💾 Saved locally", "info");
+                    }
+                } catch (error) {
+                    console.error('❌ Auto-save failed:', error);
+                    // Save to localStorage as backup
+                    localStorage.setItem(`${currentUser}_anemiaData_${today}`, JSON.stringify(entry));
+                    showNotification("💾 Saved locally (offline)", "info");
+                }
+            } else {
+                console.log('⏭️ No data to save');
+            }
+        }
+
+        /* ------------------ Load Entries ------------------ */
+        async function loadAnemiaEntries() {
+            if (!currentUser) return;
+
+            try {
+                // Try to load from API first
+                const accessToken = localStorage.getItem('accessToken');
+                if (accessToken) {
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/anemia/me`, {
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log('Raw API response:', data);
+
+                        // Handle different response formats
+                        if (data.anemia && Array.isArray(data.anemia)) {
+                            entries = data.anemia;
+                        } else if (Array.isArray(data)) {
+                            entries = data;
+                        } else {
+                            entries = [];
+                        }
+
+                        // Remove duplicates automatically
+                        if (entries.length > 0) {
+                            const uniqueEntries = new Map();
+                            entries.forEach(entry => {
+                                const key = `${entry.timestamp || entry.date}_${entry.hemoglobin || 'null'}_${entry.ferritin || 'null'}_${entry.energy || 'null'}`;
+                                if (!uniqueEntries.has(key)) {
+                                    uniqueEntries.set(key, entry);
+                                }
+                            });
+                            entries = Array.from(uniqueEntries.values());
+                            console.log(`Removed duplicates, now have ${entries.length} unique entries`);
+
+                            entries.sort((a, b) => {
+                                const dateA = new Date(a.timestamp || a.date || 0);
+                                const dateB = new Date(b.timestamp || b.date || 0);
+                                return dateB - dateA;
+                            });
+                        }
+
+                        anemiaManager.data = entries;
+                        console.log('✅ Anemia data loaded from API:', entries);
+                    } else {
+                        console.warn('⚠️ Failed to load from API, using localStorage');
+                        entries = anemiaManager.data;
+                    }
+                } else {
+                    // No authentication, use localStorage
+                    entries = anemiaManager.data;
+                    console.log('✅ Anemia data loaded from localStorage');
+                }
+            } catch (error) {
+                console.error('Error loading anemia entries:', error);
+                entries = anemiaManager.data;
+            }
+
+            updateLogDisplay();
+
+            if (entries.length > 0) {
+                updateStats(entries[0]);
+            }
+            resetDailyIfNeeded();
+        }
+
+        /* ------------------ Log Rendering ------------------ */
+        function updateLogDisplay() {
+            const logContainer = document.getElementById('log-entries');
+            const emptyState = document.getElementById('empty-log');
+
+            if (entries.length === 0) {
+                emptyState.style.display = 'block';
+                logContainer.innerHTML = '';
+            } else {
+                emptyState.style.display = 'none';
+                logContainer.innerHTML = entries.map(entry => {
+                    // Debug logging
+                    console.log('Processing entry for display:', entry);
+                    console.log('Entry fields:', {
+                        hemoglobin: entry.hemoglobin,
+                        ferritin: entry.ferritin,
+                        vitaminC: entry.vitaminC,
+                        energy: entry.energy,
+                        supplement: entry.supplement,
+                        medications: entry.medications,
+                        symptoms: entry.symptoms,
+                        selectedFoods: entry.selectedFoods,
+                        totalIronToday: entry.totalIronToday
+                    });
+
+                    // Format symptoms array
+                    const symptomsText = Array.isArray(entry.symptoms) ? entry.symptoms.join(', ') : (entry.symptoms || 'None');
+
+                    // Format selected foods array
+                    const foodsText = Array.isArray(entry.selectedFoods) ? entry.selectedFoods.join(', ') : (entry.selectedFoods || 'None');
+
+                    // Format date
+                    const dateText = entry.date || entry.timestamp ?
+                        (new Date(entry.date || entry.timestamp)).toLocaleDateString() :
+                        'Unknown Date';
+
+                    return `
+  <div class="log-entry">
+    <div class="log-date">${dateText}</div>
+    <div class="log-details">
+      <div><strong>Hemoglobin:</strong> ${entry.hemoglobin || 'Not recorded'} g/dL</div>
+      <div><strong>Ferritin:</strong> ${entry.ferritin || 'Not recorded'} ng/mL</div>
+      <div><strong>Energy:</strong> ${entry.energy || 'Not recorded'}/10</div>
+      <div><strong>Vitamin C:</strong> ${entry.vitaminC || 'Not recorded'} mg</div>
+      <div><strong>Iron Intake:</strong> ${entry.totalIronToday || '0'} mg</div>
+      <div><strong>Supplement:</strong> ${entry.supplement || 'None'}</div>
+      <div><strong>Medications:</strong> ${entry.medications || 'None'}</div>
+      <div><strong>Symptoms:</strong> ${symptomsText}</div>
+      <div><strong>Iron Foods:</strong> ${foodsText}</div>
+    </div>
+    <button class="delete-btn" onclick="deleteEntry('${entry.id || entry._id}')">❌ Delete</button>
+  </div>
+`;
+                }).join('');
+            }
+        }
+        async function deleteEntry(entryId) {
+            if (!confirm("Are you sure you want to delete this entry?")) return;
+
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                if (!accessToken) {
+                    alert("❌ Not authenticated. Please log in again.");
+                    return;
+                }
+
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/anemia/me/${entryId}`, {
+                    method: "DELETE",
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.detail || "Failed to delete entry");
+                }
+
+                alert("✅ Entry deleted successfully!");
+                entries = entries.filter(e => e._id !== entryId && e.id !== entryId);
+                updateLogDisplay();
+            } catch (error) {
+                console.error("❌ Error deleting entry:", error);
+                alert("❌ Error deleting entry.");
+            }
+        }
+
+        /* ------------------ Stats ------------------ */
+        function getEntryDateISO(entry) {
+            const value = entry?.date || entry?.timestamp;
+            return value ? new Date(value).toISOString().split('T')[0] : null;
+        }
+
+        function calculateVitaminCProgress(value) {
+            const target = 90; // mg
+            if (!value || value <= 0) return 0;
+            return Math.min((value / target) * 100, 100);
+        }
+
+        function normalizeSupplementValue(supplement) {
+            if (!supplement) return '';
+            return supplement.toString().trim().toLowerCase();
+        }
+
+        function hasSupplementForDate(dateISO) {
+            if (!dateISO) return false;
+            return entries.some(entry => {
+                const entryDate = getEntryDateISO(entry);
+                const supplementVal = normalizeSupplementValue(entry?.supplement);
+                return entryDate === dateISO && (supplementVal === 'yes' || supplementVal === 'taken' || supplementVal === 'late' || supplementVal === 'done');
+            });
+        }
+
+        function calculateSupplementStreak() {
+            let streak = 0;
+            const today = new Date();
+
+            while (true) {
+                const dateISO = today.toISOString().split('T')[0];
+                if (hasSupplementForDate(dateISO)) {
+                    streak += 1;
+                    today.setDate(today.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+
+            return streak;
+        }
+
+        function updateStats(entry) {
+
+            const hbEl = document.getElementById('hemoglobin-level');
+            const hbProgress = document.getElementById('hemoglobin-progress');
+
+            if (hbEl && hbProgress && entry.hemoglobin) {
+                hbEl.textContent = entry.hemoglobin + ' g/dL';
+                hbProgress.style.width = Math.min((entry.hemoglobin / 15) * 100, 100) + '%';
+            }
+
+            const ferrEl = document.getElementById('ferritin-level');
+            const ferrProgress = document.getElementById('ferritin-progress');
+
+            if (ferrEl && ferrProgress && entry.ferritin) {
+                ferrEl.textContent = entry.ferritin + ' ng/mL';
+                ferrProgress.style.width = Math.min((entry.ferritin / 150) * 100, 100) + '%';
+            }
+
+            const energyEl = document.getElementById('energy-level');
+            const energyProgress = document.getElementById('energy-progress');
+
+            if (energyEl && energyProgress && entry.energy) {
+                energyEl.textContent = entry.energy + '/10';
+                energyProgress.style.width = (entry.energy / 10) * 100 + '%';
+            }
+
+            const vitaminCEl = document.getElementById('vitamin-c-intake');
+            const vitaminCProgress = document.getElementById('vitamin-c-progress');
+            const vitaminCValue = Number(entry.vitaminC) || 0;
+            if (vitaminCEl && vitaminCProgress) {
+                vitaminCEl.textContent = vitaminCValue > 0 ? `${vitaminCValue} mg` : '--mg';
+                vitaminCProgress.style.width = calculateVitaminCProgress(vitaminCValue) + '%';
+            }
+
+            const supplementEl = document.getElementById('supplement-streak');
+            const supplementProgress = document.getElementById('supplement-progress');
+
+            if (supplementEl && supplementProgress) {
+                const streak = calculateSupplementStreak();
+                supplementEl.textContent = `${streak} day${streak === 1 ? '' : 's'}`;
+                supplementProgress.style.width = Math.min((streak / 30) * 100, 100) + '%';
+            }
+        }
+
+        /* ------------------ Daily Reset ------------------ */
+        function resetDailyIfNeeded() {
+            const lastEntry = entries[0];
+            const today = new Date().toISOString().split("T")[0];
+
+            if (!lastEntry || lastEntry.date !== today) {
+                totalIronToday = 0;
+                selectedFoods = [];
+                document.getElementById("iron-intake").textContent = "0mg";
+                document.getElementById("iron-progress").style.width = "0%";
+            }
+        }
+
+        /* ------------------ Clear Form ------------------ */
+        function clearForm() {
+            document.getElementById('hemoglobin-input').value = '';
+            document.getElementById('ferritin-input').value = '';
+            document.getElementById('vitamin-c-input').value = '';
+            document.getElementById('energy-level-slider').value = '5';
+            document.getElementById('energy-level-value').textContent = '5';
+            document.getElementById('supplement-input').value = '';
+            document.getElementById('medications-input').value = '';
+
+            document.querySelectorAll('input[name="symptoms"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.iron-food-item').forEach(item => item.classList.remove('selected'));
+
+            totalIronToday = 0;
+            selectedFoods = [];
+            updateIronDisplay();
+        }
+
+        /* ------------------ Init ------------------ */
+        document.addEventListener('DOMContentLoaded', async function () {
+            console.log('DOM loaded, starting initialization...');
+
+            setTimeout(async () => {
+
+                // 🔐 Authentication
+                if (!window.userAuth) {
+                    console.error('userAuth not available, trying direct check...');
+                    const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+                    const accessToken = localStorage.getItem('accessToken');
+
+                    if (!userEmail || !accessToken) {
+                        console.error('User not authenticated - redirecting to login');
+                        window.location.href = 'login.html';
+                        return;
+                    }
+                    console.log('Direct authentication check passed');
+
+                } else if (!window.userAuth.isUserAuthenticated()) {
+                    console.error('User not authenticated via userAuth - redirecting to login');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                // Ensure multi-user isolation
+                if (window.userAuth) {
+                    window.userAuth.ensureDataIsolation();
+                }
+
+                // Core setup
+                await initializeAnemiaManager();
+                checkNewDay();
+                setupEventListeners();
+
+                // Final UI refresh
+                setTimeout(() => {
+                    console.log('🔄 Final iron display update...');
+                    updateIronDisplay();
+                }, 500);
+
+                console.log('✅ Anemia tracker initialization complete');
+
+            }, 100);
+
+            // 🎚 Live update energy input
+            const energyLevelSlider = document.getElementById('energy-level-slider');
+            const energyLevelValue = document.getElementById('energy-level-value');
+
+            if (energyLevelSlider && energyLevelValue) {
+                energyLevelSlider.addEventListener('input', function () {
+                    energyLevelValue.textContent = this.value;
+                });
+                energyLevelValue.textContent = energyLevelSlider.value;
+            }
+
+            // 📌 Load logs and display
+            await loadAnemiaEntries();
+            updateLogDisplay();
+
+            // 🧠 Restore insights panel
+            loadSavedInsights();
+
+            // 📚 Restore health tip or generate new one
+            const savedTip = localStorage.getItem("anemia_tip");
+            const eduText = document.getElementById("edu-text");
+
+            if (eduText) {
+                if (savedTip) {
+                    eduText.innerHTML = `<i class="fa-solid fa-lightbulb"></i> ${savedTip}`;
+                } else {
+                    loadRandomTip();
+                }
+            }
+
+            // 🔁 Tip refresh button
+            const tipButton = document.getElementById("new-tip-btn");
+            if (tipButton) {
+                tipButton.addEventListener("click", loadRandomTip);
+            }
+
+            // 🧩 Restore saved symptom decoder message
+            const savedSymptomTip = localStorage.getItem("symptom_tip");
+            if (savedSymptomTip) {
+                const box = document.getElementById("symptom-decoder");
+                const msg = document.getElementById("symptom-message");
+
+                if (box && msg) {
+                    box.style.display = "block";
+                    msg.innerHTML = savedSymptomTip;
+                }
+            }
+        });
+
+        /* ------------------ Profile Dropdown Functionality ------------------ */
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileCircle = document.getElementById("user-profile");
+            const profileDropdown = document.getElementById("profileDropdown");
+
+            if (profileCircle && profileDropdown) {
+                // Get user's first initial
+                const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+                if (currentUser) {
+                    const firstInitial = currentUser.charAt(0).toUpperCase();
+                    profileCircle.textContent = firstInitial;
+                    profileCircle.title = currentUser;
+                }
+
+                // Add click handler for profile dropdown
+                profileCircle.addEventListener("click", () => {
+                    profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
+                });
+
+                // Hide dropdown when clicking outside
+                window.addEventListener("click", function (e) {
+                    if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                        profileDropdown.style.display = "none";
+                    }
+                });
+            }
+        });
+
+        // Function to test anemia data collection
+        function testAnemiaDataCollection() {
+            console.log('=== TESTING ANEMIA DATA COLLECTION ===');
+
+            const hemoglobin = document.getElementById('hemoglobin-input').value;
+            const ferritin = document.getElementById('ferritin-input').value;
+            const vitaminC = document.getElementById('vitamin-c-input').value;
+            const energy = document.getElementById('energy-level-slider').value;
+            const supplement = document.getElementById('supplement-input').value;
+            const medications = document.getElementById('medications-input').value;
+
+            console.log('Form values:', {
+                hemoglobin,
+                ferritin,
+                vitaminC,
+                energy,
+                supplement,
+                medications,
+                selectedFoods,
+                totalIronToday
+            });
+
+            return {
+                hemoglobin,
+                ferritin,
+                vitaminC,
+                energy,
+                supplement,
+                medications,
+                selectedFoods,
+                totalIronToday
+            };
+        }
+
+        // Function to add test data to anemia tracker
+        function addTestAnemiaData() {
+            console.log('Adding test anemia data...');
+
+            document.getElementById('hemoglobin-input').value = '13.2';
+            document.getElementById('ferritin-input').value = '45';
+            document.getElementById('vitamin-c-input').value = '120';
+            document.getElementById('energy-level-slider').value = '8';
+            document.getElementById('supplement-input').value = 'Iron 18mg daily';
+            document.getElementById('medications-input').value = 'None';
+
+            // Check some symptoms
+            document.getElementById('fatigue').checked = true;
+            document.getElementById('dizziness').checked = true;
+
+            console.log('Test data added to form');
+        }
+
+        // Function to force clear all anemia data
+        function forceClearAllAnemiaData() {
+            console.log('Force clearing all anemia data...');
+
+            // Clear entries array
+            entries = [];
+            updateLogDisplay();
+
+            // Clear localStorage
+            const today = new Date().toISOString().split('T')[0];
+            const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+            localStorage.removeItem(`${currentUser}_anemiaData_${today}`);
+
+            // Clear all anemia-related localStorage keys
+            Object.keys(localStorage).forEach(key => {
+                if (key.includes('anemia') && key.includes(currentUser)) {
+                    localStorage.removeItem(key);
+                }
+            });
+
+            console.log('All anemia data cleared locally');
+        }
+
+        // Comprehensive debug function
+        function debugAnemiaDataFlow() {
+            console.log('=== COMPREHENSIVE ANEMIA DATA FLOW DEBUG ===');
+
+            // 1. Check form elements
+            console.log('1. FORM ELEMENTS:');
+            const formElements = {
+                hemoglobin: document.getElementById('hemoglobin-input'),
+                ferritin: document.getElementById('ferritin-input'),
+                vitaminC: document.getElementById('vitamin-c-input'),
+                energy: document.getElementById('energy-level-slider'),
+                supplement: document.getElementById('supplement-input'),
+                medications: document.getElementById('medications-input')
+            };
+
+            Object.entries(formElements).forEach(([name, element]) => {
+                if (element) {
+                    console.log(`${name}:`, element.value, '(exists)');
+                } else {
+                    console.log(`${name}:`, 'ELEMENT NOT FOUND!');
+                }
+            });
+
+            // 2. Check current entries
+            console.log('2. CURRENT ENTRIES:');
+            console.log('Entries array length:', entries.length);
+            entries.forEach((entry, index) => {
+                console.log(`Entry ${index}:`, entry);
+            });
+
+            // 3. Check localStorage
+            console.log('3. LOCAL STORAGE:');
+            const today = new Date().toISOString().split('T')[0];
+            const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+            const localData = localStorage.getItem(`${currentUser}_anemiaData_${today}`);
+            console.log('Today\'s localStorage data:', localData);
+
+            // 4. Check selected foods
+            console.log('4. SELECTED FOODS:');
+            console.log('selectedFoods array:', selectedFoods);
+            console.log('totalIronToday:', totalIronToday);
+
+            // 5. Check symptoms
+            console.log('5. SYMPTOMS:');
+            const checkedSymptoms = [];
+            document.querySelectorAll('input[name="symptoms"]:checked').forEach(cb => {
+                checkedSymptoms.push(cb.value);
+            });
+            console.log('Checked symptoms:', checkedSymptoms);
+
+            console.log('=== END DEBUG ===');
+        }
+
+        // Function to create a test entry with all fields filled
+        function createTestEntryWithAllFields() {
+            console.log('Creating test entry with all fields...');
+
+            // Fill all form fields
+            document.getElementById('hemoglobin-input').value = '13.5';
+            document.getElementById('ferritin-input').value = '45.0';
+            document.getElementById('vitamin-c-input').value = '120';
+            document.getElementById('energy-level-slider').value = '8';
+            document.getElementById('energy-level-value').textContent = '8';
+            document.getElementById('supplement-input').value = 'Iron 18mg daily';
+            document.getElementById('medications-input').value = 'B12 supplement';
+
+            // Check some symptoms
+            document.getElementById('fatigue').checked = true;
+            document.getElementById('dizziness').checked = true;
+
+            // Add some foods
+            selectedFoods = ['Spinach', 'Red Meat', 'Lentils'];
+            totalIronToday = 8.1;
+
+            console.log('Test data filled in form');
+
+            // Debug the data flow
+            debugAnemiaDataFlow();
+        }
+
+        // Function to completely reset the anemia tracker
+        function resetAnemiaTracker() {
+            console.log('🔄 COMPLETELY RESETTING ANEMIA TRACKER...');
+
+            // 1. Clear all entries
+            entries = [];
+
+            // 2. Clear localStorage
+            const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+            Object.keys(localStorage).forEach(key => {
+                if (key.includes('anemia') && key.includes(currentUser)) {
+                    localStorage.removeItem(key);
+                    console.log('Removed localStorage key:', key);
+                }
+            });
+
+            // 3. Clear form
+            document.getElementById('hemoglobin-input').value = '';
+            document.getElementById('ferritin-input').value = '';
+            document.getElementById('vitamin-c-input').value = '';
+            document.getElementById('energy-level-slider').value = '5';
+            document.getElementById('energy-level-value').textContent = '5';
+            document.getElementById('supplement-input').value = '';
+            document.getElementById('medications-input').value = '';
+
+            // Clear symptoms
+            document.querySelectorAll('input[name="symptoms"]').forEach(cb => cb.checked = false);
+
+            // Clear foods
+            selectedFoods = [];
+            totalIronToday = 0;
+            document.querySelectorAll('.iron-food-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+
+            // 4. Update display
+            updateLogDisplay();
+            updateDisplay();
+
+            // 5. Reset flags
+            window.isManualSave = false;
+
+            console.log('✅ Anemia tracker completely reset!');
+        }
+
+        /* ------------------ Loading State Management ------------------ */
+        function showMainContent() {
+            const loadingPlaceholder = document.getElementById('loadingPlaceholder');
+            const mainContent = document.getElementById('mainContent');
+            if (loadingPlaceholder) loadingPlaceholder.style.display = 'none';
+            if (mainContent) mainContent.style.display = 'block';
+        }
+
+        // Check if it's a new day and auto-reset anemia data
+        function checkAnemiaDailyReset() {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            const lastDate = localStorage.getItem('anemia_lastDate');
+
+            if (lastDate && lastDate !== today) {
+                console.log('🩸 New day detected! Auto-resetting anemia data...');
+                console.log('Last date:', lastDate, 'Today:', today);
+
+                // Clear today's anemia data
+                const currentUser = localStorage.getItem('userEmail');
+                if (currentUser) {
+                    localStorage.removeItem(`${currentUser}_anemiaData`);
+                    localStorage.removeItem(`${currentUser}_anemiaLogs`);
+                }
+
+                // Update last date
+                localStorage.setItem('anemia_lastDate', today);
+
+                // Show notification
+                if (typeof showNotification === 'function') {
+                    showNotification('🌅 Good morning! Anemia tracker has been reset for a fresh start!', 'success');
+                } else {
+                    // Fallback notification
+                    alert('🌅 Good morning! Anemia tracker has been reset for a fresh start!');
+                }
+
+                // Refresh the display
+                updateLogDisplay();
+            } else if (!lastDate) {
+                // First time - set today as last date
+                localStorage.setItem('anemia_lastDate', today);
+            }
+        }
+
+        // Show content immediately when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check for daily reset
+            checkAnemiaDailyReset();
+
+            // Small delay to ensure smooth transition
+            setTimeout(showMainContent, 100);
+        });
+
+        /* ------------------ Expose to HTML ------------------ */
+        window.toggleFood = toggleFood;
+        window.addAnemiaEntry = addAnemiaEntry;
+        window.testAnemiaDataCollection = testAnemiaDataCollection;
+        window.addTestAnemiaData = addTestAnemiaData;
+        window.forceClearAllAnemiaData = forceClearAllAnemiaData;
+        window.debugAnemiaDataFlow = debugAnemiaDataFlow;
+        window.createTestEntryWithAllFields = createTestEntryWithAllFields;
+        window.resetAnemiaTracker = resetAnemiaTracker;
+    </script>
+    <script src="scripts/navigation.js"></script>
+</body>
+
+</html>

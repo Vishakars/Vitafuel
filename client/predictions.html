@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Health Predictions - VitaFuel</title>
+    <link rel="stylesheet" href="css/style.css"/>
+    <link rel="stylesheet" href="ai-dashboard.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="js/user-auth.js"></script>
+    <script src="js/health-domain-common.js"></script>
+    <script src="js/mongodb-integration.js"></script>
+</head>
+<body>
+    <!-- AI Navigation -->
+    <header class="ai-navbar"><div class="hero-img1"><img src="logo/image.png" alt="VitaFuel - Health & Wellness" style="height: 50px; width: auto;" /></div> class="ai-nav">
+            <a href="ai-dashboard.html" class="nav-link">
+                <span class="nav-icon">🏠</span>
+                <span>AI Dashboard</span>
+            </a>
+            <a href="ai-insights.html" class="nav-link">
+                <span class="nav-icon">🧠</span>
+                <span>AI Insights</span>
+            </a>
+            <a href="predictions.html" class="nav-link active">
+                <span class="nav-icon">🔮</span>
+                <span>Predictions</span>
+            </a>
+            <a href="recommendations.html" class="nav-link">
+                <span class="nav-icon">💡</span>
+                <span>AI Recommendations</span>
+            </a>
+            <a href="chatbot.html" class="nav-link">
+                <span class="nav-icon">🤖</span>
+                <span>Health Assistant</span>
+            </a>
+        </nav>
+
+        <div class="profile-container">
+            <div class="ai-profile-circle" id="user-profile">
+                <div class="profile-initial">U</div>
+                <div class="ai-status-indicator"></div>
+            </div>
+            <div class="profile-dropdown" id="profileDropdown">
+                <a href="profile.html">My Profile</a>
+                <a href="settings.html">Settings</a>
+                <a href="about.html">About</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Predictions Main Content -->
+    <main class="predictions-main">
+        <!-- Header Section -->
+        <section class="predictions-header">
+            <div class="header-content">
+                <h1>🔮 AI Health Predictions</h1>
+                <p>Advanced machine learning models predict your health trends and optimize your wellness journey</p>
+                <div class="prediction-stats">
+                    <div class="stat-item">
+                        <span class="stat-number">94%</span>
+                        <span class="stat-label">Accuracy Rate</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">7</span>
+                        <span class="stat-label">Days Ahead</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">15</span>
+                        <span class="stat-label">Health Metrics</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">Monitoring</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prediction Timeline -->
+        <section class="prediction-timeline-section">
+            <h2>📅 7-Day Health Forecast</h2>
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="timeline-date">Today</div>
+                    <div class="timeline-content">
+                        <h3>Energy & Mood</h3>
+                        <div class="prediction-details">
+                            <div class="prediction-item">
+                                <span class="pred-icon">⚡</span>
+                                <span class="pred-text">Energy Peak: 2:00 PM - 4:00 PM</span>
+                                <span class="pred-confidence">87%</span>
+                            </div>
+                            <div class="prediction-item">
+                                <span class="pred-icon">😊</span>
+                                <span class="pred-text">Mood: Positive (8.2/10)</span>
+                                <span class="pred-confidence">92%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Tomorrow</div>
+                    <div class="timeline-content">
+                        <h3>Sleep & Recovery</h3>
+                        <div class="prediction-details">
+                            <div class="prediction-item">
+                                <span class="pred-icon">💤</span>
+                                <span class="pred-text">Optimal Bedtime: 10:30 PM</span>
+                                <span class="pred-confidence">89%</span>
+                            </div>
+                            <div class="prediction-item">
+                                <span class="pred-icon">🌅</span>
+                                <span class="pred-text">Wake Time: 6:30 AM</span>
+                                <span class="pred-confidence">85%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 3</div>
+                    <div class="timeline-content">
+                        <h3>Physical Performance</h3>
+                        <div class="prediction-details">
+                            <div class="prediction-item">
+                                <span class="pred-icon">🏃‍♀️</span>
+                                <span class="pred-text">Best Workout Time: 7:00 AM</span>
+                                <span class="pred-confidence">78%</span>
+                            </div>
+                            <div class="prediction-item">
+                                <span class="pred-icon">💪</span>
+                                <span class="pred-text">Strength Peak: 95%</span>
+                                <span class="pred-confidence">82%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 4</div>
+                    <div class="timeline-content">
+                        <h3>Nutrition Needs</h3>
+                        <div class="prediction-details">
+                            <div class="prediction-item">
+                                <span class="pred-icon">🥗</span>
+                                <span class="pred-text">Hydration Alert: 2:00 PM</span>
+                                <span class="pred-confidence">94%</span>
+                            </div>
+                            <div class="prediction-item">
+                                <span class="pred-icon">🍎</span>
+                                <span class="pred-text">Snack Time: 3:30 PM</span>
+                                <span class="pred-confidence">76%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 5</div>
+                    <div class="timeline-content">
+                        <h3>Mental Clarity</h3>
+                        <div class="prediction-details">
+                            <div class="prediction-item">
+                                <span class="pred-icon">🧠</span>
+                                <span class="pred-text">Focus Peak: 9:00 AM - 11:00 AM</span>
+                                <span class="pred-confidence">91%</span>
+                            </div>
+                            <div class="prediction-item">
+                                <span class="pred-icon">💡</span>
+                                <span class="pred-text">Creativity Boost: 2:00 PM</span>
+                                <span class="pred-confidence">73%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 6</div>
+                    <div class="timeline-content">
+                        <h3>Recovery & Rest</h3>
+                        <div class="prediction-details">
+                            <div class="prediction-item">
+                                <span class="pred-icon">🧘‍♀️</span>
+                                <span class="pred-text">Meditation Time: 6:00 PM</span>
+                                <span class="pred-confidence">88%</span>
+                            </div>
+                            <div class="prediction-item">
+                                <span class="pred-icon">🛁</span>
+                                <span class="pred-text">Relaxation: 8:00 PM</span>
+                                <span class="pred-confidence">81%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 7</div>
+                    <div class="timeline-content">
+                        <h3>Weekly Summary</h3>
+                        <div class="prediction-details">
+                            <div class="prediction-item">
+                                <span class="pred-icon">📊</span>
+                                <span class="pred-text">Health Score: 87/100</span>
+                                <span class="pred-confidence">95%</span>
+                            </div>
+                            <div class="prediction-item">
+                                <span class="pred-icon">🎯</span>
+                                <span class="pred-text">Goal Progress: 92%</span>
+                                <span class="pred-confidence">89%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Health Trend Predictions -->
+        <section class="trend-predictions">
+            <h2>📈 Health Trend Predictions</h2>
+            <div class="trends-grid">
+                <div class="trend-card">
+                    <h3>Energy Levels</h3>
+                    <canvas id="energyChart" width="300" height="200"></canvas>
+                    <div class="trend-summary">
+                        <p>Your energy is predicted to <span class="trend-positive">increase by 12%</span> this week</p>
+                    </div>
+                </div>
+
+                <div class="trend-card">
+                    <h3>Sleep Quality</h3>
+                    <canvas id="sleepChart" width="300" height="200"></canvas>
+                    <div class="trend-summary">
+                        <p>Sleep quality expected to <span class="trend-positive">improve by 8%</span> with current routine</p>
+                    </div>
+                </div>
+
+                <div class="trend-card">
+                    <h3>Mood Trends</h3>
+                    <canvas id="moodChart" width="300" height="200"></canvas>
+                    <div class="trend-summary">
+                        <p>Mood stability predicted to <span class="trend-positive">remain high</span> throughout the week</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Risk Predictions -->
+        <section class="risk-predictions">
+            <h2>⚠️ Risk Predictions & Alerts</h2>
+            <div class="risk-grid">
+                <div class="risk-card low-risk">
+                    <div class="risk-header">
+                        <h3>🟢 Low Risk</h3>
+                        <span class="risk-probability">15%</span>
+                    </div>
+                    <div class="risk-content">
+                        <h4>Stress Overload</h4>
+                        <p>Based on current patterns, stress levels are expected to remain manageable</p>
+                        <div class="risk-timeline">Next 3 days</div>
+                    </div>
+                </div>
+
+                <div class="risk-card medium-risk">
+                    <div class="risk-header">
+                        <h3>🟡 Medium Risk</h3>
+                        <span class="risk-probability">35%</span>
+                    </div>
+                    <div class="risk-content">
+                        <h4>Sleep Disruption</h4>
+                        <p>Wednesday night may see reduced sleep quality due to external factors</p>
+                        <div class="risk-timeline">Day 3</div>
+                    </div>
+                </div>
+
+                <div class="risk-card low-risk">
+                    <div class="risk-header">
+                        <h3>🟢 Low Risk</h3>
+                        <span class="risk-probability">8%</span>
+                    </div>
+                    <div class="risk-content">
+                        <h4>Energy Crash</h4>
+                        <p>Energy levels are predicted to remain stable with current routine</p>
+                        <div class="risk-timeline">Next 7 days</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Optimization Suggestions -->
+        <section class="optimization-suggestions">
+            <h2>🎯 AI Optimization Suggestions</h2>
+            <div class="suggestions-grid">
+                <div class="suggestion-card">
+                    <div class="suggestion-header">
+                        <span class="suggestion-icon">⏰</span>
+                        <h3>Timing Optimization</h3>
+                    </div>
+                    <div class="suggestion-content">
+                        <p>Adjust your workout schedule to 7:00 AM for maximum performance gains</p>
+                        <div class="suggestion-impact">
+                            <span class="impact-label">Expected Impact:</span>
+                            <span class="impact-value">+15% Performance</span>
+                        </div>
+                        <button class="suggestion-btn">Apply Suggestion</button>
+                    </div>
+                </div>
+
+                <div class="suggestion-card">
+                    <div class="suggestion-header">
+                        <span class="suggestion-icon">🍎</span>
+                        <h3>Nutrition Timing</h3>
+                    </div>
+                    <div class="suggestion-content">
+                        <p>Eat a light snack at 3:30 PM to maintain stable energy levels</p>
+                        <div class="suggestion-impact">
+                            <span class="impact-label">Expected Impact:</span>
+                            <span class="impact-value">+20% Energy Stability</span>
+                        </div>
+                        <button class="suggestion-btn">Set Reminder</button>
+                    </div>
+                </div>
+
+                <div class="suggestion-card">
+                    <div class="suggestion-header">
+                        <span class="suggestion-icon">💤</span>
+                        <h3>Sleep Optimization</h3>
+                    </div>
+                    <div class="suggestion-content">
+                        <p>Go to bed at 10:30 PM to optimize sleep quality and recovery</p>
+                        <div class="suggestion-impact">
+                            <span class="impact-label">Expected Impact:</span>
+                            <span class="impact-value">+23% Sleep Quality</span>
+                        </div>
+                        <button class="suggestion-btn">Set Bedtime</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Prediction Accuracy -->
+        <section class="prediction-accuracy">
+            <h2>📊 Prediction Accuracy & Model Performance</h2>
+            <div class="accuracy-grid">
+                <div class="accuracy-card">
+                    <h3>Model Performance</h3>
+                    <div class="accuracy-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Overall Accuracy</span>
+                            <span class="metric-value">94.2%</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Energy Predictions</span>
+                            <span class="metric-value">96.1%</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Sleep Predictions</span>
+                            <span class="metric-value">92.8%</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Mood Predictions</span>
+                            <span class="metric-value">89.5%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accuracy-card">
+                    <h3>Data Quality</h3>
+                    <div class="data-quality">
+                        <div class="quality-item">
+                            <span class="quality-label">Data Completeness</span>
+                            <div class="quality-bar">
+                                <div class="quality-fill" style="width: 87%"></div>
+                            </div>
+                            <span class="quality-value">87%</span>
+                        </div>
+                        <div class="quality-item">
+                            <span class="quality-label">Data Freshness</span>
+                            <div class="quality-bar">
+                                <div class="quality-fill" style="width: 95%"></div>
+                            </div>
+                            <span class="quality-value">95%</span>
+                        </div>
+                        <div class="quality-item">
+                            <span class="quality-label">Pattern Recognition</span>
+                            <div class="quality-bar">
+                                <div class="quality-fill" style="width: 91%"></div>
+                            </div>
+                            <span class="quality-value">91%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- AI Loading Overlay -->
+    <div class="ai-loading-overlay" id="ai-loading">
+        <div class="ai-loading-content">
+            <div class="ai-brain">
+                <div class="brain-pulse"></div>
+            </div>
+            <h3>AI is generating predictions...</h3>
+            <p>Analyzing patterns and forecasting trends</p>
+        </div>
+    </div>
+
+    <script src="scripts/predictions.js"></script>
+    <script src="scripts/navigation.js"></script>
+</body>
+</html>

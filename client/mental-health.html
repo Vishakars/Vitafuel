@@ -1,0 +1,1572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | Mental Health Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/mental-health.css" />
+    <link rel="stylesheet" href="css/commonstyles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="floating-icon"><i class="fa-solid fa-brain"></i></div>
+
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">U</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-brain"></i> Mental Health Tracker</h1>
+            <p>Start your wellness journey - track mood, stress, habits, and build healthy routines</p>
+        </div>
+
+        <!-- Reset Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Current Mood</h3>
+                        <div class="stat-value" id="current-mood">Start Here</div>
+                        <div class="stat-goal">Begin your tracking</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-regular fa-face-smile"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Weekly Average</h3>
+                        <div class="stat-value" id="avg-mood">0/10</div>
+                        <div class="stat-goal">Track daily to see trends</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Wellness Streak</h3>
+                        <div class="stat-value" id="streak-count">0 days</div>
+                        <div class="stat-goal">Build consistency</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-fire"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Mindfulness Score</h3>
+                        <div class="stat-value" id="mindfulness-score">0%</div>
+                        <div class="stat-goal">Practice daily activities</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-person-rays"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Wellness Grid -->
+        <div class="wellness-grid">
+            <!-- Daily Mood Check-in -->
+            <div class="wellness-card mood-tracker">
+                <h2><i class="fa-solid fa-masks-theater"></i> Daily Mood Check-in</h2>
+                <p>How are you feeling today?</p>
+
+                <div class="mood-selector">
+                    <div class="mood-option" data-mood="very-sad" data-value="1"><i
+                            class="fa-regular fa-face-sad-tear"></i><br>Very Sad</div>
+                    <div class="mood-option" data-mood="sad" data-value="3"><i
+                            class="fa-regular fa-face-frown"></i><br>Sad</div>
+                    <div class="mood-option" data-mood="neutral" data-value="5"><i
+                            class="fa-regular fa-face-meh"></i><br>Neutral</div>
+                    <div class="mood-option" data-mood="happy" data-value="7"><i
+                            class="fa-regular fa-face-smile"></i><br>Happy</div>
+                    <div class="mood-option" data-mood="very-happy" data-value="10"><i
+                            class="fa-regular fa-face-laugh-beam"></i><br>Very Happy</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Stress Level</label>
+                    <div class="slider-container">
+                        <input type="range" class="form-input" id="stress-slider" min="1" max="10" value="5">
+                        <div class="slider-value" id="stress-value">5</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Energy Level</label>
+                    <div class="slider-container">
+                        <input type="range" class="form-input" id="energy-slider" min="1" max="10" value="5">
+                        <div class="slider-value" id="energy-value">5</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes (Optional)</label>
+                    <textarea class="form-input" id="mood-notes" placeholder="What's on your mind today?"
+                        rows="3"></textarea>
+                </div>
+
+                <div class="form-group mood-catalyst-section" id="mood-catalyst-section" style="display: none;">
+                    <label class="form-label">What caused this mood change?</label>
+                    <p class="form-sub-label">(Select all that apply - this helps us find your triggers)</p>
+                    <div class="catalyst-tag-container">
+                        <div class="catalyst-tag" data-catalyst="Poor Sleep">
+                            <i class="fa-solid fa-bed"></i> Poor Sleep
+                        </div>
+                        <div class="catalyst-tag" data-catalyst="Conflict">
+                            <i class="fa-solid fa-people-arrows"></i> Conflict with Partner/Family
+                        </div>
+                        <div class="catalyst-tag" data-catalyst="Work Stress">
+                            <i class="fa-solid fa-briefcase"></i> Work/Study Stress
+                        </div>
+                        <div class="catalyst-tag" data-catalyst="Negative News">
+                            <i class="fa-solid fa-newspaper"></i> Negative News/Social Media
+                        </div>
+                        <div class="catalyst-tag" data-catalyst="Diet">
+                            <i class="fa-solid fa-burger"></i> Ate Poorly/Missed Meal
+                        </div>
+                        <div class="catalyst-tag" data-catalyst="Weather">
+                            <i class="fa-solid fa-cloud-sun"></i> Bad Weather/Lack of Sun
+                        </div>
+                        <div class="catalyst-tag" data-catalyst="Physical Pain">
+                            <i class="fa-solid fa-circle-exclamation"></i> Physical Pain/Illness
+                        </div>
+                        <div class="catalyst-tag" data-catalyst="Loneliness">
+                            <i class="fa-solid fa-user"></i> Loneliness/Isolation
+                        </div>
+                        <div class="catalyst-tag" data-catalyst="Menstrual Cycle">
+                            <i class="fa-solid fa-droplet"></i> Menstrual Cycle
+                        </div>
+                        <div class="catalyst-tag" data-catalyst="Financial">
+                            <i class="fa-solid fa-sack-dollar"></i> Financial Worry
+                        </div>
+                    </div>
+                    <textarea class="form-input" id="catalyst-notes" placeholder="Other specific details..."
+                        rows="1"></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="saveMoodEntry()">
+                    <i class="fa-solid fa-floppy-disk"></i> Save Mood Entry
+                </button>
+            </div>
+
+            <!-- Daily Habits Tracker -->
+            <div class="wellness-card">
+                <h2><i class="fa-solid fa-list-check"></i> Daily Wellness Habits</h2>
+                <p>Track your healthy habits and build consistency</p>
+
+                <div class="habit-grid">
+                    <div class="habit-item">
+                        <div class="habit-checkbox" id="habit-water"></div>
+                        <span><i class="fa-solid fa-droplet"></i> 8 glasses of water</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-checkbox" id="habit-exercise"></div>
+                        <span><i class="fa-solid fa-person-running"></i> 30min exercise</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-checkbox" id="habit-meditation"></div>
+                        <span><i class="fa-solid fa-stopwatch"></i> 10min meditation</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-checkbox" id="habit-sleep"></div>
+                        <span><i class="fa-solid fa-bed"></i> 8 hours sleep</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-checkbox" id="habit-nature"></div>
+                        <span><i class="fa-solid fa-leaf"></i> Time in nature</span>
+                    </div>
+                    <div class="habit-item">
+                        <div class="habit-checkbox" id="habit-social"></div>
+                        <span><i class="fa-solid fa-user-group"></i> Social connection</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary" onclick="saveHabits()">
+                    <i class="fa-solid fa-sparkles"></i> Save Today's Habits
+                </button>
+            </div>
+
+            <!-- Breathing Exercise -->
+            <div class="wellness-card breathing-exercise">
+                <h2><i class="fa-solid fa-lungs"></i> Breathing Exercise</h2>
+                <p>Take a moment to breathe and center yourself</p>
+
+                <div class="breathing-mode-container">
+                    <label for="breathing-mode">Breathing Technique</label>
+                    <select id="breathing-mode" class="form-input">
+                        <option value="basic">Basic Calm (4-2-4-2)</option>
+                        <option value="box">Box Breathing (4-4-4-4)</option>
+                        <option value="478">4-7-8 Method (4-7-8)</option>
+                        <option value="resonance">Resonance (6-6)</option>
+                        <option value="pranayama">Pranayama (4-2-6-2)</option>
+                    </select>
+                </div>
+
+                <div class="breathing-circle" id="breathing-circle">
+                    <span id="breathing-text">Click to Start</span>
+                </div>
+
+                <button class="btn btn-primary" id="breathing-btn" onclick="startBreathing()">
+                    <i class="fa-solid fa-wind"></i> Start Breathing Exercise
+                </button>
+            </div>
+
+            <!-- Gratitude Journal -->
+            <div class="wellness-card">
+                <h2><i class="fa-solid fa-hands-praying"></i> Gratitude Journal</h2>
+                <p>Write down 3 things you're grateful for today</p>
+
+                <div class="form-group">
+                    <input type="text" class="form-input" id="gratitude-1" placeholder="I'm grateful for...">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-input" id="gratitude-2" placeholder="I'm grateful for...">
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-input" id="gratitude-3" placeholder="I'm grateful for...">
+                </div>
+
+                <div id="gratitude-list" style="margin-top: 20px;">
+                    <div class="empty-state">
+                        <div class="empty-state-icon"><i class="fa-solid fa-star"></i></div>
+                        <p>Start writing your gratitude entries to see them here</p>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary1" onclick="saveGratitude()">
+                    <i class="fa-solid fa-heart"></i> Save Gratitude
+                </button>
+            </div>
+        </div>
+
+        <div class="wellness-grid">
+            <div class="wellness-card adaptive-recommendation-card" id="adaptive-recommendation-card">
+                <h2><i class="fa-solid fa-lightbulb"></i> Personalized Recommendation</h2>
+                <p class="subtitle">Your next step based on your current mood, stress, and energy.</p>
+
+                <div id="rec-content-display">
+                    <div class="empty-state">
+                        <div class="empty-state-icon"><i class="fa-solid fa-chart-line"></i></div>
+                        <p>Complete your Daily Mood Check-in to get an instant recommendation tailored just for you!</p>
+                    </div>
+                </div>
+
+                <button class="btn btn-secondary" id="rec-action-button" style="display:none;"
+                    onclick="window.location.href='recommendations.html'">
+                    <i class="fa-solid fa-arrow-right"></i> View Full Hub
+                </button>
+            </div>
+        </div>
+
+        <div class="detective-card">
+            <div class="wellness-card thought-detective-game" id="detectiveCard">
+                <h2><i class="fa-solid fa-user-secret"></i> Thought Detective</h2>
+                <p>Investigate your negative thoughts and reframe them like a pro detective.</p>
+
+                <!-- STEP 1 -->
+                <div class="game-step" id="step1">
+                    <label class="form-label">🕵️ Step 1: What thought triggered you?</label>
+                    <textarea id="detectiveThought" class="form-input" placeholder="Type the negative thought..."
+                        rows="2"></textarea>
+                    <button class="btn btn-primary" onclick="startInvestigation()">
+                        <i class="fa-solid fa-magnifying-glass"></i> Investigate Thought
+                    </button>
+                </div>
+
+                <!-- STEP 2 -->
+                <div class="game-step" id="step2" style="display:none;">
+                    <label class="form-label">🔍 Clue:</label>
+                    <p id="detectiveClue" class="detective-clue-box"></p>
+                    <button class="btn btn-secondary" onclick="nextClue()">
+                        <i class="fa-solid fa-forward-step"></i> Next Clue
+                    </button>
+                </div>
+
+                <!-- STEP 3 -->
+                <div class="game-step" id="step3" style="display:none;">
+                    <label class="form-label">🧠 Which thinking trap fits this thought?</label>
+                    <select id="detectiveDistortion" class="form-input">
+                        <option value="">-- Select one --</option>
+                        <option>All-or-Nothing Thinking</option>
+                        <option>Catastrophizing</option>
+                        <option>Mind Reading</option>
+                        <option>Fortune Telling</option>
+                        <option>Overgeneralization</option>
+                        <option>Mental Filter</option>
+                        <option>Discounting Positives</option>
+                        <option>Emotional Reasoning</option>
+                        <option>Should Statements</option>
+                        <option>Labeling</option>
+                    </select>
+
+                    <button class="btn btn-primary" onclick="submitDistortion()">
+                        <i class="fa-solid fa-check-double"></i> Confirm
+                    </button>
+                </div>
+
+                <!-- STEP 4 -->
+                <div class="game-step" id="step4" style="display:none;">
+                    <label class="form-label">📝 Rewrite Reality:</label>
+                    <textarea id="detectiveRewrite" class="form-input" placeholder="Rewrite with a balanced thought..."
+                        rows="2"></textarea>
+                    <button class="btn btn-primary" onclick="finishCase()">
+                        <i class="fa-solid fa-gavel"></i> Final Verdict
+                    </button>
+                </div>
+
+                <!-- STEP 5 -->
+                <div class="game-step case-closed" id="step5" style="display:none;">
+                    <h3><i class="fa-solid fa-badge-check"></i> Case Closed!</h3>
+                    <p id="detectiveScore" class="detective-score"></p>
+                    <div id="rewriteResult" class="rewrite-box"></div>
+                    <div id="coachResponse" class="coach-response">
+                        <i class="fa-solid fa-comments"></i>Loading response...
+                    </div>
+                    <p class="detective-success">
+                        <i class="fa-solid fa-lightbulb"></i> You've successfully challenged a negative thought —
+                        brilliant work!
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 🧠 Score History Section -->
+        <div class="wellness-card" id="score-history-card">
+            <h2><i class="fa-solid fa-clock-rotate-left"></i> Thought Detective History</h2>
+            <p class="subtitle">Review your past cases and track emotional growth.</p>
+
+            <div id="score-history-list" class="history-list empty-state">
+                <p><i class="fa-solid fa-message"></i> No detective cases yet — solve one to see progress!</p>
+            </div>
+        </div>
+
+
+        <!-- Mental Health Tips -->
+        <div class="mental-health-tips">
+            <h2><i class="fa-solid fa-leaf-heart"></i> Daily Mental Health Tips</h2>
+            <div class="tip-card"><i class="fa-solid fa-sun"></i> Start your day with 5 minutes of deep breathing to set
+                a positive tone.</div>
+            <div class="tip-card"><i class="fa-solid fa-person-walking"></i> Take regular breaks from screens and go for
+                short walks to clear your mind.</div>
+            <div class="tip-card"><i class="fa-solid fa-comments"></i> Connect with friends and family - social support
+                is vital for mental health.</div>
+            <div class="tip-card"><i class="fa-solid fa-book"></i> Keep a gratitude journal - write down 3 things you're
+                grateful for each day.</div>
+            <div class="tip-card"><i class="fa-solid fa-moon"></i> Establish a consistent sleep routine for better
+                emotional regulation.</div>
+            <div class="tip-card"><i class="fa-solid fa-music"></i> Listen to calming music or nature sounds when
+                feeling overwhelmed.</div>
+            <div class="tip-card"><i class="fa-solid fa-seedling"></i> Practice mindfulness by focusing on the present
+                moment throughout your day.</div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+    <script src="js/health-domain-common.js"></script>
+    <script>
+        // Initialize mental health tracker with MongoDB integration
+        const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+        const mentalManager = new HealthDomainManager('mental-health', currentUser);
+
+        // Initialize fresh data
+        let selectedMood = null;
+        let mentalHealthData = mentalManager.data;
+        let selectedMoodValue = 0;
+        let dailyHabits = {};
+        let selectedCatalysts = [];
+        let breathingActive = false;
+        let breathingInterval = null;
+        let step = 0;
+        // Global Mood Display Dictionaries
+        const moodIcons = {
+            'very-sad': '<i class="fa-regular fa-face-sad-tear"></i>',
+            'sad': '<i class="fa-regular fa-face-frown"></i>',
+            'neutral': '<i class="fa-regular fa-face-meh"></i>',
+            'happy': '<i class="fa-regular fa-face-smile"></i>',
+            'very-happy': '<i class="fa-regular fa-face-laugh-beam"></i>'
+        };
+
+        const moodNames = {
+            'very-sad': 'Very Sad',
+            'sad': 'Sad',
+            'neutral': 'Neutral',
+            'happy': 'Happy',
+            'very-happy': 'Very Happy'
+        };
+
+        // Slider updates with dynamic background
+        function updateSliderBackground(slider) {
+            const value = (slider.value - slider.min) / (slider.max - slider.min) * 100;
+            slider.style.setProperty("--value", `${value}%`);
+        }
+
+        document.querySelectorAll("input[type='range']").forEach(slider => {
+            updateSliderBackground(slider);
+            slider.addEventListener("input", () => {
+                updateSliderBackground(slider);
+                const valueSpan = slider.parentElement.querySelector(".slider-value");
+                if (valueSpan) valueSpan.textContent = slider.value;
+            });
+        });
+
+
+        // Slider event listeners - moved inside DOMContentLoaded
+
+        // Initialize slider backgrounds on page load
+        window.addEventListener('load', function () {
+            updateSliderBackground(document.getElementById('stress-slider'));
+            updateSliderBackground(document.getElementById('energy-slider'));
+        });
+
+        // Mood selection - moved inside DOMContentLoaded
+
+        // Habit tracking
+        function toggleHabit(habit) {
+            const checkbox = document.getElementById(`habit-${habit}`);
+            dailyHabits[habit] = !dailyHabits[habit];
+
+            if (dailyHabits[habit]) {
+                checkbox.classList.add('checked');
+                checkbox.innerHTML = '✓';
+            } else {
+                checkbox.classList.remove('checked');
+                checkbox.innerHTML = '';
+            }
+
+            updateMindfulnessScore();
+        }
+
+        function saveHabits() {
+            const completedHabits = Object.values(dailyHabits).filter(Boolean).length;
+            alert(`Great job! You completed ${completedHabits} wellness habits today!`);
+        }
+
+        // Update mindfulness score based on completed habits
+        function updateMindfulnessScore() {
+            const totalHabits = 6;
+            const completedHabits = Object.values(dailyHabits).filter(Boolean).length;
+            const percentage = Math.round((completedHabits / totalHabits) * 100);
+
+            document.getElementById('mindfulness-score').textContent = `${percentage}%`;
+            document.querySelector('#mindfulness-score').parentElement.parentElement.parentElement.querySelector('.progress-fill').style.width = `${percentage}%`;
+        }
+
+        // Breathing exercise
+        const breathingPatterns = {
+            basic: [
+                { text: "Breathe In...", duration: 4000 },
+                { text: "Hold...", duration: 2000 },
+                { text: "Breathe Out...", duration: 4000 },
+                { text: "Hold...", duration: 2000 }
+            ],
+            box: [
+                { text: "Breathe In...", duration: 4000 },
+                { text: "Hold...", duration: 4000 },
+                { text: "Breathe Out...", duration: 4000 },
+                { text: "Hold...", duration: 4000 }
+            ],
+            "478": [
+                { text: "Breathe In...", duration: 4000 },
+                { text: "Hold...", duration: 7000 },
+                { text: "Breathe Out...", duration: 8000 }
+            ],
+            resonance: [
+                { text: "Breathe In...", duration: 6000 },
+                { text: "Breathe Out...", duration: 6000 }
+            ],
+            pranayama: [
+                { text: "Breathe In...", duration: 4000 },
+                { text: "Hold...", duration: 2000 },
+                { text: "Breathe Out...", duration: 6000 },
+                { text: "Hold...", duration: 2000 }
+            ]
+        };
+
+        function startBreathing() {
+            const circle = document.getElementById("breathing-circle");
+            const text = document.getElementById("breathing-text");
+            const btn = document.getElementById("breathing-btn");
+            const mode = document.getElementById("breathing-mode").value;
+
+            if (!breathingActive) {
+                breathingActive = true;
+                step = 0;
+
+                btn.innerHTML = `⏹ Stop Exercise`;
+                btn.classList.remove("btn-primary");
+                btn.classList.add("btn-secondary");
+
+                circle.classList.add("animate");
+                runBreathingStep(mode);
+
+            } else {
+                stopBreathing();
+            }
+        }
+
+        function runBreathingStep(mode) {
+            if (!breathingActive) return;
+
+            const pattern = breathingPatterns[mode];
+            const circle = document.getElementById("breathing-circle");
+            const text = document.getElementById("breathing-text");
+
+            text.textContent = pattern[step].text;
+
+            // Animation scaling logic
+            if (pattern[step].text.includes("In")) {
+                circle.style.transform = "scale(1.25)";
+            } else if (pattern[step].text.includes("Out")) {
+                circle.style.transform = "scale(1)";
+            }
+
+            breathingInterval = setTimeout(() => {
+                step = (step + 1) % pattern.length;
+                runBreathingStep(mode);
+            }, pattern[step].duration);
+        }
+
+        function stopBreathing() {
+            breathingActive = false;
+            clearTimeout(breathingInterval);
+
+            const circle = document.getElementById("breathing-circle");
+            const text = document.getElementById("breathing-text");
+            const btn = document.getElementById("breathing-btn");
+
+            circle.classList.remove("animate");
+            circle.style.transform = "scale(1)";
+            text.textContent = "Session Complete 🌿";
+
+            btn.innerHTML = `🌿 Start Breathing`;
+            btn.classList.remove("btn-secondary");
+            btn.classList.add("btn-primary");
+
+            setTimeout(() => {
+                if (!breathingActive) text.textContent = "Click to Start";
+            }, 3000);
+        }
+
+        // Gratitude journal
+        function saveGratitude() {
+            const gratitude1 = document.getElementById('gratitude-1').value.trim();
+            const gratitude2 = document.getElementById('gratitude-2').value.trim();
+            const gratitude3 = document.getElementById('gratitude-3').value.trim();
+
+            if (!gratitude1 || !gratitude2 || !gratitude3) {
+                alert('Please fill in all three gratitude entries!');
+                return;
+            }
+
+            const today = new Date().toLocaleDateString();
+            const gratitudeList = document.getElementById('gratitude-list');
+
+            // Clear empty state
+            gratitudeList.innerHTML = '';
+
+            // Add new gratitude entries
+            const entries = [gratitude1, gratitude2, gratitude3];
+            entries.forEach((entry, index) => {
+                const div = document.createElement('div');
+                div.className = 'gratitude-item';
+                div.innerHTML = `<strong>${today} - Entry ${index + 1}:</strong> ${entry}`;
+                gratitudeList.appendChild(div);
+            });
+
+            // Clear inputs
+            document.getElementById('gratitude-1').value = '';
+            document.getElementById('gratitude-2').value = '';
+            document.getElementById('gratitude-3').value = '';
+
+            alert('Gratitude entries saved! 🙏');
+        }
+
+        function generateBalancedRewrite(thought, distortion) {
+            let templates = {
+                "All-or-Nothing Thinking":
+                    `Instead of " ${thought} ", a more balanced version might be: 
+            "Sometimes things don't go perfectly, but that doesn’t mean it’s a failure. I can improve and try again."`,
+
+                "Catastrophizing":
+                    `A calmer version of that thought could be: 
+            "It feels overwhelming now, but that doesn’t mean the worst will happen. I can handle challenges step by step."`,
+
+                "Mind Reading":
+                    `A healthier rewrite could be:
+            "I can’t know what others think. It's more realistic to focus on what I can control and assume positive intent."`,
+
+                "Overgeneralization":
+                    `A more fair version may be:
+            "This situation didn't go how I hoped, but it doesn’t define all future outcomes."`,
+
+                "Should Statements":
+                    `A kinder version is:
+            "I would like to do well, and I'm learning. Progress—not perfection—is what matters."`,
+
+                "Emotional Reasoning":
+                    `Balanced rewrite:
+            "My feelings are valid, but they don’t always reflect facts."`
+            };
+
+            return templates[distortion] || `A balanced alternative is: 
+    "I’m learning, improving, and I don’t need to be perfect to be worthy."`;
+        }
+
+        function therapistResponse(distortion) {
+            return {
+                "Catastrophizing": "It’s completely okay to feel overwhelmed. The fact that you're examining the thought instead of believing it shows strength.",
+                "All-or-Nothing Thinking": "Growth isn’t black or white — progress has many shades. You're already moving forward.",
+                "Mind Reading": "You deserve compassion from yourself — not assumptions built on fear.",
+            }[distortion] ||
+                "You handled this really well. You're building awareness — and that's real progress.";
+        }
+
+        // Thought Challenge Log Function
+        function saveThoughtChallenge() {
+            const situation = document.getElementById('thought-situation').value.trim();
+            const ant = document.getElementById('thought-ant').value.trim();
+            const distortion = document.getElementById('cognitive-distortion-select').value;
+            const reframed = document.getElementById('thought-reframed').value.trim();
+
+            if (!situation || !ant || !distortion || !reframed) {
+                alert('Please fill out all steps in the Thought Challenge Log.');
+                return;
+            }
+
+            const thoughtEntry = {
+                date: new Date().toISOString(),
+                situation: situation,
+                negativeThought: ant,
+                distortion: distortion,
+                reframedThought: reframed
+            };
+
+            // Placeholder: In a real app, you would save this to the mentalManager or API
+            console.log('Thought Challenge Saved:', thoughtEntry);
+
+            // Clear form
+            document.getElementById('thought-situation').value = '';
+            document.getElementById('thought-ant').value = '';
+            document.getElementById('cognitive-distortion-select').value = '';
+            document.getElementById('thought-reframed').value = '';
+
+            alert('Thought Challenge saved! You just challenged a negative thought. Great work! 🧠');
+        }
+
+        let clues = [
+            "Is there evidence supporting this thought?",
+            "Would you say this to a friend?",
+            "Is this a fact or an emotional reaction?",
+            "Am I predicting the future or assuming the worst?",
+            "Can there be another perspective?"
+        ];
+
+        let clueIndex = 0;
+        let score = 0;
+        let cluesExplored = 0;
+
+        function startInvestigation() {
+            let thought = document.getElementById("detectiveThought").value.trim();
+            if (!thought) return alert("Enter a thought first!");
+
+            score = 10;
+            clueIndex = 0;
+            cluesExplored = 0;
+            document.getElementById("step1").style.display = "none";
+            document.getElementById("step2").style.display = "block";
+            document.getElementById("detectiveClue").textContent = clues[clueIndex];
+        }
+
+        function nextClue() {
+            cluesExplored++;
+            score += 5;  // score only if they click for next clue
+
+            clueIndex++;
+
+            if (clueIndex >= clues.length) {
+                document.getElementById("step2").style.display = "none";
+                document.getElementById("step3").style.display = "block";
+            } else {
+                document.getElementById("detectiveClue").textContent = clues[clueIndex];
+            }
+        }
+
+        function submitDistortion() {
+            let dist = document.getElementById("detectiveDistortion").value;
+            if (!dist) return alert("Pick one!");
+
+            score += 15; // reduced from 20 → makes scoring more variable
+            document.getElementById("step3").style.display = "none";
+            document.getElementById("step4").style.display = "block";
+        }
+
+        function finishCase() {
+            let rewrite = document.getElementById("detectiveRewrite").value.trim();
+            let thought = document.getElementById("detectiveThought").value.trim();
+            let distortion = document.getElementById("detectiveDistortion").value;
+
+            if (!rewrite) return alert("Rewrite the thought first!");
+
+            // --- SMART SCORING SYSTEM ---
+            let finalScore = 10; // base score
+
+            // 🧩 Clue click bonus
+            finalScore += cluesExplored * (Math.floor(Math.random() * 5) + 3);
+
+            // 🎯 Distortion selection
+            finalScore += 10;
+
+            // ✍️ Rewrite Quality Scoring
+            if (rewrite.length > 60) finalScore += 30;
+            else if (rewrite.length > 30) finalScore += 20;
+            else if (rewrite.length > 15) finalScore += 10;
+            else finalScore += 5;
+
+            // 💬 Positive language bonus
+            const positiveWords = ["can", "progress", "learning", "better", "improve", "okay", "worthy", "trying"];
+            const positivityHits = positiveWords.filter(word => rewrite.toLowerCase().includes(word)).length;
+            if (positivityHits >= 2) finalScore += 10;
+
+            // 🔍 Accuracy Bonus: Does thought match distortion?
+            const distortionHints = {
+                "Mind Reading": ["think", "they probably", "others", "everyone"],
+                "Catastrophizing": ["worst", "ruined", "terrible", "never"],
+                "All-or-Nothing Thinking": ["always", "never", "perfect", "failure"],
+                "Labeling": ["i am", "im", "stupid", "useless"],
+                "Overgeneralization": ["every time", "everything", "nothing goes right"]
+            };
+
+            for (let key in distortionHints) {
+                if (distortion === key && distortionHints[key].some(term => thought.toLowerCase().includes(term))) {
+                    finalScore += 15;
+                }
+            }
+
+            score = finalScore;
+
+            // --- FEEDBACK CONTENT ---
+            let autoRewrite = generateBalancedRewrite(thought, distortion);
+            let supportiveMessage = therapistResponse(distortion);
+
+            document.getElementById("step4").style.display = "none";
+            document.getElementById("step5").style.display = "block";
+
+            // 🪄 Auto Rewrite Output
+            document.getElementById("rewriteResult").innerHTML = `
+        <p><strong><i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Reframed Thought:</strong></p>
+        <em>${autoRewrite}</em>
+    `;
+
+            // ⭐ Scoring Icon Tier System
+            const icon =
+                score >= 90 ? "fa-trophy" :
+                    score >= 70 ? "fa-star" :
+                        score >= 50 ? "fa-thumbs-up" :
+                            "fa-heart";
+
+            document.getElementById("detectiveScore").innerHTML = `
+        <i class="fa-solid ${icon}"></i> Final Score: <strong>${score} points</strong>
+    `;
+
+            document.getElementById("coachResponse").innerHTML = `
+        <i class="fa-solid fa-comments"></i> ${supportiveMessage}
+    `;
+
+            // --- SAVE SCORE HISTORY ---
+            let history = JSON.parse(localStorage.getItem("detective_score_history") || "[]");
+
+            history.push({
+                thought,
+                distortion,
+                rewrite,
+                score,
+                date: new Date().toLocaleString()
+            });
+
+            if (history.length > 50) history.shift(); // keep latest 50 entries
+
+            localStorage.setItem("detective_score_history", JSON.stringify(history));
+
+            // Reload score UI if exists
+            if (typeof loadScoreHistory === "function") loadScoreHistory();
+
+            // Reset session variables (fresh run next time)
+            cluesExplored = 0;
+            clueIndex = 0;
+        }
+
+        function loadScoreHistory() {
+    let history = JSON.parse(localStorage.getItem("detective_score_history") || "[]");
+    const historyList = document.getElementById("score-history-list");
+
+    if (!historyList) return;
+
+    if (history.length === 0) {
+        historyList.innerHTML = `
+            <p><i class="fa-solid fa-message"></i> No detective cases yet — solve one to get started!</p>
+        `;
+        return;
+    }
+
+    historyList.classList.remove("empty-state");
+
+    historyList.innerHTML = history.slice(-5).reverse().map(entry => `
+        <div class="history-entry">
+            <div class="history-icon">
+                <i class="fa-solid fa-user-secret"></i>
+            </div>
+            <div class="history-text">
+                <strong>${entry.thought}</strong><br>
+                🧠 Distortion: <em>${entry.distortion}</em><br>
+                ⭐ Score: <strong>${entry.score}</strong><br>
+                <small>${entry.date}</small>
+            </div>
+        </div>
+    `).join("");
+}
+
+
+        /**
+ * Determines a personalized recommendation based on the current mood and stress.
+ * @param {number} moodValue - Numerical mood value (1-10).
+ * @param {number} stressLevel - Stress slider value (1-10).
+ * @param {number} energyLevel - Energy slider value (1-10).
+ * @returns {{title: string, content: string, action: string, icon: string}} - An object containing the recommendation.
+ */
+        function getAdaptiveRecommendation(moodValue, stressLevel, energyLevel) {
+            const recommendation = {
+                extra: {} // container for additional guidance
+            };
+
+            // --- LOW MOOD (1–4) ---
+            if (moodValue <= 4) {
+
+                // Sad + High Stress
+                if (stressLevel >= 7) {
+                    recommendation.title = "Immediate Calm & Comfort";
+                    recommendation.icon = "fa-hand-holding-heart";
+                    recommendation.content = "Your nervous system may be overwhelmed right now. Slow, intentional breathing can help settle it.";
+                    recommendation.action = "Try a 5-minute <strong>Box Breathing</strong> session or guided meditation.";
+
+                    recommendation.extra = {
+                        music: "Calming piano or soft lo-fi playlist",
+                        activity: "Sit somewhere quiet and do slow breathing (4-4-4-4).",
+                        prompt: "What emotion am I feeling — and what does it need right now?"
+                    };
+                }
+
+                // Sad + Low Energy
+                else if (energyLevel <= 4) {
+                    recommendation.title = "Gentle Uplift & Connection";
+                    recommendation.icon = "fa-heart";
+                    recommendation.content = "Low energy can make everything feel heavier. Small compassionate actions help shift momentum.";
+                    recommendation.action = "Send a friendly text, step outside for fresh air, or write 3 small wins from yesterday.";
+
+                    recommendation.extra = {
+                        music: "Soft acoustic or nature sounds",
+                        activity: "Stand, stretch, and walk slowly for 2 minutes.",
+                        prompt: "What would help me feel just 1% better?"
+                    };
+                }
+
+                // Sad + Moderate Stress/Energy
+                else {
+                    recommendation.title = "Process & Move";
+                    recommendation.icon = "fa-person-walking";
+                    recommendation.content = "Movement helps emotional processing. Even a short walk can shift your emotional state.";
+                    recommendation.action = "Take a <strong>15-minute walk</strong> or write in your <strong>Thought Challenge Log</strong>.";
+
+                    recommendation.extra = {
+                        music: "Motivational or uplifting music",
+                        activity: "Walk while focusing on slow breathing.",
+                        prompt: "What thought is repeating in my mind — and is it fully true?"
+                    };
+                }
+            }
+
+            // --- NEUTRAL / OKAY MOOD (5–7) ---
+            else if (moodValue <= 7) {
+
+                // Neutral + Low Energy
+                if (energyLevel <= 5) {
+                    recommendation.title = "Boost Dopamine & Focus";
+                    recommendation.icon = "fa-bolt";
+                    recommendation.content = "A small activation can prevent a mid-day dip. Let's wake the mind gently.";
+                    recommendation.action = "Do a quick <strong>2-minute desk stretch</strong> or drink water.";
+
+                    recommendation.extra = {
+                        music: "Upbeat instrumental or energetic playlist",
+                        activity: "Shake out shoulders + deep breath x5",
+                        prompt: "What small task could I complete right now to gain momentum?"
+                    };
+                }
+
+                // Neutral + High Stress
+                else if (stressLevel >= 6) {
+                    recommendation.title = "Preventative Stress Relief";
+                    recommendation.icon = "fa-shield-halved";
+                    recommendation.content = "You're functioning well, but high stress can sneak up. Let's build a buffer.";
+                    recommendation.action = "Set boundaries for 15 minutes and plan something enjoyable tonight.";
+
+                    recommendation.extra = {
+                        music: "Calm focus playlist",
+                        activity: "5-minute stretch or quiet break.",
+                        prompt: "What can I let go of that doesn’t need my energy today?"
+                    };
+                }
+
+                // Neutral + Stable
+                else {
+                    recommendation.title = "Sustaining Wellness";
+                    recommendation.icon = "fa-seedling";
+                    recommendation.content = "You're steady — great! Now keep strengthening routines that support you.";
+                    recommendation.action = "Review your Daily Wellness Habits and complete the missing ones.";
+
+                    recommendation.extra = {
+                        music: "Happy soft pop playlist",
+                        activity: "Do something enjoyable and grounding.",
+                        prompt: "Which habit has helped me the most lately?"
+                    };
+                }
+            }
+
+            // --- HIGH / VERY GOOD MOOD (8–10) ---
+            else {
+                recommendation.title = "Reinforce Positive Patterns";
+                recommendation.icon = "fa-rocket";
+                recommendation.content = "This is a great moment to reinforce what’s working so it becomes easier to repeat.";
+                recommendation.action = "Write 3 reasons why you feel good in your Gratitude Journal.";
+
+                recommendation.extra = {
+                    music: "Celebrate with your favorite upbeat song",
+                    activity: "Take a short joyful walk or stretch",
+                    prompt: "What choices today supported my wellbeing?"
+                };
+            }
+
+            return recommendation;
+        }
+
+        // Save mood entry
+        async function saveMoodEntry() {
+            console.log('saveMoodEntry called, selectedMood:', selectedMood);
+            if (!selectedMood) {
+                alert('Please select your mood first!');
+                return;
+            }
+
+            const stressLevel = document.getElementById('stress-slider').value;
+            const energyLevel = document.getElementById('energy-slider').value;
+            const notes = document.getElementById('mood-notes').value.trim();
+            const catalystNotes = document.getElementById('catalyst-notes').value.trim();
+
+            // --- CONSOLIDATED DATA OBJECT ---
+            const mentalData = {
+                mood: selectedMood,
+                moodValue: selectedMoodValue,
+                anxietyLevel: parseInt(stressLevel),
+                stressLevel: parseInt(stressLevel),
+                energyLevel: parseInt(energyLevel),
+                notes: notes || null,
+                catalysts: selectedCatalysts || [],
+                catalystNotes: catalystNotes || null
+            };
+            // ----------------------------------------------------
+
+            // 🆕 UPDATE UI (REPLACE OLD BLOCK)
+            updateMoodDisplay();
+
+            // 🆕 STREAK TRACKING
+            const today = new Date().toDateString();
+            const lastDate = localStorage.getItem("mood_last_saved_date");
+            let streak = parseInt(localStorage.getItem("mood_streak") || 0);
+
+            if (lastDate !== today) {
+                streak++;
+                localStorage.setItem("mood_last_saved_date", today);
+                localStorage.setItem("mood_streak", streak);
+            }
+
+            const streakElement = document.getElementById("streak-count");
+            if (streakElement) {
+                streakElement.textContent = `${streak} day${streak > 1 ? "s" : ""}`;
+                const streakBar = streakElement.closest(".stat-card").querySelector(".progress-fill");
+                streakBar.style.width = `${Math.min(streak * 14, 100)}%`;
+            }
+
+            // 🆕 SAVE MOOD HISTORICALLY FOR AVERAGE
+            let moodHistory = JSON.parse(localStorage.getItem("mood_history") || "[]");
+            moodHistory.push(selectedMoodValue);
+            localStorage.setItem("mood_history", JSON.stringify(moodHistory));
+
+            const avgMood = Math.round(moodHistory.reduce((a, b) => a + b, 0) / moodHistory.length);
+            document.getElementById("avg-mood").textContent = `${avgMood}/10`;
+            const avgBar = document.getElementById("avg-mood").closest(".stat-card").querySelector(".progress-fill");
+            avgBar.style.width = `${(avgMood / 10) * 100}%`;
+
+            // ----------------------------------------------------
+            // SAVE TO BACKEND OR LOCAL
+            try {
+                const accessToken = localStorage.getItem("accessToken");
+                if (accessToken && currentUser) {
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/mental-health/me`, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${accessToken}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(mentalData)
+                    });
+
+                    if (!response.ok) throw new Error();
+                    console.log("✅ Saved to backend");
+                } else {
+                    throw new Error();
+                }
+            } catch {
+                console.warn("⚠️ Using localStorage instead.");
+                mentalManager.addEntry(mentalData);
+            }
+
+            saveTodayState(); // keep this
+
+            // =========================================================
+            // 🔥 ADAPTIVE RECOMMENDATION UPDATE
+            // =========================================================
+            const adaptiveRec = getAdaptiveRecommendation(
+                selectedMoodValue,
+                parseInt(stressLevel),
+                parseInt(energyLevel)
+            );
+
+            const recContentDiv = document.getElementById('rec-content-display');
+            const recActionButton = document.getElementById('rec-action-button');
+
+            recContentDiv.innerHTML = `
+        <div class="rec-content-active">
+            <div class="rec-icon-box"><i class="fa-solid ${adaptiveRec.icon}"></i></div>
+            <div class="rec-text-box">
+                <h3>${adaptiveRec.title}</h3>
+                <p class="rec-content-text">${adaptiveRec.content}</p>
+                <p class="rec-action-text"><strong>Next Step:</strong> ${adaptiveRec.action}</p>
+                <div class="extra-recommendations">
+                    <p><i class="fa-solid fa-headphones-simple"></i> <strong>Quick Boost:</strong> ${adaptiveRec.extra.music}</p>
+                    <p><i class="fa-solid fa-leaf"></i> <strong>Try This:</strong> ${adaptiveRec.extra.activity}</p>
+                    <p><i class="fa-regular fa-pen-to-square"></i> <strong>Reflection:</strong> ${adaptiveRec.extra.prompt}</p>
+                </div>
+            </div>
+        </div>`;
+
+            recActionButton.style.display = 'block';
+
+            // =========================================================
+            // 💡 LOW MOOD → Encourage Thought Detective Game
+            // =========================================================
+            if (selectedMoodValue <= 5) {
+                setTimeout(() => {
+                    alert("🧠 Looks like today is emotionally heavy — consider using the Thought Detective tool to challenge that mood.");
+                }, 500);
+            }
+
+            alert('Mood entry saved successfully! 🌟');
+        }
+
+        // Initialize habits tracking
+        const habitKeys = ['water', 'exercise', 'meditation', 'sleep', 'nature', 'social'];
+        habitKeys.forEach(habit => {
+            dailyHabits[habit] = false;
+        });
+
+        // Load mental health data from MongoDB
+        async function loadMentalHealthData() {
+            try {
+                // Try to load from API first using /me endpoint
+                const accessToken = localStorage.getItem('accessToken');
+                if (accessToken && currentUser) {
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/mental-health/me`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data && data.length > 0) {
+                            mentalHealthData = data;
+                            mentalManager.data = data;
+                            console.log('✅ Mental health data loaded from API');
+
+                            // Restore today's state
+                            restoreTodayState();
+                        } else {
+                            mentalHealthData = mentalManager.data;
+                            console.log('✅ Mental health data loaded from localStorage');
+                            restoreTodayState();
+                        }
+                    } else {
+                        console.warn('Failed to load from API, falling back to localStorage');
+                        mentalHealthData = mentalManager.data;
+                        console.log('✅ Mental health data loaded from localStorage');
+                        restoreTodayState();
+                    }
+                } else {
+                    mentalHealthData = mentalManager.data;
+                    console.log('✅ Mental health data loaded from localStorage');
+                    restoreTodayState();
+                }
+            } catch (error) {
+                console.warn('Error loading from API:', error);
+                mentalHealthData = mentalManager.data;
+                console.log('✅ Mental health data loaded from localStorage');
+                restoreTodayState();
+            }
+        }
+
+        // Restore today's state from localStorage
+        function restoreTodayState() {
+            const today = new Date().toDateString();
+            const todayKey = `${currentUser}_mentalHealth_${today}`;
+            const todayData = localStorage.getItem(todayKey);
+            const catalystSection = document.getElementById('mood-catalyst-section');
+
+            if (todayData) {
+                try {
+                    const data = JSON.parse(todayData);
+                    console.log('Restoring today\'s state:', data);
+
+                    // Restore mood selection
+                    if (data.selectedMood) {
+                        selectedMood = data.selectedMood;
+                        selectedMoodValue = data.selectedMoodValue;
+                        document.querySelectorAll('.mood-option').forEach(opt => {
+                            if (opt.dataset.mood === selectedMood) {
+                                opt.classList.add('selected');
+                            }
+                        });
+
+                        // Show Catalyst section if mood was negative (Value 1-5)
+                        if (selectedMoodValue <= 5) {
+                            if (catalystSection) catalystSection.style.display = 'block';
+                        } else {
+                            if (catalystSection) catalystSection.style.display = 'none';
+                        }
+                    }
+
+                    // Restore sliders
+                    if (data.stressLevel) {
+                        document.getElementById('stress-slider').value = data.stressLevel;
+                        document.getElementById('stress-value').textContent = data.stressLevel;
+                        updateSliderBackground(document.getElementById('stress-slider'));
+                    }
+
+                    if (data.energyLevel) {
+                        document.getElementById('energy-slider').value = data.energyLevel;
+                        document.getElementById('energy-value').textContent = data.energyLevel;
+                        updateSliderBackground(document.getElementById('energy-slider'));
+                    }
+
+                    // Restore notes
+                    if (data.notes) {
+                        document.getElementById('mood-notes').value = data.notes;
+                    }
+
+                    // Restore habits
+                    if (data.dailyHabits) {
+                        dailyHabits = data.dailyHabits;
+                        Object.keys(dailyHabits).forEach(habit => {
+                            const checkbox = document.getElementById(`habit-${habit}`);
+                            if (checkbox) {
+                                if (dailyHabits[habit]) {
+                                    checkbox.classList.add('checked');
+                                    checkbox.innerHTML = '✓';
+                                } else {
+                                    checkbox.classList.remove('checked');
+                                    checkbox.innerHTML = '';
+                                }
+                            }
+                        });
+                    }
+
+                    // --- NEW: Restore Catalysts ---
+                    if (data.selectedCatalysts) {
+                        selectedCatalysts = data.selectedCatalysts; // Restore the global variable
+                        document.querySelectorAll('.catalyst-tag').forEach(tag => {
+                            if (selectedCatalysts.includes(tag.dataset.catalyst)) {
+                                tag.classList.add('selected');
+                            }
+                        });
+                    }
+
+                    if (data.catalystNotes) {
+                        document.getElementById('catalyst-notes').value = data.catalystNotes;
+                    }
+                    // --- END NEW: Restore Catalysts ---
+
+                    // Update displays
+                    updateMoodDisplay();
+                    updateMindfulnessScore();
+
+                } catch (error) {
+                    console.error('Error parsing today\'s data:', error);
+                }
+            }
+        }
+
+        // Save today's state to localStorage
+        function saveTodayState() {
+            const today = new Date().toDateString();
+            const todayKey = `${currentUser}_mentalHealth_${today}`;
+
+            const todayData = {
+                selectedMood: selectedMood,
+                selectedMoodValue: selectedMoodValue,
+                stressLevel: document.getElementById('stress-slider').value,
+                energyLevel: document.getElementById('energy-slider').value,
+                notes: document.getElementById('mood-notes').value,
+                dailyHabits: dailyHabits,
+                selectedCatalysts: selectedCatalysts, // <-- NEW
+                catalystNotes: document.getElementById('catalyst-notes').value, // <-- NEW
+                timestamp: new Date().toISOString()
+            };
+
+            localStorage.setItem(todayKey, JSON.stringify(todayData));
+            console.log('Today\'s state saved:', todayData);
+        }
+
+        // Update mood display
+        function updateMoodDisplay() {
+            if (!selectedMood || !selectedMoodValue) return;
+
+            // Update display text with global icons + names
+            document.getElementById('current-mood').innerHTML = `${moodIcons[selectedMood]} ${moodNames[selectedMood]}`;
+            document.getElementById('avg-mood').textContent = `${selectedMoodValue}/10`;
+
+            // Update progress bars safely
+            const currentMoodCard = document.getElementById('current-mood')?.closest('.stat-card');
+            const avgMoodCard = document.getElementById('avg-mood')?.closest('.stat-card');
+
+            if (currentMoodCard) {
+                const bar = currentMoodCard.querySelector('.progress-fill');
+                if (bar) bar.style.width = `${(selectedMoodValue / 10) * 100}%`;
+            }
+
+            if (avgMoodCard) {
+                const bar = avgMoodCard.querySelector('.progress-fill');
+                if (bar) bar.style.width = `${(selectedMoodValue / 10) * 100}%`;
+            }
+        }
+
+        // Check if it's a new day and clear form if needed
+        function checkNewDay() {
+            const today = new Date().toDateString();
+            const lastVisitKey = `${currentUser}_mentalHealth_lastVisit`;
+            const lastVisit = localStorage.getItem(lastVisitKey);
+
+            if (lastVisit !== today) {
+                console.log('New day detected, clearing form');
+                clearFormForNewDay();
+                localStorage.setItem(lastVisitKey, today);
+            }
+        }
+
+        // Clear form for new day
+        function clearFormForNewDay() {
+            // Reset mood selection
+            document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
+            selectedMood = null;
+            selectedMoodValue = 0;
+
+            // Reset sliders
+            document.getElementById('stress-slider').value = 5;
+            document.getElementById('energy-slider').value = 5;
+            document.getElementById('stress-value').textContent = '5';
+            document.getElementById('energy-value').textContent = '5';
+            updateSliderBackground(document.getElementById('stress-slider'));
+            updateSliderBackground(document.getElementById('energy-slider'));
+
+            // Reset notes
+            document.getElementById('mood-notes').value = '';
+
+            // Reset habits
+            dailyHabits = {};
+            const habitKeys = ['water', 'exercise', 'meditation', 'sleep', 'nature', 'social'];
+            habitKeys.forEach(habit => {
+                dailyHabits[habit] = false;
+                const checkbox = document.getElementById(`habit-${habit}`);
+                if (checkbox) {
+                    checkbox.classList.remove('checked');
+                    checkbox.innerHTML = '';
+                }
+            });
+
+            // Reset displays
+            document.getElementById('current-mood').innerHTML = '😐 Neutral';
+            document.getElementById('avg-mood').textContent = '0/10';
+            document.getElementById('mindfulness-score').textContent = '0%';
+
+            // Clear progress bars
+            document.querySelectorAll('.progress-fill').forEach(bar => {
+                bar.style.width = '0%';
+            });
+
+            console.log('Form cleared for new day');
+        }
+
+        // Initialize page
+        // Check if it's a new day and auto-reset mental health data
+        function checkMentalHealthDailyReset() {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            const lastDate = localStorage.getItem('mentalHealth_lastDate');
+
+            if (lastDate && lastDate !== today) {
+                console.log('🧠 New day detected! Auto-resetting mental health data...');
+                console.log('Last date:', lastDate, 'Today:', today);
+
+                // Clear mental health data
+                const currentUser = localStorage.getItem('userEmail');
+                if (currentUser) {
+                    localStorage.removeItem(`${currentUser}_mentalHealthData`);
+                    localStorage.removeItem(`${currentUser}_mentalHealthLogs`);
+                    localStorage.removeItem(`${currentUser}_moodData`);
+                    localStorage.removeItem(`${currentUser}_habitsData`);
+                }
+
+                // Update last date
+                localStorage.setItem('mentalHealth_lastDate', today);
+
+                // Show notification
+                if (typeof showNotification === 'function') {
+                    showNotification('🌅 Good morning! Mental health data has been reset for a fresh start!', 'success');
+                } else {
+                    console.log('🌅 Good morning! Mental health data has been reset for a fresh start!');
+                }
+            } else if (!lastDate) {
+                // First time - set today as last date
+                localStorage.setItem('mentalHealth_lastDate', today);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Check for daily reset
+            checkMentalHealthDailyReset();
+
+            console.log('Mental health page loaded, currentUser:', currentUser);
+            console.log('Mental manager:', mentalManager);
+
+            // Check for new day first
+            checkNewDay();
+
+            // Test if basic DOM is working
+            console.log('DOM elements test:');
+            console.log('- Mood options:', document.querySelectorAll('.mood-option').length);
+            console.log('- Habit checkboxes:', document.querySelectorAll('.habit-checkbox').length);
+            console.log('- Stress slider:', !!document.getElementById('stress-slider'));
+            console.log('- Energy slider:', !!document.getElementById('energy-slider'));
+            console.log('- Save button:', !!document.querySelector('button[onclick="saveMoodEntry()"]'));
+
+            await loadMentalHealthData();
+            loadScoreHistory();
+
+            // Mood selection event listeners (ENHANCED for Catalyst display)
+            const moodOptions = document.querySelectorAll('.mood-option');
+            const catalystSection = document.getElementById('mood-catalyst-section');
+
+            moodOptions.forEach(option => {
+                option.addEventListener('click', function () {
+                    document.querySelectorAll('.mood-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedMood = this.dataset.mood;
+                    selectedMoodValue = parseInt(this.dataset.value);
+
+                    // Show Catalyst section only for Sad/Very Sad (Value 1-5)
+                    if (selectedMoodValue <= 5) {
+                        catalystSection.style.display = 'block';
+                    } else {
+                        catalystSection.style.display = 'none';
+                        selectedCatalysts = []; // Clear if they switch to happy
+                        document.querySelectorAll('.catalyst-tag').forEach(tag => tag.classList.remove('selected'));
+                        document.getElementById('catalyst-notes').value = '';
+                    }
+
+                    saveTodayState();
+                    updateMoodDisplay();
+                    loadScoreHistory();
+
+                });
+            });
+
+            // Catalyst Tag Selection Event Listeners
+            // Catalyst tag toggle system with auto memory save
+            document.querySelectorAll('.catalyst-tag').forEach(tag => {
+                tag.addEventListener('click', () => {
+
+                    // UI toggle effect
+                    tag.classList.toggle('selected');
+
+                    const catalystValue = tag.dataset.catalyst;
+
+                    // Update array
+                    if (tag.classList.contains('selected')) {
+                        if (!selectedCatalysts.includes(catalystValue)) {
+                            selectedCatalysts.push(catalystValue);
+                        }
+                    } else {
+                        selectedCatalysts = selectedCatalysts.filter(val => val !== catalystValue);
+                    }
+
+                    // Save instantly
+                    saveTodayState();
+                });
+            });
+
+            // Catalyst Notes Listener
+            const catalystNotesField = document.getElementById('catalyst-notes');
+            if (catalystNotesField) {
+                catalystNotesField.addEventListener('input', function () {
+                    saveTodayState();
+                });
+            }
+
+            // Habit tracking event listeners
+            const habitCheckboxes = document.querySelectorAll('.habit-checkbox');
+            console.log('Found habit checkboxes:', habitCheckboxes.length);
+
+            habitCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function () {
+                    const habit = this.id.replace('habit-', '');
+                    console.log('Habit checkbox clicked:', habit);
+                    toggleHabit(habit);
+
+                    // Save state immediately
+                    saveTodayState();
+                });
+            });
+
+            // Slider event listeners
+            const stressSlider = document.getElementById('stress-slider');
+            const energySlider = document.getElementById('energy-slider');
+
+            console.log('Stress slider found:', !!stressSlider);
+            console.log('Energy slider found:', !!energySlider);
+
+            if (stressSlider) {
+                stressSlider.addEventListener('input', function () {
+                    console.log('Stress slider changed:', this.value);
+                    document.getElementById('stress-value').textContent = this.value;
+                    updateSliderBackground(this);
+
+                    // Save state immediately
+                    saveTodayState();
+                });
+            }
+
+            if (energySlider) {
+                energySlider.addEventListener('input', function () {
+                    console.log('Energy slider changed:', this.value);
+                    document.getElementById('energy-value').textContent = this.value;
+                    updateSliderBackground(this);
+
+                    // Save state immediately
+                    saveTodayState();
+                });
+            }
+
+            // Notes field event listener
+            const notesField = document.getElementById('mood-notes');
+            if (notesField) {
+                notesField.addEventListener('input', function () {
+                    // Save state immediately
+                    saveTodayState();
+                });
+            }
+        });
+    </script>
+    <script>
+        // Direct profile dropdown fix for Weight Management page
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileCircle = document.getElementById('user-profile');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            if (profileCircle && profileDropdown) {
+                // Add click handler
+                profileCircle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Toggle dropdown
+                    if (profileDropdown.style.display === 'block') {
+                        profileDropdown.style.display = 'none';
+                    } else {
+                        profileDropdown.style.display = 'block';
+                        profileDropdown.style.position = 'absolute';
+                        profileDropdown.style.right = '0';
+                        profileDropdown.style.top = '100%';
+                        profileDropdown.style.backgroundColor = '#fff';
+                        profileDropdown.style.zIndex = '9999';
+                        profileDropdown.style.minWidth = '150px';
+                        profileDropdown.style.border = '1px solid #ddd';
+                        profileDropdown.style.borderRadius = '10px';
+                        profileDropdown.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                        profileDropdown.style.padding = '10px 0';
+                    }
+                });
+
+                // Hide dropdown when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                        profileDropdown.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="scripts/navigation.js"></script>
+</body>
+
+</html>

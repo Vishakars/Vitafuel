@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | Sinusitis Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/sinusitis.css">
+    <link rel="stylesheet" href="css/commonstyles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/health-domain-common.js"></script>
+</head>
+
+<body>
+    <div class="floating-icon"><i class="fa-solid fa-head-side-virus"></i> <i class="fa-solid fa-virus"></i></div>
+
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">V</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-virus"></i> Sinusitis Tracker</h1>
+            <p>Monitor sinus health, track symptoms, medications, and triggers</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Current Severity</h3>
+                        <div class="stat-value" id="current-severity">None</div>
+                        <div class="stat-goal" id="pain-level-display">Pain Level: 0/10</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-face-frown"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="severity-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Total Episodes</h3>
+                        <div class="stat-value" id="total-episodes">0</div>
+                        <div class="stat-goal">This month</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="episodes-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Symptom-Free Days</h3>
+                        <div class="stat-value" id="symptom-free-days">0</div>
+                        <div class="stat-goal">This month</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="symptom-free-progress" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Treatment Adherence</h3>
+                        <div class="stat-value" id="treatment-adherence">0%</div>
+                        <div class="stat-goal">Medications taken</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-pills"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="adherence-progress" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="symptom-tracker">
+            <h2><i class="fa-solid fa-notes-medical"></i> Log Symptoms</h2>
+            <div class="symptom-form">
+                <div class="form-group">
+                    <label class="form-label">Congestion Level</label>
+                    <select class="form-select" id="congestion-level">
+                        <option value="">Select level</option>
+                        <option value="None">None</option>
+                        <option value="Mild">Mild</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="Severe">Severe</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nasal Discharge</label>
+                    <select class="form-select" id="nasal-discharge">
+                        <option value="">Select type</option>
+                        <option value="None">None</option>
+                        <option value="Clear">Clear</option>
+                        <option value="Yellow">Yellow</option>
+                        <option value="Green">Green</option>
+                        <option value="Bloody">Bloody</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Pressure Location</label>
+                    <select class="form-select" id="pressure-location">
+                        <option value="">Select area</option>
+                        <option value="None">None</option>
+                        <option value="Forehead">Forehead</option>
+                        <option value="Cheeks">Cheeks</option>
+                        <option value="Around eyes">Around eyes</option>
+                        <option value="Behind nose">Behind nose</option>
+                        <option value="Multiple areas">Multiple areas</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Possible Trigger</label>
+                    <select class="form-select" id="possible-trigger">
+                        <option value="">Select trigger</option>
+                        <option value="None identified">None identified</option>
+                        <option value="Allergies">Allergies</option>
+                        <option value="Weather change">Weather change</option>
+                        <option value="Pollution">Pollution</option>
+                        <option value="Stress">Stress</option>
+                        <option value="Cold/Flu">Cold/Flu</option>
+                        <option value="Dust">Dust</option>
+                        <option value="Strong odors">Strong odors</option>
+                        <option value="Dry air">Dry air</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Headache Severity</label>
+                    <select class="form-select" id="headache-severity">
+                        <option value="">Select severity</option>
+                        <option value="None">None</option>
+                        <option value="Mild">Mild</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="Severe">Severe</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sleep Quality</label>
+                    <select class="form-select" id="sleep-quality">
+                        <option value="">Select quality</option>
+                        <option value="Excellent">Excellent</option>
+                        <option value="Good">Good</option>
+                        <option value="Fair">Fair</option>
+                        <option value="Poor">Poor</option>
+                        <option value="Very Poor">Very Poor</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group1">
+                <label class="form-label">Pain Level (0-10)</label>
+                <input type="range" class="form-input" id="pain-level-slider" min="0" max="10" value="0">
+                <span id="pain-level-value">0</span>
+            </div>
+
+            <div class="form-group1">
+                <label class="form-label">Additional Symptoms</label>
+                <div class="checkbox-container">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="fatigue">
+                        <label for="fatigue"><i class="fa-solid fa-bed"></i> Fatigue</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="fever">
+                        <label for="fever"><i class="fa-solid fa-temperature-high"></i> Fever</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="bad-breath">
+                        <label for="bad-breath"><i class="fa-solid fa-wind"></i> Bad breath</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="tooth-pain">
+                        <label for="tooth-pain"><i class="fa-solid fa-tooth"></i> Tooth pain</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="reduced-smell">
+                        <label for="reduced-smell"><i class="fa-solid fa-head-side-mask"></i> Reduced smell</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="cough">
+                        <label for="cough"><i class="fa-solid fa-lungs"></i> Cough</label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group1">
+                <label class="form-label">Notes</label>
+                <textarea class="form-input" id="symptom-notes" rows="3"
+                    placeholder="Additional observations or thoughts..."></textarea>
+            </div>
+
+            <button class="btn" onclick="saveSymptomEntry()" style="margin-top: 20px;"><i
+                    class="fa-solid fa-floppy-disk"></i> Save Entry</button>
+        </div>
+
+        <div class="medication-tracker">
+            <h2><i class="fa-solid fa-pills"></i> Medication Tracker</h2>
+            <div class="medication-grid">
+                <div class="medication-card">
+                    <h4 style="color: #a15e32; margin-bottom: 10px;">Nasal Decongestant</h4>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="decongestant-taken">
+                        <label for="decongestant-taken">Taken today</label>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #8b6c58;">Take as needed for congestion</p>
+                </div>
+                <div class="medication-card">
+                    <h4 style="color: #a15e32; margin-bottom: 10px;">Antihistamine</h4>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="antihistamine-taken">
+                        <label for="antihistamine-taken">Taken today</label>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #8b6c58;">For allergy-related symptoms</p>
+                </div>
+                <div class="medication-card">
+                    <h4 style="color: #a15e32; margin-bottom: 10px;">Nasal Spray</h4>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="nasal-spray-used">
+                        <label for="nasal-spray-used">Used today</label>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #8b6c58;">Steroid or saline spray</p>
+                </div>
+                <div class="medication-card">
+                    <h4 style="color: #a15e32; margin-bottom: 10px;">Pain Reliever</h4>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="pain-reliever-taken">
+                        <label for="pain-reliever-taken">Taken today</label>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 0.9rem; color: #8b6c58;">For headache and facial pain</p>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn" onclick="saveMedicationLog()" style="margin-top: 20px;"><i
+                        class="fa-solid fa-floppy-disk"></i> Save Medication
+                    Log</button>
+            </div>
+        </div>
+
+        <div class="weather-tracker">
+            <h2><i class="fa-solid fa-cloud-sun"></i> Weather & Environment</h2>
+            <div class="symptom-form1">
+                <div class="form-group">
+                    <label class="form-label">Weather Condition</label>
+                    <select class="form-select" id="weather-condition">
+                        <option value="">Select condition</option>
+                        <option value="Sunny">Sunny</option>
+                        <option value="Cloudy">Cloudy</option>
+                        <option value="Rainy">Rainy</option>
+                        <option value="Stormy">Stormy</option>
+                        <option value="Windy">Windy</option>
+                        <option value="Foggy">Foggy</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Humidity Level</label>
+                    <select class="form-select" id="humidity-level">
+                        <option value="">Select level</option>
+                        <option value="Very Low">Very Low (< 30%)</option>
+                        <option value="Low">Low (30-40%)</option>
+                        <option value="Normal">Normal (40-60%)</option>
+                        <option value="High">High (60-70%)</option>
+                        <option value="Very High">Very High (> 70%)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Air Quality</label>
+                    <select class="form-select" id="air-quality">
+                        <option value="">Select quality</option>
+                        <option value="Good">Good</option>
+                        <option value="Moderate">Moderate</option>
+                        <option value="Unhealthy for Sensitive">Unhealthy for Sensitive</option>
+                        <option value="Unhealthy">Unhealthy</option>
+                        <option value="Very Unhealthy">Very Unhealthy</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Temperature Change</label>
+                    <select class="form-select" id="temperature-change">
+                        <option value="">Select change</option>
+                        <option value="Stable">Stable</option>
+                        <option value="Gradual increase">Gradual increase</option>
+                        <option value="Gradual decrease">Gradual decrease</option>
+                        <option value="Sudden increase">Sudden increase</option>
+                        <option value="Sudden decrease">Sudden decrease</option>
+                    </select>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn" onclick="saveWeatherLog()" style="margin-top: 20px;"><i
+                        class="fa-solid fa-cloud-sun"></i> Save Weather Log</button>
+            </div>
+        </div>
+
+        <div class="symptom-reminders">
+            <h2><i class="fa-solid fa-bell"></i> Daily Reminders</h2>
+            <div class="reminders-grid">
+                <div class="reminder-card">
+                    <h4 style="color: #a15e32; margin-bottom: 10px;"><i class="fa-solid fa-shower"></i> Morning Nasal
+                        Rinse</h4>
+                    <p>Use saline solution to clear nasal passages</p>
+                    <div class="checkbox-item"><input type="checkbox" id="morning-rinse"><label
+                            for="morning-rinse">Completed</label></div>
+                </div>
+                <div class="reminder-card">
+                    <h4 style="color: #a15e32; margin-bottom: 10px;"><i class="fa-solid fa-droplet"></i> Hydration Check
+                    </h4>
+                    <p>Drink at least 8 glasses of water today</p>
+                    <div class="checkbox-item"><input type="checkbox" id="hydration-check"><label
+                            for="hydration-check">Goal achieved</label></div>
+                </div>
+                <div class="reminder-card">
+                    <h4 style="color: #a15e32; margin-bottom: 10px;"><i class="fa-solid fa-temperature-high"></i>
+                        Humidifier Use</h4>
+                    <p>Run humidifier in bedroom for better sleep</p>
+                    <div class="checkbox-item"><input type="checkbox" id="humidifier-use"><label
+                            for="humidifier-use">Used overnight</label></div>
+                </div>
+                <div class="reminder-card">
+                    <h4 style="color: #a15e32; margin-bottom: 10px;"><i class="fa-solid fa-spa"></i> Stress Management
+                    </h4>
+                    <p>Practice relaxation or breathing exercises</p>
+                    <div class="checkbox-item"><input type="checkbox" id="stress-management"><label
+                            for="stress-management">Practiced today</label></div>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn" onclick="saveReminderLog()" style="margin-top: 20px;"><i
+                        class="fa-solid fa-check"></i> Save Reminders</button>
+            </div>
+        </div>
+
+        <div class="symptom-log">
+            <h2><i class="fa-solid fa-chart-column"></i> Recent Entries</h2>
+            <div id="log-container">
+                <div class="no-data">
+                    <h3><i class="fa-solid fa-star"></i> Start Your Journey</h3>
+                    <p>No entries yet. Begin tracking your symptoms to identify patterns and triggers!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="trigger-analysis">
+            <h2><i class="fa-solid fa-magnifying-glass-chart"></i> Trigger Patterns</h2>
+            <div id="trigger-container">
+                <div class="no-data">
+                    <h3><i class="fa-solid fa-chart-line"></i> Pattern Analysis</h3>
+                    <p>Track symptoms for a few days to see personalized trigger patterns and insights.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="treatment-tips">
+            <h2><i class="fa-solid fa-lightbulb"></i> Treatment Tips</h2>
+
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-shower"></i> Nasal Irrigation:</strong>
+                Use saline nasal rinses 2-3 times daily to flush out irritants and mucus. Use distilled or boiled water
+                for safety.
+            </div>
+
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-temperature-high"></i> Warm Compresses:</strong>
+                Apply warm, moist compresses to affected areas for 10-15 minutes to reduce pain and promote drainage.
+            </div>
+
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-droplet"></i> Stay Hydrated:</strong>
+                Drink plenty of water to thin mucus secretions and support your immune system.
+            </div>
+
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-bed"></i> Sleep Position:</strong>
+                Sleep with your head elevated using extra pillows to promote sinus drainage during the night.
+            </div>
+
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-cloud-sun"></i> Humidity Control:</strong>
+                Use a humidifier to maintain 40-50% humidity. Clean it regularly to prevent mold growth.
+            </div>
+
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-ban-smoking"></i> Avoid Irritants:</strong>
+                Stay away from smoke, strong perfumes, cleaning chemicals, and other known triggers.
+            </div>
+
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-spa"></i> Manage Stress:</strong>
+                Practice stress-reduction techniques as stress can worsen sinus symptoms.
+            </div>
+
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-seedling"></i> Anti-inflammatory Foods:</strong>
+                Include foods rich in omega-3s, vitamin C, and antioxidants in your diet.
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+
+
+    <script>
+        // Initialize data storage. Load data from localStorage on page load.
+        const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+
+        let symptomEntries = JSON.parse(localStorage.getItem(`${currentUser}_symptomEntries`)) || [];
+        let medicationLogs = JSON.parse(localStorage.getItem(`${currentUser}_medicationLogs`)) || [];
+        let weatherLogs = JSON.parse(localStorage.getItem(`${currentUser}_weatherLogs`)) || [];
+        let reminderLogs = JSON.parse(localStorage.getItem(`${currentUser}_reminderLogs`)) || [];
+
+        function getUserKey(key) {
+            return `${currentUser}_${key}`;
+        }
+
+        // Load existing data
+        function loadData() {
+            symptomEntries = JSON.parse(localStorage.getItem(getUserKey("symptomEntries")) || "[]");
+            medicationLogs = JSON.parse(localStorage.getItem(getUserKey("medicationLogs")) || "[]");
+            weatherLogs = JSON.parse(localStorage.getItem(getUserKey("weatherLogs")) || "[]");
+            reminderLogs = JSON.parse(localStorage.getItem(getUserKey("reminderLogs")) || "[]");
+            updateStats();
+            displayRecentEntries();
+            displayTriggerAnalysis();
+        }
+
+        // Save symptom entry
+        function saveSymptomEntry() {
+            const entry = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                congestionLevel: document.getElementById('congestion-level').value,
+                nasalDischarge: document.getElementById('nasal-discharge').value,
+                pressureLocation: document.getElementById('pressure-location').value,
+                possibleTrigger: document.getElementById('possible-trigger').value,
+                headacheSeverity: document.getElementById('headache-severity').value,
+                sleepQuality: document.getElementById('sleep-quality').value,
+                painLevel: parseInt(document.getElementById('pain-level-slider').value),
+                additionalSymptoms: {
+                    fatigue: document.getElementById('fatigue').checked,
+                    fever: document.getElementById('fever').checked,
+                    badBreath: document.getElementById('bad-breath').checked,
+                    toothPain: document.getElementById('tooth-pain').checked,
+                    reducedSmell: document.getElementById('reduced-smell').checked,
+                    cough: document.getElementById('cough').checked
+                },
+                notes: document.getElementById('symptom-notes').value
+            };
+
+            // Validate required fields
+            if (!entry.congestionLevel || !entry.nasalDischarge || !entry.pressureLocation) {
+                alert('Please fill in all required fields (Congestion Level, Nasal Discharge, Pressure Location)');
+                return;
+            }
+
+            symptomEntries.unshift(entry);
+            // Save the updated array to localStorage
+            localStorage.setItem(getUserKey("symptomEntries"), JSON.stringify(symptomEntries));
+
+            // Reset form
+            resetSymptomForm();
+
+            // Update displays
+            updateStats();
+            displayRecentEntries();
+            displayTriggerAnalysis();
+
+            alert('Symptom entry saved successfully!');
+        }
+
+        // Reset symptom form
+        function resetSymptomForm() {
+            document.getElementById('congestion-level').value = '';
+            document.getElementById('nasal-discharge').value = '';
+            document.getElementById('pressure-location').value = '';
+            document.getElementById('possible-trigger').value = '';
+            document.getElementById('headache-severity').value = '';
+            document.getElementById('sleep-quality').value = '';
+            document.getElementById('pain-level-slider').value = '0';
+            document.getElementById('pain-level-value').textContent = '0';
+            document.getElementById('symptom-notes').value = '';
+
+            // Reset checkboxes
+            ['fatigue', 'fever', 'bad-breath', 'tooth-pain', 'reduced-smell', 'cough'].forEach(id => {
+                document.getElementById(id).checked = false;
+            });
+        }
+
+        // Save medication log
+        function saveMedicationLog() {
+            const log = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                decongestant: document.getElementById('decongestant-taken').checked,
+                antihistamine: document.getElementById('antihistamine-taken').checked,
+                nasalSpray: document.getElementById('nasal-spray-used').checked,
+                painReliever: document.getElementById('pain-reliever-taken').checked
+            };
+
+            medicationLogs.unshift(log);
+            // Save the updated array to localStorage
+            localStorage.setItem(getUserKey("medicationLogs"), JSON.stringify(medicationLogs));
+
+            updateStats();
+            alert('Medication log saved successfully!');
+        }
+
+        // Save weather log
+        function saveWeatherLog() {
+            const log = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                weatherCondition: document.getElementById('weather-condition').value,
+                humidityLevel: document.getElementById('humidity-level').value,
+                airQuality: document.getElementById('air-quality').value,
+                temperatureChange: document.getElementById('temperature-change').value
+            };
+
+            if (!log.weatherCondition) {
+                alert('Please select at least the weather condition');
+                return;
+            }
+
+            weatherLogs.unshift(log);
+            // Save the updated array to localStorage
+            localStorage.setItem(getUserKey("weatherLogs"), JSON.stringify(weatherLogs));
+
+            // Reset form
+            document.getElementById('weather-condition').value = '';
+            document.getElementById('humidity-level').value = '';
+            document.getElementById('air-quality').value = '';
+            document.getElementById('temperature-change').value = '';
+
+            alert('Weather log saved successfully!');
+        }
+
+        // Save reminder log
+        function saveReminderLog() {
+            const log = {
+                id: Date.now(),
+                date: new Date().toISOString(),
+                morningRinse: document.getElementById('morning-rinse').checked,
+                hydrationCheck: document.getElementById('hydration-check').checked,
+                humidifierUse: document.getElementById('humidifier-use').checked,
+                stressManagement: document.getElementById('stress-management').checked
+            };
+
+            reminderLogs.unshift(log);
+            // Save the updated array to localStorage
+            localStorage.setItem(getUserKey("reminderLogs"), JSON.stringify(reminderLogs));
+
+            updateStats();
+            alert('Reminders saved successfully!');
+        }
+
+        // Update statistics
+        function updateStats() {
+            const currentMonth = new Date().getMonth();
+            const currentYear = new Date().getFullYear();
+
+            // Filter entries for current month
+            const thisMonthEntries = symptomEntries.filter(entry => {
+                const entryDate = new Date(entry.date);
+                return entryDate.getMonth() === currentMonth && entryDate.getFullYear() === currentYear;
+            });
+
+            // Current severity (from most recent entry)
+            let currentSeverity = "None";
+            let currentPainLevel = 0;
+            let severityProgress = 0;
+
+            if (symptomEntries.length > 0) {
+                const latest = symptomEntries[0];
+                currentPainLevel = latest.painLevel;
+
+                if (currentPainLevel === 0) {
+                    currentSeverity = "None";
+                    severityProgress = 0;
+                } else if (currentPainLevel <= 3) {
+                    currentSeverity = "Mild";
+                    severityProgress = 33;
+                } else if (currentPainLevel <= 7) {
+                    currentSeverity = "Moderate";
+                    severityProgress = 66;
+                } else {
+                    currentSeverity = "Severe";
+                    severityProgress = 100;
+                }
+            }
+
+            // Total episodes this month
+            const totalEpisodes = thisMonthEntries.length;
+
+            // Symptom-free days (days without entries this month)
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const daysWithEntries = new Set(thisMonthEntries.map(entry =>
+                new Date(entry.date).getDate()
+            )).size;
+            const symptomFreeDays = daysInMonth - daysWithEntries;
+
+            // Treatment adherence
+            const thisMonthMedLogs = medicationLogs.filter(log => {
+                const logDate = new Date(log.date);
+                return logDate.getMonth() === currentMonth && logDate.getFullYear() === currentYear;
+            });
+
+            let adherence = 0;
+            if (thisMonthMedLogs.length > 0) {
+                const totalMeds = thisMonthMedLogs.length * 4; // 4 medications tracked
+                const takenMeds = thisMonthMedLogs.reduce((sum, log) =>
+                    sum + (log.decongestant ? 1 : 0) + (log.antihistamine ? 1 : 0) +
+                    (log.nasalSpray ? 1 : 0) + (log.painReliever ? 1 : 0), 0);
+                adherence = Math.round((takenMeds / totalMeds) * 100);
+            }
+
+            // Update UI
+            document.getElementById('current-severity').textContent = currentSeverity;
+            document.getElementById('pain-level-display').textContent = `Pain Level: ${currentPainLevel}/10`;
+            document.getElementById('severity-progress').style.width = `${severityProgress}%`;
+
+            document.getElementById('total-episodes').textContent = totalEpisodes;
+            document.getElementById('episodes-progress').style.width = `${Math.min((totalEpisodes / 10) * 100, 100)}%`;
+
+            document.getElementById('symptom-free-days').textContent = symptomFreeDays;
+            document.getElementById('symptom-free-progress').style.width = `${(symptomFreeDays / daysInMonth) * 100}%`;
+
+            document.getElementById('treatment-adherence').textContent = `${adherence}%`;
+            document.getElementById('adherence-progress').style.width = `${adherence}%`;
+        }
+
+        // Display recent entries
+        function displayRecentEntries() {
+            const container = document.getElementById('log-container');
+
+            if (symptomEntries.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <h3>🌟 Start Your Journey</h3>
+                        <p>No entries yet. Begin tracking your symptoms to identify patterns and triggers!</p>
+                    </div>`;
+                return;
+            }
+
+            const recentEntries = symptomEntries.slice(0, 5);
+            let html = '';
+
+            recentEntries.forEach(entry => {
+                const date = new Date(entry.date);
+                const dateStr = date.toLocaleDateString() + ' - ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                let severity = 'mild';
+                if (entry.painLevel > 7) severity = 'severe';
+                else if (entry.painLevel > 3) severity = 'moderate';
+
+                const additionalSymptoms = Object.entries(entry.additionalSymptoms)
+                    .filter(([key, value]) => value)
+                    .map(([key, value]) => key.replace(/([A-Z])/g, ' $1').toLowerCase())
+                    .join(', ');
+
+                html += `
+                    <div class="log-entry">
+                        <div class="log-date">${dateStr}</div>
+                        <div class="log-details">
+                            <div><strong>Pain:</strong> ${entry.painLevel}/10</div>
+                            <div><strong>Congestion:</strong> ${entry.congestionLevel}</div>
+                            <div><strong>Discharge:</strong> ${entry.nasalDischarge}</div>
+                            <div><strong>Location:</strong> ${entry.pressureLocation}</div>
+                            <div><strong>Trigger:</strong> ${entry.possibleTrigger}</div>
+                            <div><strong>Sleep:</strong> ${entry.sleepQuality}</div>
+                            ${additionalSymptoms ? `<div><strong>Other symptoms:</strong> ${additionalSymptoms}</div>` : ''}
+                            <div><strong>Status:</strong> <span class="severity-indicator severity-${severity}">${severity}</span></div>
+                        </div>
+                        ${entry.notes ? `<div style="margin-top: 10px; font-style: italic; color: #8b6c58;">"${entry.notes}"</div>` : ''}
+                    </div>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Display trigger analysis
+        function displayTriggerAnalysis() {
+            const container = document.getElementById('trigger-container');
+
+            if (symptomEntries.length < 3) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <h3>📈 Pattern Analysis</h3>
+                        <p>Track symptoms for at least 3 entries to see personalized trigger patterns and insights.</p>
+                    </div>`;
+                return;
+            }
+
+            // Analyze triggers
+            const triggerCount = {};
+            const triggerSeverity = {};
+
+            symptomEntries.forEach(entry => {
+                const trigger = entry.possibleTrigger;
+                if (trigger && trigger !== "None identified") {
+                    triggerCount[trigger] = (triggerCount[trigger] || 0) + 1;
+                    if (!triggerSeverity[trigger]) triggerSeverity[trigger] = [];
+                    triggerSeverity[trigger].push(entry.painLevel);
+                }
+            });
+
+            const sortedTriggers = Object.entries(triggerCount)
+                .sort(([, a], [, b]) => b - a)
+                .slice(0, 4);
+
+            if (sortedTriggers.length === 0) {
+                container.innerHTML = `
+                    <div class="no-data">
+                        <h3>📊 No Patterns Yet</h3>
+                        <p>Continue tracking triggers to identify your personal patterns.</p>
+                    </div>`;
+                return;
+            }
+
+            let html = '<div class="trigger-grid">';
+
+            sortedTriggers.forEach(([trigger, count]) => {
+                const avgSeverity = triggerSeverity[trigger].reduce((a, b) => a + b, 0) / triggerSeverity[trigger].length;
+                const frequency = Math.round((count / symptomEntries.length) * 100);
+
+                let severityText = "Mild";
+                if (avgSeverity > 7) severityText = "Severe";
+                else if (avgSeverity > 3) severityText = "Moderate";
+
+                const icons = {
+                    'Weather change': '🌪️',
+                    'Pollution': '🏭',
+                    'Allergies': '🌸',
+                    'Stress': '😰',
+                    'Cold/Flu': '🤧',
+                    'Dust': '🌪️',
+                    'Strong odors': '👃',
+                    'Dry air': '🏜️'
+                };
+
+                html += `
+                    <div class="trigger-card">
+                        <h3 style="color: #a15e32; margin-bottom: 10px;">${icons[trigger] || '🔍'} ${trigger}</h3>
+                        <p><strong>Frequency:</strong> ${frequency}% of episodes (${count} times)</p>
+                        <p><strong>Avg Severity:</strong> ${severityText} (${avgSeverity.toFixed(1)}/10)</p>
+                        <p><strong>Pattern:</strong> Most common trigger in your logs</p>
+                    </div>`;
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Pain level slider functionality
+        // Check if it's a new day and auto-reset sinusitis data
+        function checkSinusitisDailyReset() {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            const lastDate = localStorage.getItem('sinusitis_lastDate');
+
+            if (lastDate && lastDate !== today) {
+                console.log('👃 New day detected! Auto-resetting sinusitis data...');
+                console.log('Last date:', lastDate, 'Today:', today);
+
+                // Clear sinusitis data
+                const currentUser = localStorage.getItem('userEmail');
+                if (currentUser) {
+                    localStorage.removeItem(`${currentUser}_sinusitisData`);
+                    localStorage.removeItem(`${currentUser}_sinusitisLogs`);
+                    localStorage.removeItem(`${currentUser}_symptomData`);
+                }
+
+                // Update last date
+                localStorage.setItem('sinusitis_lastDate', today);
+
+                // Show notification
+                if (typeof showNotification === 'function') {
+                    showNotification('🌅 Good morning! Sinusitis data has been reset for a fresh start!', 'success');
+                } else {
+                    console.log('🌅 Good morning! Sinusitis data has been reset for a fresh start!');
+                }
+            } else if (!lastDate) {
+                // First time - set today as last date
+                localStorage.setItem('sinusitis_lastDate', today);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Check for daily reset
+            checkSinusitisDailyReset();
+
+            const painLevelSlider = document.getElementById('pain-level-slider');
+            const painLevelValue = document.getElementById('pain-level-value');
+
+            if (painLevelSlider && painLevelValue) {
+                painLevelSlider.addEventListener('input', function () {
+                    painLevelValue.textContent = this.value;
+                });
+                painLevelValue.textContent = painLevelSlider.value;
+            }
+
+            // Load data on page load
+            loadData();
+        });
+
+        // User profile functionality (simplified)
+        const fullName = "User";
+        const firstName = fullName.trim().split(" ")[0];
+        const firstInitial = firstName[0].toUpperCase();
+
+        const profileCircle = document.getElementById("user-profile");
+        const profileDropdown = document.getElementById("profileDropdown");
+
+        if (profileCircle) {
+            profileCircle.textContent = firstInitial;
+            profileCircle.title = firstName;
+        }
+
+        // Update profile circle with user initial
+        function updateProfileCircle() {
+            const currentUser = localStorage.getItem('currentUser');
+            if (currentUser) {
+                const initial = currentUser.charAt(0).toUpperCase();
+                profileCircle.textContent = initial;
+            } else {
+                profileCircle.textContent = 'V';
+            }
+        }
+
+        // Call the function to update profile circle
+        updateProfileCircle();
+
+        // Add click handler for profile dropdown
+        if (profileDropdown) {
+            profileCircle.addEventListener("click", () => {
+                profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
+            });
+
+            // Hide dropdown when clicking outside
+            window.addEventListener("click", function (e) {
+                if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.style.display = "none";
+                }
+            });
+        }
+    </script>
+    <script src="scripts/navigation.js"></script>
+</body>
+
+</html>

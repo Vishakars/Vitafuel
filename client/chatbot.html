@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VitaFuel | Chatbot</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/commonstyles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .chat-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: rgba(139, 69, 19, 0.08);
+      backdrop-filter: blur(5px);
+      border-radius: 25px;
+      padding: 40px;
+      box-shadow: 0 8px 30px rgba(160, 82, 45, 0.12);
+      border: 1px solid rgba(210, 180, 140, 0.25);
+    }
+
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    .quick-btn {
+      background: linear-gradient(135deg, #A0522D, #D2691E);
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(160, 82, 45, 0.3);
+    }
+
+    .quick-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(160, 82, 45, 0.4);
+      background: linear-gradient(135deg, #8B4513, #CD853F);
+    }
+
+    .suggested-topics {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    .suggested-topics h4 {
+      color: #A0522D;
+      margin-bottom: 8px;
+      font-family: 'Georgia', serif;
+    }
+
+    .topic-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .topic-chip {
+      background: #F5E6D3;
+      color: #A0522D;
+      padding: 6px 12px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      border: 1px solid #D2B48C;
+    }
+
+    .topic-chip:hover {
+      background: #A0522D;
+      color: white;
+      transform: scale(1.05);
+    }
+
+    .chat-input {
+      font-size: 16px;
+    }
+
+    .chat-input::placeholder {
+      color: #999;
+      font-style: italic;
+      font-size: 1rem;
+    }
+
+    .chat-heading {
+      font-style: italic;
+      text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.3);
+      margin-bottom: 2rem;
+    }
+
+    #voice-btn {
+      position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+    }
+
+    #mic-icon {
+      font-size: 18px;
+      color: #fff;
+      transition: color 0.3s ease;
+    }
+
+    #voice-btn:hover #mic-icon {
+      color: #2ecc71;
+      /* green glow color */
+    }
+
+    /* Tooltip text */
+    #voice-btn::after {
+      content: "Speak";
+      position: absolute;
+      bottom: 120%;
+      /* position above the icon */
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: #fff;
+      padding: 5px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      font-size: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease, transform 0.2s ease;
+    }
+
+    #voice-btn:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-3px);
+    }
+  </style>
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="hero-img1">
+      <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="health-insights.html">Wellness Hub</a>
+      <a href="recommendations.html">Recommendations</a>
+      <a href="chatbot.html" class="active">Chatbot</a>
+      <a href="shopping-list.html">Shopping List</a>
+      <div class="profile-container">
+        <div class="profile-circle" id="user-profile">V</div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="profile.html">My Profile</a>
+          <a href="settings.html">Settings</a>
+          <a href="about.html">About</a>
+          <a href="logout.html">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <section class="chat-section">
+    <div class="chat-container">
+      <h2 class="chat-heading">Ask VitaBot <i class="fa-solid fa-comments"></i></h2>
+
+      <!-- Quick Action Buttons -->
+      <div class="quick-actions">
+        <button class="quick-btn" data-topic="exercise">
+          <i class="fa-solid fa-person-running white-icon"></i> Exercise
+        </button>
+        <button class="quick-btn" data-topic="nutrition">
+          <i class="fa-solid fa-apple-whole white-icon"></i> Nutrition
+        </button>
+        <button class="quick-btn" data-topic="sleep">
+          <i class="fa-solid fa-moon white-icon"></i> Sleep
+        </button>
+        <button class="quick-btn" data-topic="stress">
+          <i class="fa-solid fa-spa white-icon"></i> Stress
+        </button>
+        <button class="quick-btn" data-topic="recipes">
+          <i class="fa-solid fa-utensils white-icon"></i> Recipes
+        </button>
+        <button class="quick-btn" data-topic="mood">
+          <i class="fa-solid fa-face-laugh white-icon"></i> Mood
+        </button>
+        <button class="quick-btn" data-topic="symptoms">
+          <i class="fa-solid fa-stethoscope white-icon"></i> Symptoms
+        </button>
+        <button class="quick-btn" data-topic="wellness">
+          <i class="fa-solid fa-heart-pulse white-icon"></i> Wellness
+        </button>
+      </div>
+
+
+      <div id="chatbox">
+        <div class="disclaimer">
+          <strong>⚠️ Important:</strong> I provide general health information only. For serious symptoms or medical
+          emergencies, please consult a healthcare professional or call emergency services immediately.
+        </div>
+        <div class="bot-message">Hi there! I'm VitaBot, your personal health assistant. I can help with exercise tips,
+          nutrition advice, sleep guidance, stress management, recipes, mood tracking, and general wellness. What would
+          you like to know? 🌟</div>
+      </div>
+
+      <form id="chat-form">
+        <input type="text" id="user-input" class="chat-input" placeholder="Ask me anything..." required />
+        <button type="button" id="voice-btn" title="Speak">
+          <i id="mic-icon" class="fa-solid fa-microphone"></i>
+        </button>
+        <button type="submit">Send</button>
+      </form>
+
+      <!-- Suggested Topics -->
+      <div class="suggested-topics">
+        <h4><i class="fa-solid fa-lightbulb white-icon"></i> Try asking about:</h4>
+        <div class="topic-chips">
+          <span class="topic-chip" data-topic="morning routine">Morning routine</span>
+          <span class="topic-chip" data-topic="weight loss">Weight loss</span>
+          <span class="topic-chip" data-topic="energy boost">Energy boost</span>
+          <span class="topic-chip" data-topic="healthy snacks">Healthy snacks</span>
+          <span class="topic-chip" data-topic="meditation">Meditation</span>
+          <span class="topic-chip" data-topic="hydration">Hydration</span>
+          <span class="topic-chip" data-topic="back pain">Back pain</span>
+          <span class="topic-chip" data-topic="anxiety">Anxiety</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <footer class="footer">
+    <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+  </footer>
+
+  <script src="js/chatbot.js"></script>
+  <script src="scripts/navigation.js"></script>
+  <script>
+    // Auto-scroll chatbox function
+    function scrollChatToBottom() {
+      const chatbox = document.getElementById('chatbox');
+      if (chatbox) {
+        chatbox.scrollTop = chatbox.scrollHeight;
+      }
+    }
+
+    // Override or enhance the existing chat functionality
+    document.addEventListener('DOMContentLoaded', function () {
+      // Scroll to bottom initially
+      scrollChatToBottom();
+
+      // Watch for new messages being added to chatbox
+      const chatbox = document.getElementById('chatbox');
+      if (chatbox) {
+        // Create a MutationObserver to detect when new messages are added
+        const observer = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            if (mutation.addedNodes.length > 0) {
+              // Scroll to bottom when new content is added
+              setTimeout(scrollChatToBottom, 100);
+            }
+          });
+        });
+
+        // Start observing the chatbox for changes
+        observer.observe(chatbox, {
+          childList: true,
+          subtree: true
+        });
+      }
+
+      // Also add scroll on form submit
+      const chatForm = document.getElementById('chat-form');
+      if (chatForm) {
+        chatForm.addEventListener('submit', function () {
+          setTimeout(scrollChatToBottom, 200);
+        });
+      }
+    });
+  </script>
+  <script>
+    // Quick action button functionality
+    document.addEventListener('DOMContentLoaded', function () {
+      // Quick action buttons
+      document.querySelectorAll('.quick-btn').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const topic = this.getAttribute('data-topic');
+          const userInput = document.getElementById('user-input');
+
+          // Set appropriate question based on topic
+          const questions = {
+            'exercise': 'What exercises should I do today?',
+            'nutrition': 'What should I eat for a healthy diet?',
+            'sleep': 'How can I improve my sleep quality?',
+            'stress': 'How can I manage stress better?',
+            'recipes': 'Can you suggest some healthy recipes?',
+            'mood': 'How can I improve my mood?',
+            'symptoms': 'I have some health symptoms, can you help?',
+            'wellness': 'What are some general wellness tips?'
+          };
+
+          userInput.value = questions[topic] || `Tell me about ${topic}`;
+          userInput.focus();
+        });
+      });
+
+      // Topic chips
+      document.querySelectorAll('.topic-chip').forEach(chip => {
+        chip.addEventListener('click', function () {
+          const topic = this.getAttribute('data-topic');
+          const userInput = document.getElementById('user-input');
+          userInput.value = `Tell me about ${topic}`;
+          userInput.focus();
+        });
+      });
+    });
+  </script>
+  <script>
+    const currentUser = localStorage.getItem('currentUser') || localStorage.getItem('userEmail');
+    const accessToken = localStorage.getItem('accessToken');
+
+    // 🚪 Redirect to login if not logged in
+    if (!currentUser || !accessToken) {
+      window.location.href = 'login.html';
+    }
+
+    // 🛠 Helper for per-user key generation
+    function getUserKey(key) {
+      return `${currentUser}_${key}`;
+    }
+
+    // Profile dropdown functionality is handled by navigation.js
+  </script>
+
+  <script>
+    // Direct profile dropdown fix for Chatbot page
+    document.addEventListener('DOMContentLoaded', function () {
+      const profileCircle = document.getElementById('user-profile');
+      const profileDropdown = document.getElementById('profileDropdown');
+
+      if (profileCircle && profileDropdown) {
+        // Add click handler
+        profileCircle.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Toggle dropdown
+          if (profileDropdown.style.display === 'block') {
+            profileDropdown.style.display = 'none';
+          } else {
+            profileDropdown.style.display = 'block';
+            profileDropdown.style.position = 'absolute';
+            profileDropdown.style.right = '0';
+            profileDropdown.style.top = '100%';
+            profileDropdown.style.backgroundColor = '#fff';
+            profileDropdown.style.zIndex = '9999';
+            profileDropdown.style.minWidth = '150px';
+            profileDropdown.style.border = '1px solid #ddd';
+            profileDropdown.style.borderRadius = '10px';
+            profileDropdown.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+            profileDropdown.style.padding = '10px 0';
+          }
+        });
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+          if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+            profileDropdown.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+
+</html>

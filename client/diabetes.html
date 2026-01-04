@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | Diabetes Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/diabetes.css" />
+    <link rel="stylesheet" href="css/commonstyles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <div class="floating-icon"><i class="fa-solid fa-droplet"></i> <i class="fa-solid fa-capsules"></i> <i
+            class="fa-solid fa-heart-pulse"></i></div>
+
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">U</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-droplet"></i> Diabetes Tracker</h1>
+            <p>Take control of your health with comprehensive glucose monitoring</p>
+        </div>
+
+        <div class="welcome-message">
+            <h3 style="color: #a15e32; margin-bottom: 10px;"><i class="fa-solid fa-sparkles"></i> Welcome to Your Health
+                Journey!</h3>
+            <p>Start tracking your glucose levels to gain valuable insights into your diabetes management. Every reading
+                brings you closer to better health!</p>
+        </div>
+
+        <div id="risk-alert" class="risk-alert hidden">
+            <i id="risk-icon" class="fa-solid fa-circle-info"></i>
+            <span id="risk-text">Analyzing your data...</span>
+        </div>
+
+
+        <!-- ✅ Stats Section -->
+        <div class="stats-group">
+
+            <!-- ✅ Row 1 (3 cards) -->
+            <div class="stats-row row-3">
+
+                <!-- Latest Reading -->
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-info">
+                            <h3>Latest Reading</h3>
+                            <div class="stat-value" id="latest-reading">--</div>
+                            <div class="stat-goal" id="latest-timing">No readings yet</div>
+                        </div>
+                        <div class="stat-icon"><i class="fa-solid fa-droplet"></i></div>
+                    </div>
+                    <div class="empty-state" id="latest-empty">
+                        Add your first glucose reading to see it here
+                    </div>
+                </div>
+
+                <!-- Average Level -->
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-info">
+                            <h3>Average Level</h3>
+                            <div class="stat-value" id="avg-reading">--</div>
+                            <div class="stat-goal">Target: 80-130 mg/dL</div>
+                        </div>
+                        <div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div>
+                    </div>
+                    <div class="empty-state" id="avg-empty">
+                        Track multiple readings to see your average
+                    </div>
+                </div>
+
+                <!-- Total Readings -->
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-info">
+                            <h3>Total Readings</h3>
+                            <div class="stat-value" id="total-readings">0</div>
+                            <div class="stat-goal">Keep tracking daily!</div>
+                        </div>
+                        <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+                    </div>
+                    <div class="empty-state">
+                        Start your monitoring journey today
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ✅ Row 2 (2 cards) -->
+            <div class="stats-row row-2">
+
+                <!-- Readings in Range -->
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-info">
+                            <h3>Readings in Range</h3>
+                            <div class="stat-value" id="in-range-percent">--%</div>
+                            <div class="stat-goal">Target: >70%</div>
+                        </div>
+                        <div class="stat-icon"><i class="fa-solid fa-bullseye"></i></div>
+                    </div>
+                    <div class="empty-state" id="range-empty">
+                        Track readings to see your range percentage
+                    </div>
+                </div>
+
+                <!-- Estimated A1C -->
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-info">
+                            <h3>Estimated A1C</h3>
+                            <div class="stat-value" id="estimated-a1c">--</div>
+                            <div class="stat-goal">Based on avg glucose</div>
+                        </div>
+                        <div class="stat-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                    </div>
+                    <div class="empty-state" id="a1c-empty">
+                        Log readings to estimate your A1C
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <div class="glucose-tracker pulse-animation">
+            <h2><i class="fa-solid fa-pen-to-square"></i> Log New Glucose Reading</h2>
+            <p style="margin-bottom: 30px; color: #8b6c58; font-style: italic;font-size: 17px;">Record your blood
+                glucose level to start building your health profile</p>
+
+            <div class="glucose-form">
+                <div class="form-group">
+                    <label class="form-label">Glucose Level (mg/dL)*</label>
+                    <input type="number" class="form-input" id="glucose-level" min="20" max="800"
+                        placeholder="Enter your reading (e.g., 120)" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Measurement Time*</label>
+                    <select class="form-input" id="measurement-time" required>
+                        <option value="">Select timing</option>
+                        <option value="before-meal">Before Meal</option>
+                        <option value="after-meal">2 Hours After Meal</option>
+                        <option value="bedtime">Bedtime</option>
+                        <option value="random">Random Check</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Date & Time*</label>
+                    <input type="datetime-local" class="form-input" id="reading-datetime" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Notes (Optional)</label>
+                    <input type="text" class="form-input" id="reading-notes"
+                        placeholder="How are you feeling? Any observations?">
+                </div>
+            </div>
+
+            <button class="btn btn-primary" onclick="logGlucoseReading()">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Log My Reading
+            </button>
+        </div>
+
+        <div class="glucose-log">
+            <h2><i class="fa-solid fa-clipboard-list"></i> Your Glucose History</h2>
+            <div id="readings-list">
+                <div class="empty-log">
+                    <p><i class="fa-solid fa-star"></i> No readings recorded yet</p>
+                    <p>Start your health journey by logging your first glucose reading above!</p>
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="clearAllReadings()" id="clear-btn" style="display: none;">
+                <i class="fa-solid fa-trash"></i> Clear All Readings
+            </button>
+        </div>
+
+        <!-- Advanced Analytics Section -->
+        <div class="analytics-section">
+            <h2><i class="fa-solid fa-chart-simple"></i> Glucose Trends & Analytics</h2>
+            <div class="analytics-grid">
+                <div class="chart-container">
+                    <h3><i class="fa-solid fa-chart-line"></i> 7-Day Trend</h3>
+                    <canvas id="glucoseChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3><i class="fa-solid fa-clock"></i> Time-based Analysis</h3>
+                    <canvas id="timeChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medication & Insulin Tracking -->
+        <div class="medication-tracker">
+            <h2><i class="fa-solid fa-pills"></i> Medication & Insulin Tracking</h2>
+            <div class="medication-grid">
+                <div class="medication-card">
+                    <h3><i class="fa-solid fa-pen"></i> Log Medication</h3>
+                    <div class="form-group">
+                        <label>Medication Type</label>
+                        <select id="med-type" class="form-input">
+                            <option value="insulin">Insulin</option>
+                            <option value="metformin">Metformin</option>
+                            <option value="glipizide">Glipizide</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Dosage</label>
+                        <input type="text" id="med-dosage" class="form-input" placeholder="e.g., 10 units, 500mg">
+                    </div>
+                    <div class="form-group">
+                        <label>Time Taken</label>
+                        <input type="datetime-local" id="med-time" class="form-input">
+                    </div>
+                    <button class="btn btn-secondary" onclick="logMedication()"><i class="fa-solid fa-plus"></i> Log
+                        Medication</button>
+                </div>
+
+                <div class="medication-card">
+                    <h3><i class="fa-solid fa-list-check"></i> Today's Medications</h3>
+                    <div id="today-medications">
+                        <p class="empty-state">No medications logged today</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- A1C & Long-term Tracking -->
+        <div class="a1c-tracker">
+            <h2><i class="fa-solid fa-bullseye"></i> A1C & Long-term Goals</h2>
+            <div class="a1c-grid">
+                <div class="a1c-card">
+                    <h3><i class="fa-solid fa-chart-pie"></i> A1C Tracking</h3>
+                    <div class="form-group">
+                        <label>A1C Level (%)</label>
+                        <input type="number" id="a1c-level" class="form-input" step="0.1" min="3" max="15"
+                            placeholder="e.g., 6.5">
+                    </div>
+                    <div class="form-group">
+                        <label>Test Date</label>
+                        <input type="date" id="a1c-date" class="form-input">
+                    </div>
+                    <button class="btn btn-secondary" onclick="logA1C()"><i class="fa-solid fa-plus"></i> Log
+                        A1C</button>
+                </div>
+
+                <div class="a1c-card">
+                    <h3><i class="fa-solid fa-flag-checkered"></i> Goal Setting</h3>
+                    <div class="goal-item">
+                        <label>Target A1C (%)</label>
+                        <input type="number" id="target-a1c" class="form-input" step="0.1" min="4" max="8"
+                            placeholder="e.g., 7.0">
+                    </div>
+                    <div class="goal-item">
+                        <label>Target Fasting Glucose (mg/dL)</label>
+                        <input type="number" id="target-fasting" class="form-input" min="70" max="200"
+                            placeholder="e.g., 100">
+                    </div>
+                    <button class="btn btn-primary" onclick="setGoals()"><i class="fa-solid fa-bullseye-arrow"></i> Set
+                        Goals</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- A1C History Graph -->
+        <div class="chart-container">
+            <h3><i class="fa-solid fa-chart-line"></i> HbA1C History Trend</h3>
+            <canvas id="a1cHistoryChart"></canvas>
+        </div>
+
+
+        <div class="tips-section">
+            <h2><i class="fa-solid fa-lightbulb"></i> Diabetes Management Tips</h2>
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-clock"></i> Monitor Regularly:</strong> Check your blood glucose at
+                consistent times - before meals, 2
+                hours after eating, and at bedtime for the best insights.
+            </div>
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-utensils"></i> Meal Planning:</strong> Keep a consistent meal schedule and
+                note how different foods affect
+                your glucose levels.
+            </div>
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-glass-water"></i> Stay Hydrated:</strong> Drink plenty of water throughout
+                the day to help maintain stable
+                blood sugar levels.
+            </div>
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-person-running"></i> Exercise Smart:</strong> Regular physical activity
+                helps improve insulin sensitivity -
+                even a 10-minute walk after meals can help!
+            </div>
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-user-doctor"></i> Healthcare Team:</strong> Share your glucose logs with
+                your healthcare provider to
+                optimize your treatment plan.
+            </div>
+            <div class="tip-card">
+                <strong><i class="fa-solid fa-moon"></i> Quality Sleep:</strong> Aim for 7-9 hours of quality sleep, as
+                poor sleep can affect blood
+                sugar control.
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+
+    <div class="notification" id="notification">
+        <span id="notification-text">Reading logged successfully! ✨</span>
+    </div>
+
+    <script>
+        let glucoseReadings = [];
+        const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail'); // Use the same key as register and login pages
+
+        // Use a unique key for each user to prevent data mixing
+        function getDiabetesDataKey() {
+            return currentUser ? `diabetesData_${currentUser}` : 'diabetesData_guest';
+        }
+
+        // Function to load readings from localStorage on page load
+        async function loadReadingsFromStorage() {
+            // Try to load from MongoDB first
+            const mongoData = await loadFromMongoDB(`diabetes/me`);
+            if (mongoData && mongoData.length > 0) {
+                glucoseReadings = mongoData;
+                console.log("✅ Glucose data loaded from MongoDB");
+                // Update UI after loading data
+                updateStats();
+                displayReadings();
+                return;
+            }
+
+            // Fallback to localStorage
+            const storedReadings = localStorage.getItem(getDiabetesDataKey());
+            if (storedReadings) {
+                try {
+                    glucoseReadings = JSON.parse(storedReadings);
+                    console.log("✅ Glucose data loaded from localStorage");
+                    // Update UI after loading data
+                    updateStats();
+                    displayReadings();
+                } catch (e) {
+                    console.error("Failed to parse stored glucose data:", e);
+                    glucoseReadings = [];
+                }
+            }
+        }
+
+        // Function to save the readings to localStorage
+        function saveReadingsToStorage() {
+            localStorage.setItem(getDiabetesDataKey(), JSON.stringify(glucoseReadings));
+            console.log("✅ Glucose data saved to storage.");
+        }
+
+        // Set current date/time as default
+        function setCurrentDateTime() {
+            const now = new Date();
+            const localDateTime = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+            document.getElementById('reading-datetime').value = localDateTime.toISOString().slice(0, 16);
+        }
+
+        // Get glucose status based on level and timing
+        function getGlucoseStatus(level, timing) {
+            const num = parseFloat(level);
+
+            // 🔹 Shared ranges for fasting & before-meal
+            if (timing === "before-meal") {
+                if (num < 70) return { status: "Low", class: "status-critical", emoji: "⬇️" };
+                if (num <= 130) return { status: "In Range", class: "status-normal", emoji: "✅" };
+                if (num <= 180) return { status: "Elevated", class: "status-high", emoji: "⚠️" };
+                return { status: "High", class: "status-critical", emoji: "⬆️" };
+            }
+
+            // 🔹 After-meal guidelines (2 hours post-meal)
+            if (timing === "after-meal") {
+                if (num < 70) return { status: "Low", class: "status-critical", emoji: "⬇️" };
+                if (num <= 180) return { status: "In Range", class: "status-normal", emoji: "✅" };
+                if (num <= 240) return { status: "Elevated", class: "status-high", emoji: "⚠️" };
+                return { status: "High", class: "status-critical", emoji: "⬆️" };
+            }
+
+            // 🔹 Bedtime values
+            if (timing === "bedtime") {
+                if (num < 90) return { status: "Low", class: "status-critical", emoji: "⬇️" };
+                if (num <= 150) return { status: "In Range", class: "status-normal", emoji: "✅" };
+                if (num <= 200) return { status: "Elevated", class: "status-high", emoji: "⚠️" };
+                return { status: "High", class: "status-critical", emoji: "⬆️" };
+            }
+
+            // 🔹 Random checks (clinically broad)
+            if (timing === "random") {
+                if (num < 70) return { status: "Low", class: "status-critical", emoji: "⬇️" };
+                if (num <= 200) return { status: "In Range", class: "status-normal", emoji: "✅" };
+                if (num <= 250) return { status: "Elevated", class: "status-high", emoji: "⚠️" };
+                return { status: "High", class: "status-critical", emoji: "⬆️" };
+            }
+
+            // 🔹 Fallback (should never hit)
+            return { status: "Unknown", class: "status-high", emoji: "❓" };
+        }
+
+
+        // Show notification
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notification-text');
+
+            notificationText.textContent = message;
+            notification.style.background = type === 'success'
+                ? 'linear-gradient(135deg, #4caf50, #45a049)'
+                : 'linear-gradient(135deg, #f44336, #d32f2f)';
+
+            notification.classList.add('show');
+
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Format datetime for display
+        function formatDateTime(dateTimeString) {
+            const date = new Date(dateTimeString);
+            return date.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        // Log glucose reading
+        async function logGlucoseReading() {
+            const level = document.getElementById('glucose-level').value;
+            const timing = document.getElementById('measurement-time').value;
+            const datetime = document.getElementById('reading-datetime').value;
+            const notes = document.getElementById('reading-notes').value.trim();
+
+            // Validation
+            if (!level || !timing || !datetime) {
+                showNotification('Please fill in all required fields (glucose level, timing, and date/time)', 'error');
+                return;
+            }
+
+            const numLevel = parseFloat(level);
+            if (numLevel < 20 || numLevel > 800) {
+                showNotification('Please enter a valid glucose level between 20-800 mg/dL', 'error');
+                return;
+            }
+
+            // Create reading object
+            const reading = {
+                id: Date.now(),
+                level: numLevel,
+                timing: timing,
+                datetime: datetime,
+                notes: notes,
+                timestamp: new Date().toISOString()
+            };
+
+            // Add to readings array
+            glucoseReadings.unshift(reading); // Add to beginning for most recent first
+
+            // Save to MongoDB via diabetes API
+            const diabetesData = {
+                bloodGlucose: numLevel,
+                readingType: timing,
+                notes: notes
+            };
+
+            // Try to save to MongoDB first, fallback to localStorage
+            const mongoSaved = await saveToMongoDB(diabetesData, `diabetes/me`);
+            if (!mongoSaved) {
+                console.log('Falling back to localStorage for diabetes data');
+                // This is the CRITICAL line that saves the data
+                saveReadingsToStorage();
+            }
+
+            // Update UI
+            updateStats();
+            displayReadings();
+            updateCharts();
+            evaluateRiskAlerts();
+
+            // Clear form
+            document.getElementById('glucose-level').value = '';
+            document.getElementById('measurement-time').value = '';
+            document.getElementById('reading-notes').value = '';
+            setCurrentDateTime();
+
+            // Show success notification
+            const status = getGlucoseStatus(numLevel, timing);
+            showNotification(`Reading logged: ${numLevel} mg/dL - ${status.status} ${status.emoji}`);
+
+            // Remove pulse animation from tracker
+            document.querySelector('.glucose-tracker').classList.remove('pulse-animation');
+        }
+
+        // Update statistics
+        function updateStats() {
+            const totalReadings = glucoseReadings.length;
+            document.getElementById('total-readings').textContent = totalReadings;
+
+            // ✅ No readings case
+            if (totalReadings === 0) {
+                document.getElementById('latest-reading').textContent = '--';
+                document.getElementById('avg-reading').textContent = '--';
+                document.getElementById('in-range-percent').textContent = '--%';
+                document.getElementById('estimated-a1c').textContent = '--';
+
+                // Show empty states
+                document.getElementById('latest-empty').style.display = 'block';
+                document.getElementById('avg-empty').style.display = 'block';
+                document.getElementById('range-empty').style.display = 'block';
+                document.getElementById('a1c-empty').style.display = 'block';
+
+                document.getElementById('clear-btn').style.display = 'none';
+
+                evaluateRiskAlerts();
+                return;
+            }
+
+            // ✅ Hide empty states when readings exist
+            document.getElementById('latest-empty').style.display = 'none';
+            document.getElementById('avg-empty').style.display = 'none';
+            document.getElementById('range-empty').style.display = 'none';
+            document.getElementById('a1c-empty').style.display = 'none';
+
+            // ✅ Latest reading
+            const latest = glucoseReadings[0];
+            const level = latest.level || latest.bloodGlucose;
+            const timing = latest.timing || latest.readingType;
+
+            document.getElementById('latest-reading').textContent = `${level} mg/dL`;
+            document.querySelector('#latest-reading')
+                .parentElement
+                .querySelector('.stat-goal').textContent =
+                `${timing ? timing.replace('-', ' ') : 'reading'}`;
+
+            // ✅ Average reading
+            const average = (
+                glucoseReadings.reduce((sum, reading) => {
+                    const val = reading.level || reading.bloodGlucose;
+                    return sum + val;
+                }, 0) / totalReadings
+            ).toFixed(1);
+
+            document.getElementById('avg-reading').textContent = `${average} mg/dL`;
+
+            // ✅ Readings in target range (general 70–180)
+            const inRangeCount = glucoseReadings.filter(reading => {
+                const val = reading.level || reading.bloodGlucose;
+                return val >= 70 && val <= 180;
+            }).length;
+
+            const inRangePercent = ((inRangeCount / totalReadings) * 100).toFixed(0);
+            document.getElementById('in-range-percent').textContent = `${inRangePercent}%`;
+
+            // ✅ Estimated A1C formula = (Avg + 46.7) / 28.7
+            const estimatedA1C = ((parseFloat(average) + 46.7) / 28.7).toFixed(2);
+            const a1cElement = document.getElementById('estimated-a1c');
+
+            a1cElement.textContent = `${estimatedA1C}%`;
+            a1cElement.setAttribute(
+                "title",
+                "Estimated using formula: (Avg Glucose + 46.7) / 28.7"
+            );
+
+            // ✅ Color coding based on A1C category
+            if (estimatedA1C >= 8) {
+                a1cElement.style.color = "#b71c1c"; // red
+            } else if (estimatedA1C >= 7) {
+                a1cElement.style.color = "#e65100"; // orange
+            } else if (estimatedA1C >= 6.5) {
+                a1cElement.style.color = "#795548"; // prediabetic, mocha tone
+            } else {
+                a1cElement.style.color = "#2e7d32"; // green
+            }
+
+            // ✅ Show clear button only when needed
+            document.getElementById('clear-btn').style.display = 'block';
+
+            // ✅ Refresh risk alert every time stats update
+            evaluateRiskAlerts();
+        }
+
+
+        function evaluateRiskAlerts() {
+            const alertBox = document.getElementById('risk-alert');
+            const riskText = document.getElementById('risk-text');
+            const riskIcon = document.getElementById('risk-icon');
+
+            if (!glucoseReadings || glucoseReadings.length === 0) {
+                alertBox.className = "risk-alert alert-warning";
+                riskText.textContent = "No glucose history yet. Start logging to see trends.";
+                riskIcon.className = "fa-solid fa-circle-info";
+                alertBox.classList.remove("hidden");
+                return;
+            }
+
+            const last7 = glucoseReadings.slice(0, 7);
+            const highs = last7.filter(r => (r.level || r.bloodGlucose) > 180).length;
+            const lows = last7.filter(r => (r.level || r.bloodGlucose) < 70).length;
+
+            const trendAvg = last7.reduce((acc, r) => acc + (r.level || r.bloodGlucose), 0) / last7.length;
+
+            // 🎯 Danger conditions
+            if (lows >= 2) {
+                alertBox.className = "risk-alert alert-danger";
+                riskText.textContent = "Multiple dangerously low readings detected. Please consult your doctor.";
+                riskIcon.className = "fa-solid fa-triangle-exclamation";
+                alertBox.classList.remove("hidden");
+                return;
+            }
+
+            if (highs >= 3) {
+                alertBox.className = "risk-alert alert-danger";
+                riskText.textContent = "Several high glucose spikes detected. Monitor closely!";
+                riskIcon.className = "fa-solid fa-triangle-exclamation";
+                alertBox.classList.remove("hidden");
+                return;
+            }
+
+            // ⚠️ Mild warning
+            if (trendAvg > 150 && trendAvg < 200) {
+                alertBox.className = "risk-alert alert-warning";
+                riskText.textContent = "Glucose levels trending slightly high. Keep an eye on your meals & activity.";
+                riskIcon.className = "fa-solid fa-circle-exclamation";
+                alertBox.classList.remove("hidden");
+                return;
+            }
+
+            if (trendAvg < 80) {
+                alertBox.className = "risk-alert alert-warning";
+                riskText.textContent = "Average glucose is on the lower side. Avoid skipping meals.";
+                riskIcon.className = "fa-solid fa-circle-exclamation";
+                alertBox.classList.remove("hidden");
+                return;
+            }
+
+            // ✅ Healthy trend
+            alertBox.className = "risk-alert alert-success";
+            riskText.textContent = "Great job! Your glucose levels are stable and within safe trends.";
+            riskIcon.className = "fa-solid fa-circle-check";
+            alertBox.classList.remove("hidden");
+        }
+
+
+        // Display readings list
+        function displayReadings() {
+            const readingsList = document.getElementById('readings-list');
+
+            if (glucoseReadings.length === 0) {
+                readingsList.innerHTML = `
+                <div class="empty-log">
+                    <p>🌟 No readings recorded yet</p>
+                    <p>Start your health journey by logging your first glucose reading above!</p>
+                </div>
+            `;
+                return;
+            }
+
+            let readingsHtml = '';
+            glucoseReadings.forEach((reading, index) => {
+                // Handle both local and MongoDB data structures
+                const level = reading.level || reading.bloodGlucose;
+                const timing = reading.timing || reading.readingType;
+                const datetime = reading.datetime || reading.timestamp;
+
+                const status = getGlucoseStatus(level, timing);
+                const formattedDate = formatDateTime(datetime);
+
+                readingsHtml += `
+                <div class="log-entry" style="animation-delay: ${index * 0.1}s">
+                    <div class="log-date">${formattedDate}</div>
+                    <div class="log-details">
+                        <div><strong>Level:</strong> ${level} mg/dL</div>
+                        <div><strong>Timing:</strong> ${timing ? timing.replace('-', ' ') : 'reading'}</div>
+                        <div><strong>Status:</strong> <span class="status-badge ${status.class}">${status.emoji} ${status.status}</span></div>
+                        <div><strong>Notes:</strong> ${reading.notes || 'None'}</div>
+                    </div>
+                </div>
+            `;
+            });
+
+            readingsList.innerHTML = readingsHtml;
+        }
+
+        // Clear all readings
+        function clearAllReadings() {
+            if (confirm('Are you sure you want to clear all glucose readings? This action cannot be undone.')) {
+                glucoseReadings = [];
+                saveReadingsToStorage(); // Save the empty array to clear data
+                updateStats();
+                evaluateRiskAlerts();
+                displayReadings();
+                showNotification('All readings have been cleared', 'success');
+
+                // Add pulse animation back to tracker
+                document.querySelector('.glucose-tracker').classList.add('pulse-animation');
+            }
+        }
+
+        // Medication tracking
+        let medications = JSON.parse(localStorage.getItem(`${currentUser}_medications`) || '[]');
+        let a1cReadings = JSON.parse(localStorage.getItem(`${currentUser}_a1cReadings`) || '[]');
+        let goals = JSON.parse(localStorage.getItem(`${currentUser}_diabetesGoals`) || '{}');
+
+        // MongoDB API integration
+        async function saveToMongoDB(data, endpoint) {
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                console.warn('No access token found, saving to localStorage only');
+                return false;
+            }
+
+            try {
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/${endpoint}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    console.log(`✅ Data saved to MongoDB via ${endpoint}`);
+                    return true;
+                } else {
+                    console.error(`❌ Failed to save to MongoDB: ${response.status}`);
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Error saving to MongoDB:', error);
+                return false;
+            }
+        }
+
+        async function loadFromMongoDB(endpoint) {
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                console.warn('No access token found, loading from localStorage only');
+                return [];
+            }
+
+            try {
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/${endpoint}`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log(`✅ Data loaded from MongoDB via ${endpoint}`);
+                    return data;
+                } else {
+                    console.error(`❌ Failed to load from MongoDB: ${response.status}`);
+                    return [];
+                }
+            } catch (error) {
+                console.error('❌ Error loading from MongoDB:', error);
+                return [];
+            }
+        }
+
+        function logMedication() {
+            const type = document.getElementById('med-type').value;
+            const dosage = document.getElementById('med-dosage').value;
+            const time = document.getElementById('med-time').value;
+
+            if (!type || !dosage || !time) {
+                showNotification('Please fill in all medication fields', 'error');
+                return;
+            }
+
+            const medication = {
+                id: Date.now(),
+                type: type,
+                dosage: dosage,
+                time: time,
+                date: new Date().toISOString()
+            };
+
+            medications.push(medication);
+            localStorage.setItem(`${currentUser}_medications`, JSON.stringify(medications));
+
+            // Clear form
+            document.getElementById('med-type').value = '';
+            document.getElementById('med-dosage').value = '';
+            document.getElementById('med-time').value = '';
+
+            displayTodayMedications();
+            showNotification('Medication logged successfully', 'success');
+        }
+
+        function displayTodayMedications() {
+            const container = document.getElementById('today-medications');
+            const today = new Date().toISOString().split('T')[0];
+
+            const todayMeds = medications.filter(med =>
+                new Date(med.time).toISOString().split('T')[0] === today
+            );
+
+            if (todayMeds.length === 0) {
+                container.innerHTML = '<p class="empty-state">No medications logged today</p>';
+                return;
+            }
+
+            container.innerHTML = todayMeds.map(med => `
+            <div class="medication-item">
+                <div class="med-info">
+                    <strong>${med.type}</strong> - ${med.dosage}
+                </div>
+                <div class="med-time">
+                    ${new Date(med.time).toLocaleTimeString()}
+                </div>
+            </div>
+        `).join('');
+        }
+        function logA1C() {
+            const level = parseFloat(document.getElementById('a1c-level').value);
+            const date = document.getElementById('a1c-date').value;
+
+            if (!level || !date) {
+                showNotification('Please fill in all A1C fields', 'error');
+                return;
+            }
+
+            const a1cReading = {
+                id: Date.now(),
+                level: level,
+                date: date,
+                timestamp: new Date().toISOString()
+            };
+
+            a1cReadings.push(a1cReading);
+            localStorage.setItem(`${currentUser}_a1cReadings`, JSON.stringify(a1cReadings));
+
+            // ✅ Refresh chart IMMEDIATELY when new A1C is logged
+            updateCharts();
+
+            // Clear form
+            document.getElementById('a1c-level').value = '';
+            document.getElementById('a1c-date').value = '';
+
+            showNotification('A1C reading logged successfully', 'success');
+        }
+
+        function setGoals() {
+            const targetA1C = parseFloat(document.getElementById('target-a1c').value);
+            const targetFasting = parseInt(document.getElementById('target-fasting').value);
+
+            if (!targetA1C || !targetFasting) {
+                showNotification('Please set both target values', 'error');
+                return;
+            }
+
+            goals = {
+                targetA1C: targetA1C,
+                targetFasting: targetFasting,
+                setDate: new Date().toISOString()
+            };
+
+            localStorage.setItem(`${currentUser}_diabetesGoals`, JSON.stringify(goals));
+            showNotification('Goals set successfully', 'success');
+        }
+
+        // Initialize charts
+        let glucoseChart, timeChart;
+
+        function initializeCharts() {
+            if (typeof Chart === 'undefined') {
+                console.log('Chart.js not loaded yet, retrying...');
+                setTimeout(initializeCharts, 100);
+                return;
+            }
+
+            // 7-Day Trend Chart
+            const glucoseCtx = document.getElementById('glucoseChart');
+            if (glucoseCtx) {
+                glucoseChart = new Chart(glucoseCtx, {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: [{
+                            label: 'Glucose (mg/dL)',
+                            data: [],
+                            borderColor: '#a15e32',
+                            backgroundColor: 'rgba(161, 94, 50, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true },
+                            title: { display: true, text: '7-Day Glucose Trend' }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 50,
+                                max: 300
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Time-based Analysis Chart
+            const timeCtx = document.getElementById('timeChart');
+            if (timeCtx) {
+                timeChart = new Chart(timeCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Before Meal', 'After Meal', 'Bedtime', 'Random'],
+                        datasets: [{
+                            label: 'Average Glucose (mg/dL)',
+                            data: [0, 0, 0, 0, 0],
+                            backgroundColor: [
+                                'rgba(161, 94, 50, 0.8)',
+                                'rgba(210, 153, 106, 0.8)',
+                                'rgba(139, 108, 88, 0.8)',
+                                'rgba(123, 95, 74, 0.8)',
+                                'rgba(107, 82, 61, 0.8)'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: true, text: 'Average by Time of Day' }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+
+            // A1C History Chart
+            const a1cCtx = document.getElementById('a1cHistoryChart');
+            if (a1cCtx) {
+                a1cHistoryChart = new Chart(a1cCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: a1cReadings.map(r => r.date),
+                        datasets: [
+                            {
+                                type: 'bar',
+                                label: 'A1C (%)',
+                                data: a1cReadings.map(r => r.level),
+                                backgroundColor: 'rgba(161, 94, 50, 0.7)',
+                                borderRadius: 8
+                            },
+                            {
+                                type: 'line',
+                                label: 'Trend',
+                                data: a1cReadings.map(r => r.level),
+                                borderColor: '#a15e32',
+                                borderWidth: 3,
+                                tension: 0.3,
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: true }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: false,
+                                min: 4,
+                                max: 15
+                            }
+                        }
+                    }
+                });
+            }
+
+            updateCharts();
+        }
+
+        function updateCharts() {
+            if (!glucoseChart || !timeChart) return;
+
+            // ✅ 7-Day Trend
+            const last7Days = glucoseReadings.slice(-7);
+            glucoseChart.data.labels = last7Days.map(reading =>
+                new Date(reading.datetime).toLocaleDateString()
+            );
+            glucoseChart.data.datasets[0].data = last7Days.map(
+                reading => reading.level || reading.bloodGlucose
+            );
+            glucoseChart.update();
+
+            // ✅ Time-based Analysis
+            const timeGroups = {
+                'before-meal': [],
+                'after-meal': [],
+                'bedtime': [],
+                'random': []
+            };
+
+            glucoseReadings.forEach(reading => {
+                const value = reading.level || reading.bloodGlucose;
+                const timing = reading.timing || reading.readingType;
+
+                if (timeGroups[timing]) {
+                    timeGroups[timing].push(value);
+                }
+            });
+
+            const averages = Object.keys(timeGroups).map(timing => {
+                const values = timeGroups[timing];
+                return values.length > 0
+                    ? Math.round(values.reduce((sum, val) => sum + val, 0) / values.length)
+                    : 0;
+            });
+
+            timeChart.data.datasets[0].data = averages;
+            timeChart.update();
+
+            // ✅ A1C History Chart Update — ADD HERE
+            if (a1cHistoryChart) {
+                const sortedA1C = [...a1cReadings].sort(
+                    (a, b) => new Date(a.date) - new Date(b.date)
+                );
+
+                const dates = sortedA1C.map(a =>
+                    new Date(a.date).toLocaleDateString()
+                );
+                const values = sortedA1C.map(a => a.level);
+
+                a1cHistoryChart.data.labels = dates;
+                a1cHistoryChart.data.datasets[0].data = values;
+                a1cHistoryChart.data.datasets[1].data = values;
+
+                a1cHistoryChart.update();
+            }
+        }
+
+        // Initialize page
+        // Check if it's a new day and auto-reset diabetes data
+        function checkDiabetesDailyReset() {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            const lastDate = localStorage.getItem('diabetes_lastDate');
+
+            if (lastDate && lastDate !== today) {
+                console.log('🩸 New day detected! Auto-resetting diabetes data...');
+                console.log('Last date:', lastDate, 'Today:', today);
+
+                // Clear diabetes data
+                const currentUser = localStorage.getItem('userEmail');
+                if (currentUser) {
+                    localStorage.removeItem(`${currentUser}_diabetesData`);
+                    localStorage.removeItem(`${currentUser}_glucoseReadings`);
+                    localStorage.removeItem(`${currentUser}_diabetesLogs`);
+                }
+
+                // Update last date
+                localStorage.setItem('diabetes_lastDate', today);
+
+                // Show notification
+                if (typeof showNotification === 'function') {
+                    showNotification('🌅 Good morning! Diabetes data has been reset for a fresh start!', 'success');
+                } else {
+                    console.log('🌅 Good morning! Diabetes data has been reset for a fresh start!');
+                }
+            } else if (!lastDate) {
+                // First time - set today as last date
+                localStorage.setItem('diabetes_lastDate', today);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Check for daily reset
+            checkDiabetesDailyReset();
+
+            await loadReadingsFromStorage(); // Load from storage first
+            setCurrentDateTime();
+            updateStats();
+            displayReadings();
+            displayTodayMedications();
+            initializeCharts();
+
+            // Set up form validation
+            const form = document.querySelector('.glucose-form');
+            const inputs = form.querySelectorAll('input[required], select[required]');
+
+            inputs.forEach(input => {
+                input.addEventListener('change', function () {
+                    if (this.value) {
+                        this.style.borderColor = 'rgba(76, 175, 80, 0.5)';
+                    } else {
+                        this.style.borderColor = 'rgba(161, 94, 50, 0.2)';
+                    }
+                });
+            });
+
+            // Add keyboard shortcut for quick entry
+            document.addEventListener('keydown', function (e) {
+                if (e.ctrlKey && e.key === 'Enter') {
+                    logGlucoseReading();
+                }
+            });
+        });
+
+        // Auto-update datetime every minute
+        setInterval(function () {
+            const datetimeInput = document.getElementById('reading-datetime');
+            if (!datetimeInput.value) {
+                setCurrentDateTime();
+            }
+        }, 60000);
+
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        function getUserKey(key) {
+            return `${currentUser}_${key}`;
+        }
+
+        const fullName = localStorage.getItem(getUserKey("name")) || "User";
+        const firstName = fullName.trim().split(" ")[0];
+        const firstInitial = firstName[0].toUpperCase();
+
+        const profileCircle = document.getElementById("user-profile");
+        const profileDropdown = document.getElementById("profileDropdown");
+
+        if (profileCircle) {
+            profileCircle.textContent = firstInitial;
+            profileCircle.title = firstName;
+        }
+
+        // Add click handler for profile dropdown
+        if (profileDropdown) {
+            profileCircle.addEventListener("click", () => {
+                profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
+            });
+
+            // Hide dropdown when clicking outside
+            window.addEventListener("click", function (e) {
+                if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.style.display = "none";
+                }
+            });
+        }
+    </script>
+    <script src="scripts/navigation.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,3757 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | Wellness Hub</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/health-insights.css" />
+    <link rel="stylesheet" href="css/commonstyles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/health-domain-common.js"></script>
+    <script src="js/mongodb-integration.js"></script>
+
+    <!-- Emergency script - runs immediately when page starts loading -->
+    <script>
+        console.log('Page loading started - emergency script running');
+        // This will run as soon as the script tag is encountered
+        window.addEventListener('load', () => {
+            console.log('Window load event - showing content');
+            setTimeout(() => {
+                const loading = document.getElementById('loading');
+                const content = document.getElementById('awareness-content');
+                if (loading && content) {
+                    console.log('Window load: Force showing content');
+                    loading.style.display = 'none';
+                    content.style.display = 'block';
+                }
+            }, 200);
+        });
+    </script>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html" class="active">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">V</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-leaf"></i> Wellness Hub</h1>
+            <p>Your central hub for wellness activities, remedies, and health support</p>
+        </div>
+
+        <div id="loading" class="loading">
+            <h3>
+                <i class="fa-solid fa-arrows-rotate"></i> Loading your wellness hub...
+            </h3>
+
+            <p>Preparing your wellness activities and health resources</p>
+
+            <button onclick="forceShowContent()" class="btn-primary" style="margin-top: 20px;">
+                <i class="fa-solid fa-rocket"></i> Show Content Now
+            </button>
+
+            <button onclick="loadUserEmergencyContacts()" class="btn-primary"
+                style="margin-top: 10px; background-color: #4CAF50;">
+                <i class="fa-solid fa-arrows-rotate"></i> Load Emergency Contacts
+            </button>
+        </div>
+
+        <!-- Emergency script to show content immediately -->
+        <script>
+            // Emergency script - runs immediately when this part of HTML loads
+            console.log('Emergency script running...');
+            setTimeout(() => {
+                console.log('Emergency timeout triggered');
+                const loading = document.getElementById('loading');
+                const content = document.getElementById('awareness-content');
+                if (loading && content) {
+                    console.log('Emergency: Hiding loading, showing content');
+                    loading.style.display = 'none';
+                    content.style.display = 'block';
+                }
+            }, 500);
+        </script>
+
+        <div id="awareness-content" style="display: none;">
+            <!-- Emergency script 2 - runs when content div loads -->
+            <script>
+                console.log('Content div loaded, emergency script 2 running...');
+                setTimeout(() => {
+                    const loading = document.getElementById('loading');
+                    const content = document.getElementById('awareness-content');
+                    if (loading && content && loading.style.display !== 'none') {
+                        console.log('Emergency 2: Force showing content');
+                        loading.style.display = 'none';
+                        content.style.display = 'block';
+                    }
+                }, 100);
+            </script>
+
+            <!-- Body Awareness Activities -->
+            <div class="awareness-card">
+                <h3><i class="fa-solid fa-yin-yang"></i> Body & Mind Awareness</h3>
+                <p class="awareness-intro">Discover your body and mind through interactive activities. Take time to
+                    connect with yourself.</p>
+
+                <div class="activities-grid">
+                    <div class="activity-item" onclick="startActivity('breathing')">
+                        <div class="activity-icon"><i class="fa-solid fa-lungs"></i></div>
+                        <h4>Breathing Exercise</h4>
+                        <p>5-minute guided breathing for relaxation</p>
+                        <div class="activity-time">5 min</div>
+                    </div>
+
+                    <div class="activity-item" onclick="startActivity('body-scan')">
+                        <div class="activity-icon"><i class="fa-solid fa-eye"></i></div>
+                        <h4>Body Scan</h4>
+                        <p>Mindful body awareness meditation</p>
+                        <div class="activity-time">10 min</div>
+                    </div>
+
+                    <div class="activity-item" onclick="startActivity('mood-check')">
+                        <div class="activity-icon"><i class="fa-regular fa-face-laugh-beam"></i></div>
+                        <h4>Mood Check-in</h4>
+                        <p>Reflect on your current emotional state</p>
+                        <div class="activity-time">3 min</div>
+                    </div>
+
+                    <div class="activity-item" onclick="startActivity('gratitude')">
+                        <div class="activity-icon"><i class="fa-solid fa-hands-praying"></i></div>
+                        <h4>Gratitude Practice</h4>
+                        <p>Focus on what you're grateful for today</p>
+                        <div class="activity-time">5 min</div>
+                    </div>
+
+                    <div class="activity-item" onclick="startActivity('stress-check')">
+                        <div class="activity-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                        <h4>Stress Assessment</h4>
+                        <p>Check your stress levels and get tips</p>
+                        <div class="activity-time">3 min</div>
+                    </div>
+
+                    <div class="activity-item" onclick="startActivity('energy-level')">
+                        <div class="activity-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <h4>Energy Check</h4>
+                        <p>Assess your current energy levels</p>
+                        <div class="activity-time">2 min</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Wellness Tips -->
+            <div class="awareness-card">
+                <h3><i class="fa-solid fa-lightbulb"></i> Daily Wellness Tips</h3>
+                <div class="tips-container">
+                    <div class="tip-item">
+                        <div class="tip-icon"><i class="fa-solid fa-cloud-sun"></i></div>
+                        <div class="tip-content">
+                            <h4>Morning Routine</h4>
+                            <p>Start your day with 5 minutes of stretching and deep breathing</p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-icon"><i class="fa-solid fa-droplet"></i></div>
+                        <div class="tip-content">
+                            <h4>Hydration Reminder</h4>
+                            <p>Drink a glass of water every hour to stay hydrated</p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-icon"><i class="fa-solid fa-person-walking"></i></div>
+                        <div class="tip-content">
+                            <h4>Movement Break</h4>
+                            <p>Take a 2-minute walk every hour to boost circulation</p>
+                        </div>
+                    </div>
+
+                    <div class="tip-item">
+                        <div class="tip-icon"><i class="fa-solid fa-moon"></i></div>
+                        <div class="tip-content">
+                            <h4>Evening Wind-down</h4>
+                            <p>Practice 10 minutes of gentle stretching before bed</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Home Remedies & Medications -->
+            <div class="awareness-card">
+                <h3><i class="fa-solid fa-house"></i> Home Remedies & Medications</h3>
+                <p class="awareness-intro">Quick access to common remedies and medication suggestions for everyday
+                    health concerns.</p>
+
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input type="text" id="remedy-search"
+                        placeholder="Search for remedies (e.g., cold, headache, stomach ache)" class="search-input">
+                    <button onclick="searchRemedies()" class="search-btn"><i class="fa-solid fa-magnifying-glass"></i>
+                        Search</button>
+                </div>
+
+                <!-- Popular Remedies -->
+                <div class="remedies-grid">
+                    <div class="remedy-item" onclick="showRemedy('cold')">
+                        <div class="remedy-icon"><i class="fa-solid fa-head-side-cough"></i></div>
+                        <h4>Common Cold</h4>
+                        <p>Natural remedies for cold relief</p>
+                    </div>
+
+                    <div class="remedy-item" onclick="showRemedy('headache')">
+                        <div class="remedy-icon"><i class="fa-solid fa-user-injured"></i></div>
+                        <h4>Headache</h4>
+                        <p>Quick headache relief methods</p>
+                    </div>
+
+                    <div class="remedy-item" onclick="showRemedy('stomach')">
+                        <div class="remedy-icon"><i class="fa-solid fa-face-dizzy"></i></div>
+                        <h4>Stomach Issues</h4>
+                        <p>Digestive problems & nausea</p>
+                    </div>
+
+                    <div class="remedy-item" onclick="showRemedy('fever')">
+                        <div class="remedy-icon"><i class="fa-solid fa-temperature-high"></i></div>
+                        <h4>Fever</h4>
+                        <p>Fever management at home</p>
+                    </div>
+
+                    <div class="remedy-item" onclick="showRemedy('cough')">
+                        <div class="remedy-icon"><i class="fa-solid fa-head-side-mask"></i></div>
+                        <h4>Cough</h4>
+                        <p>Natural cough remedies</p>
+                    </div>
+
+                    <div class="remedy-item" onclick="showRemedy('sore-throat')">
+                        <div class="remedy-icon"><i class="fa-solid fa-lungs"></i></div>
+                        <h4>Sore Throat</h4>
+                        <p>Throat pain relief</p>
+                    </div>
+
+                    <div class="remedy-item" onclick="showRemedy('insomnia')">
+                        <div class="remedy-icon"><i class="fa-solid fa-bed"></i></div>
+                        <h4>Sleep Issues</h4>
+                        <p>Better sleep naturally</p>
+                    </div>
+
+                    <div class="remedy-item" onclick="showRemedy('anxiety')">
+                        <div class="remedy-icon"><i class="fa-solid fa-face-tired"></i></div>
+                        <h4>Anxiety</h4>
+                        <p>Calm anxiety naturally</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ayurvedic Remedies -->
+            <div class="awareness-card">
+                <h3><i class="fa-solid fa-leaf"></i> Ayurvedic Remedies</h3>
+                <p class="awareness-intro">Traditional Indian medicine practices for holistic health and wellness.</p>
+
+                <div class="ayurveda-grid">
+                    <div class="ayurveda-item" onclick="showAyurveda('vata')">
+                        <div class="dosha-icon"><i class="fa-solid fa-wind"></i></div>
+                        <h4>Vata Dosha</h4>
+                        <p>Air & Space elements - Balance with warm, grounding foods</p>
+                    </div>
+
+                    <div class="ayurveda-item" onclick="showAyurveda('pitta')">
+                        <div class="dosha-icon"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                        <h4>Pitta Dosha</h4>
+                        <p>Fire & Water elements - Cool with fresh, hydrating foods</p>
+                    </div>
+
+                    <div class="ayurveda-item" onclick="showAyurveda('kapha')">
+                        <div class="dosha-icon"><i class="fa-solid fa-water"></i></div>
+                        <h4>Kapha Dosha</h4>
+                        <p>Water & Earth elements - Energize with light, warm foods</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity Results -->
+            <div id="activity-results" class="activity-results" style="display: none;">
+                <div class="results-header">
+                    <h3 id="activity-title">Activity Results</h3>
+                    <button onclick="closeActivityResults()" class="close-btn">✕</button>
+                </div>
+                <div id="activity-content">
+                    <!-- Activity content will be populated here -->
+                </div>
+            </div>
+
+            <!-- Remedy Details Modal -->
+            <div id="remedy-modal" class="modal-overlay" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 id="remedy-title">Remedy Details</h3>
+                        <button onclick="closeRemedyModal()" class="modal-close-btn">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="remedy-content">
+                            <!-- Remedy content will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Health Tips -->
+            <div class="awareness-card">
+                <h3><i class="fa-solid fa-lightbulb"></i> Quick Health Tips</h3>
+                <p class="awareness-intro">Simple, actionable tips you can implement right now for better health.</p>
+
+                <div class="tips-grid">
+                    <div class="quick-tip" onclick="showQuickTip('hydration')">
+                        <div class="tip-icon"><i class="fa-solid fa-droplet"></i></div>
+                        <h4>Hydration Hack</h4>
+                        <p>Start your day with a glass of water before coffee</p>
+                    </div>
+
+                    <div class="quick-tip" onclick="showQuickTip('posture')">
+                        <div class="tip-icon"><i class="fa-solid fa-person-rays"></i></div>
+                        <h4>Posture Check</h4>
+                        <p>Set hourly reminders to straighten your back</p>
+                    </div>
+
+                    <div class="quick-tip" onclick="showQuickTip('breathing')">
+                        <div class="tip-icon"><i class="fa-solid fa-burst"></i></div>
+                        <h4>Stress Relief</h4>
+                        <p>Take 3 deep breaths when feeling overwhelmed</p>
+                    </div>
+
+                    <div class="quick-tip" onclick="showQuickTip('movement')">
+                        <div class="tip-icon"><i class="fa-solid fa-person-walking"></i></div>
+                        <h4>Micro Movement</h4>
+                        <p>Stand up and stretch every 30 minutes</p>
+                    </div>
+
+                    <div class="quick-tip" onclick="showQuickTip('sleep')">
+                        <div class="tip-icon"><i class="fa-solid fa-moon"></i></div>
+                        <h4>Sleep Quality</h4>
+                        <p>Keep your phone away from bed for better sleep</p>
+                    </div>
+
+                    <div class="quick-tip" onclick="showQuickTip('nutrition')">
+                        <div class="tip-icon"><i class="fa-solid fa-bowl-food"></i></div>
+                        <h4>Smart Snacking</h4>
+                        <p>Keep healthy snacks visible and junk food hidden</p>
+                    </div>
+
+                    <div class="remedy-item" onclick="showQuickTip('eye-strain')">
+                        <div class="remedy-icon"><i class="fa-regular fa-eye"></i></div>
+                        <h4>Eye Strain</h4>
+                        <p>Relax tired eyes with simple tips</p>
+                    </div>
+
+                    <div class="quick-tip" onclick="showQuickTip('energy')">
+                        <div class="tip-icon"><i class="fa-solid fa-bolt"></i></div>
+                        <h4>Energy Boost</h4>
+                        <p>Natural ways to fight fatigue</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Emergency Health Contacts -->
+            <div class="awareness-card">
+                <h3><i class="fa-solid fa-triangle-exclamation"></i> Emergency Health Contacts</h3>
+                <p class="awareness-intro">Important emergency numbers and your personal contacts for urgent health
+                    situations.</p>
+
+                <div class="emergency-grid">
+                    <div class="emergency-item">
+                        <div class="emergency-icon"><i class="fa-solid fa-truck-medical"></i></div>
+                        <h4>Emergency Services</h4>
+                        <p class="emergency-number">911</p>
+                        <p class="emergency-desc">For life-threatening emergencies</p>
+                    </div>
+
+                    <div class="emergency-item">
+                        <div class="emergency-icon"><i class="fa-solid fa-hospital"></i></div>
+                        <h4>Poison Control</h4>
+                        <p class="emergency-number">1-800-222-1222</p>
+                        <p class="emergency-desc">24/7 poison emergency hotline</p>
+                    </div>
+
+                    <div class="emergency-item">
+                        <div class="emergency-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                        <h4>Crisis Text Line</h4>
+                        <p class="emergency-number">Text HOME to 741741</p>
+                        <p class="emergency-desc">Mental health crisis support</p>
+                    </div>
+
+                    <div class="emergency-item">
+                        <div class="emergency-icon"><i class="fa-solid fa-people-roof"></i></div>
+                        <h4>Emergency Contact</h4>
+                        <p class="emergency-name" id="user-emergency-name">Loading...</p>
+                        <p class="emergency-number" id="user-emergency-number">Loading...</p>
+                        <p class="emergency-desc">Your emergency contact person</p>
+                    </div>
+                </div>
+
+                <div class="emergency-note">
+                    <p><strong>Note:</strong> Personal contact information is loaded from your profile. Make sure to
+                        keep your emergency contacts updated in your profile settings.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ayurvedic Dosha Modal -->
+        <div id="ayurvedaModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeAyurvedaModal()">&times;</span>
+                <div id="ayurvedaModalContent">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div id="empty-state" class="empty-state" style="display: none;">
+            <h3>📊 No Data Available</h3>
+            <p>Start tracking your health data to see personalized insights and recommendations.</p>
+            <p>Visit your health domain trackers to begin logging your health information.</p>
+            <div style="margin-top: 20px;">
+                <button onclick="window.location.href='dashboard.html'" class="btn-primary" style="margin-right: 10px;">
+                    🏠 Go to Dashboard
+                </button>
+                <button onclick="loadAllHealthData()" class="btn-secondary" style="margin-right: 10px;">
+                    🔄 Refresh Data
+                </button>
+                <button onclick="createSampleData()" class="btn-secondary" style="margin-right: 10px;">
+                    📊 View Sample Data
+                </button>
+                <button onclick="initializeHealthInsights()" class="btn-primary" style="margin-right: 10px;">
+                    🔄 Force Load Insights
+                </button>
+                <button onclick="debugData()" class="btn-secondary">
+                    🐛 Debug Data
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+
+    <script>
+        // Initialize health insights dashboard
+        const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+        const accessToken = localStorage.getItem('accessToken');
+        let healthCharts = {};
+        let allHealthData = {};
+
+        // Load all health data from different domains
+        async function loadAllHealthData() {
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('insights-content');
+            const emptyState = document.getElementById('empty-state');
+
+            console.log('Loading health data...', { currentUser, accessToken: accessToken ? 'present' : 'missing' });
+
+            // Always try to load from localStorage first (for offline functionality)
+            const localHealthData = JSON.parse(localStorage.getItem('healthData') || '{}');
+            const hasLocalData = Object.keys(localHealthData).length > 0 ||
+                localStorage.getItem('userMeals') ||
+                localStorage.getItem('sleepData') ||
+                localStorage.getItem('selectedDomains');
+
+            if (hasLocalData) {
+                console.log('Found local data, loading insights...');
+                await loadInsightsFromLocalData();
+                loading.style.display = 'none';
+                content.style.display = 'block';
+                emptyState.style.display = 'none';
+                return;
+            }
+
+            // If no local data, try API
+            if (currentUser && accessToken) {
+                try {
+                    // Load data from all health domains using API
+                    const [healthData, nutritionData, activityData, profileData] = await Promise.all([
+                        fetchHealthData(),
+                        fetchNutritionData(),
+                        fetchActivityData(),
+                        fetchProfileData()
+                    ]);
+
+                    allHealthData = {
+                        health: healthData,
+                        nutrition: nutritionData,
+                        activity: activityData,
+                        profile: profileData
+                    };
+
+                    // Check if we have any data
+                    const hasData = Object.values(allHealthData).some(data => data && Object.keys(data).length > 0);
+                    console.log('Has data check:', hasData, allHealthData);
+
+                    if (hasData) {
+                        // Initialize dashboard with API data
+                        await initializeDashboard();
+                        loading.style.display = 'none';
+                        content.style.display = 'block';
+                        emptyState.style.display = 'none';
+                        return;
+                    }
+                } catch (error) {
+                    console.error('Error loading health data:', error);
+                }
+            }
+
+            // If no data from anywhere, show content with default values
+            console.log('No data found, showing content with default values');
+            await loadInsightsFromLocalData(); // This will show default values
+            loading.style.display = 'none';
+            content.style.display = 'block';
+            emptyState.style.display = 'none';
+        }
+
+        // Load insights from local data (same as dashboard)
+        async function loadInsightsFromLocalData() {
+            console.log('Loading insights from local data...');
+
+            // Get comprehensive user data
+            const healthData = JSON.parse(localStorage.getItem('healthData') || '{}');
+            const todayWater = healthData.water || 0;
+            const todayMiles = healthData.miles || 0;
+            const todayCalories = healthData.calories || 0;
+            const currentWeight = healthData.weight || 0;
+            const currentMood = healthData.mood || '😊';
+            const userHeight = localStorage.getItem('userHeight') || 170;
+            const userAge = localStorage.getItem('userAge') || 25;
+            const userGender = localStorage.getItem('userGender') || 'other';
+
+            // Get today's meals and nutrition data
+            const meals = JSON.parse(localStorage.getItem('userMeals') || '[]');
+            const today = new Date().toISOString().split('T')[0];
+            const todayMeals = meals.filter(meal =>
+                new Date(meal.date || new Date().toISOString()).toISOString().split('T')[0] === today
+            );
+
+            // Calculate nutrition totals
+            const nutritionTotals = todayMeals.reduce((totals, meal) => {
+                totals.calories += meal.nutrition.calories || 0;
+                totals.protein += meal.nutrition.protein || 0;
+                totals.carbs += meal.nutrition.carbs || 0;
+                totals.fat += meal.nutrition.fat || 0;
+                totals.fiber += meal.nutrition.fiber || 0;
+                return totals;
+            }, { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0 });
+
+            // Get sleep data
+            const sleepData = JSON.parse(localStorage.getItem('sleepData') || '{}');
+            const todaySleep = sleepData[today] || {};
+
+            // Get health domain data
+            const selectedDomains = JSON.parse(localStorage.getItem('selectedDomains') || '[]');
+
+            // Calculate BMI
+            const heightInMeters = userHeight / 100;
+            const bmi = currentWeight > 0 ? (currentWeight / (heightInMeters * heightInMeters)) : 0;
+
+            // Always update health score and metrics (even with default values)
+            updateHealthScoreDisplay(healthData, nutritionTotals, todaySleep);
+            updateMetrics();
+            generateAlerts();
+
+            console.log('Health insights loaded with data:', {
+                water: todayWater,
+                miles: todayMiles,
+                calories: todayCalories,
+                weight: currentWeight,
+                meals: todayMeals.length,
+                domains: selectedDomains.length
+            });
+        }
+
+        function generatePersonalizedInsights(data) {
+            const insights = [];
+
+            // Hydration Insight
+            const hydrationPercentage = (data.water / 3000) * 100;
+            if (hydrationPercentage >= 80) {
+                insights.push({
+                    icon: "💧",
+                    title: "Hydration Champion",
+                    text: `Excellent! You've consumed ${(data.water / 1000).toFixed(1)}L today (${Math.round(hydrationPercentage)}% of goal).`,
+                    recommendation: "Your hydration habits are on point! This boosts your energy and cognitive function.",
+                    priority: "excellent"
+                });
+            } else if (hydrationPercentage >= 50) {
+                insights.push({
+                    icon: "💧",
+                    title: "Good Hydration Progress",
+                    text: `You've had ${(data.water / 1000).toFixed(1)}L today. You're ${Math.round(100 - hydrationPercentage)}% away from your daily goal.`,
+                    recommendation: "Try drinking a glass of water every hour to reach your 3L target.",
+                    priority: "good"
+                });
+            } else {
+                insights.push({
+                    icon: "💧",
+                    title: "Hydration Needs Attention",
+                    text: `You've only had ${(data.water / 1000).toFixed(1)}L today. Dehydration can affect your mood and energy.`,
+                    recommendation: "Set hourly water reminders and keep a water bottle nearby.",
+                    priority: "needs-attention"
+                });
+            }
+
+            // Activity Insight
+            if (data.miles >= 5) {
+                insights.push({
+                    icon: "🏃",
+                    title: "Activity Superstar",
+                    text: `Amazing! You've walked ${data.miles.toFixed(1)} miles today. You're exceeding your daily goal!`,
+                    recommendation: "Your consistent activity is boosting your cardiovascular health and mood.",
+                    priority: "excellent"
+                });
+            } else if (data.miles >= 2) {
+                insights.push({
+                    icon: "🚶",
+                    title: "Good Activity Level",
+                    text: `You've walked ${data.miles.toFixed(1)} miles today. ${(5 - data.miles).toFixed(1)} more miles to reach your goal.`,
+                    recommendation: "Take a 10-minute walk break to boost your activity and energy.",
+                    priority: "good"
+                });
+            } else {
+                insights.push({
+                    icon: "🚶",
+                    title: "Move More Today",
+                    text: `You've only walked ${data.miles.toFixed(1)} miles today. Regular movement is crucial for health.`,
+                    recommendation: "Try a 5-minute walk every hour or take the stairs instead of elevators.",
+                    priority: "needs-attention"
+                });
+            }
+
+            // Nutrition Insight
+            if (data.nutrition.calories > 0) {
+                const calorieBalance = data.nutrition.calories - data.calories;
+                if (Math.abs(calorieBalance) <= 200) {
+                    insights.push({
+                        icon: "⚖️",
+                        title: "Perfect Calorie Balance",
+                        text: `Great balance! ${Math.round(data.nutrition.calories)} cal consumed, ${Math.round(data.calories)} cal burned.`,
+                        recommendation: "This balance helps maintain your weight and energy levels.",
+                        priority: "excellent"
+                    });
+                } else if (calorieBalance > 200) {
+                    insights.push({
+                        icon: "📈",
+                        title: "Calorie Surplus",
+                        text: `You've consumed ${Math.round(calorieBalance)} more calories than burned today.`,
+                        recommendation: "Consider adding a 20-minute walk or reducing portion sizes slightly.",
+                        priority: "good"
+                    });
+                } else {
+                    insights.push({
+                        icon: "📉",
+                        title: "Calorie Deficit",
+                        text: `You've burned ${Math.round(-calorieBalance)} more calories than consumed today.`,
+                        recommendation: "Add a healthy snack to maintain your energy and metabolism.",
+                        priority: "good"
+                    });
+                }
+
+                // Protein Insight
+                const proteinGoal = data.gender === 'male' ? 56 : 46; // grams per day
+                if (data.nutrition.protein >= proteinGoal) {
+                    insights.push({
+                        icon: "💪",
+                        title: "Protein Power",
+                        text: `Excellent! You've consumed ${Math.round(data.nutrition.protein)}g protein today.`,
+                        recommendation: "Adequate protein supports muscle health and keeps you full longer.",
+                        priority: "excellent"
+                    });
+                } else {
+                    insights.push({
+                        icon: "🥩",
+                        title: "Boost Your Protein",
+                        text: `You've had ${Math.round(data.nutrition.protein)}g protein today. Aim for ${proteinGoal}g daily.`,
+                        recommendation: "Add lean meats, eggs, or legumes to your next meal.",
+                        priority: "good"
+                    });
+                }
+            } else {
+                insights.push({
+                    icon: "🍽️",
+                    title: "Start Tracking Meals",
+                    text: "You haven't logged any meals today. Tracking helps you understand your nutrition.",
+                    recommendation: "Log your meals to get personalized nutrition insights and recommendations.",
+                    priority: "needs-attention"
+                });
+            }
+
+            // BMI Insight
+            if (data.bmi > 0) {
+                if (data.bmi >= 18.5 && data.bmi <= 24.9) {
+                    insights.push({
+                        icon: "✅",
+                        title: "Healthy BMI",
+                        text: `Your BMI is ${data.bmi.toFixed(1)}, which is in the healthy range.`,
+                        recommendation: "Maintain your current lifestyle to keep this healthy balance.",
+                        priority: "excellent"
+                    });
+                } else if (data.bmi < 18.5) {
+                    insights.push({
+                        icon: "📈",
+                        title: "Underweight BMI",
+                        text: `Your BMI is ${data.bmi.toFixed(1)}. Consider increasing your calorie intake.`,
+                        recommendation: "Focus on nutrient-dense foods and strength training to build healthy weight.",
+                        priority: "needs-attention"
+                    });
+                } else {
+                    insights.push({
+                        icon: "📉",
+                        title: "Overweight BMI",
+                        text: `Your BMI is ${data.bmi.toFixed(1)}. Small changes can make a big difference.`,
+                        recommendation: "Focus on portion control and regular exercise for gradual, sustainable weight loss.",
+                        priority: "good"
+                    });
+                }
+            }
+
+            // Mood Insight
+            const moodMessages = {
+                '😊': { message: "You're feeling great today!", priority: "excellent" },
+                '😐': { message: "You're feeling neutral today.", priority: "good" },
+                '😑': { message: "You might be feeling a bit down today.", priority: "needs-attention" },
+                '😢': { message: "You're feeling sad today.", priority: "needs-attention" },
+                '😴': { message: "You might be feeling tired today.", priority: "good" }
+            };
+
+            const moodData = moodMessages[data.mood] || moodMessages['😊'];
+            insights.push({
+                icon: data.mood,
+                title: "Mood Check",
+                text: moodData.message,
+                recommendation: data.mood === '😊' ? "Keep doing what makes you happy!" : "Try some light exercise or meditation to boost your mood.",
+                priority: moodData.priority
+            });
+
+            // Sleep Insight (if available)
+            if (data.sleep.duration) {
+                const sleepHours = data.sleep.duration;
+                if (sleepHours >= 7 && sleepHours <= 9) {
+                    insights.push({
+                        icon: "😴",
+                        title: "Perfect Sleep Duration",
+                        text: `You slept ${sleepHours.toFixed(1)} hours last night. This is optimal for your health.`,
+                        recommendation: "Maintain this sleep schedule for consistent energy and mood.",
+                        priority: "excellent"
+                    });
+                } else if (sleepHours < 7) {
+                    insights.push({
+                        icon: "😴",
+                        title: "Insufficient Sleep",
+                        text: `You only slept ${sleepHours.toFixed(1)} hours last night. Adults need 7-9 hours.`,
+                        recommendation: "Try going to bed 30 minutes earlier tonight for better rest.",
+                        priority: "needs-attention"
+                    });
+                } else {
+                    insights.push({
+                        icon: "😴",
+                        title: "Oversleeping",
+                        text: `You slept ${sleepHours.toFixed(1)} hours last night. Too much sleep can affect energy.`,
+                        recommendation: "Try to maintain 7-9 hours of sleep for optimal health.",
+                        priority: "good"
+                    });
+                }
+            }
+
+            // Health Domains Insight
+            if (data.domains.length > 0) {
+                insights.push({
+                    icon: "🏥",
+                    title: "Health Tracking",
+                    text: `You're actively tracking ${data.domains.length} health domain${data.domains.length > 1 ? 's' : ''}.`,
+                    recommendation: "Comprehensive tracking helps identify patterns and improve your health.",
+                    priority: "excellent"
+                });
+            }
+
+            // Return top 6 most relevant insights
+            return insights.slice(0, 6);
+        }
+
+        function updateInsightsDisplay(insights) {
+            // Find or create insights container
+            let insightsContainer = document.getElementById('personalized-insights');
+            if (!insightsContainer) {
+                // Create insights section
+                const content = document.getElementById('insights-content');
+                const insightsSection = document.createElement('div');
+                insightsSection.className = 'insights-section';
+                insightsSection.innerHTML = `
+                    <h3>💡 Personalized Health Insights</h3>
+                    <div id="personalized-insights" class="insights-container"></div>
+                `;
+                content.appendChild(insightsSection);
+                insightsContainer = document.getElementById('personalized-insights');
+            }
+
+            // Display insights
+            insightsContainer.innerHTML = insights.map(insight => `
+                <div class="insight-card personalized ${insight.priority}">
+                    <div class="insight-icon">${insight.icon}</div>
+                    <div class="insight-content">
+                        <div class="insight-title">${insight.title}</div>
+                        <div class="insight-text">${insight.text}</div>
+                        ${insight.recommendation ? `<div class="insight-recommendation">💡 ${insight.recommendation}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateHealthScoreDisplay(healthData, nutritionTotals, sleepData) {
+            // Calculate health score
+            const hydrationScore = Math.min((healthData.water || 0) / 30, 1) * 100; // 3L = 100%
+            const activityScore = Math.min((healthData.miles || 0) / 5, 1) * 100; // 5 miles = 100%
+            const nutritionScore = nutritionTotals.calories > 0 ? Math.min(nutritionTotals.calories / 2000, 1) * 100 : 0;
+            const sleepScore = sleepData.duration ? Math.min(sleepData.duration / 8, 1) * 100 : 0;
+
+            const overallScore = Math.round((hydrationScore + activityScore + nutritionScore + sleepScore) / 4);
+
+            // Update health score display
+            const overallScoreElement = document.getElementById('overall-score');
+            if (overallScoreElement) {
+                overallScoreElement.textContent = `${overallScore}%`;
+            }
+
+            // Update other metrics
+            const trackingStreakElement = document.getElementById('tracking-streak');
+            if (trackingStreakElement) {
+                const domains = JSON.parse(localStorage.getItem('selectedDomains') || '[]');
+                trackingStreakElement.textContent = domains.length;
+            }
+
+            const goalsAchievedElement = document.getElementById('goals-achieved');
+            if (goalsAchievedElement) {
+                let goalsMet = 0;
+                if (hydrationScore >= 80) goalsMet++;
+                if (activityScore >= 80) goalsMet++;
+                if (nutritionScore >= 80) goalsMet++;
+                if (sleepScore >= 80) goalsMet++;
+                goalsAchievedElement.textContent = `${goalsMet}/4`;
+            }
+
+            const improvementTrendElement = document.getElementById('improvement-trend');
+            if (improvementTrendElement) {
+                improvementTrendElement.textContent = overallScore >= 70 ? '📈' : overallScore >= 50 ? '➡️' : '📉';
+            }
+        }
+
+        // Create sample data for demonstration
+        async function createSampleData() {
+            try {
+                console.log('Creating sample data for demonstration...');
+
+                // Create sample health data
+                const sampleHealthData = {
+                    healthData: {
+                        weight: 65,
+                        water: 6,
+                        calories: 1200,
+                        mood: '😊',
+                        heartrate: 72,
+                        bmi: 22.5
+                    }
+                };
+
+                // Create sample nutrition data
+                const sampleNutritionData = {
+                    totalCalories: 1800,
+                    totalProtein: 85,
+                    totalCarbs: 200,
+                    totalFat: 65,
+                    averageDaily: {
+                        calories: 1800,
+                        protein: 85,
+                        carbs: 200,
+                        fat: 65
+                    }
+                };
+
+                // Create sample activity data
+                const sampleActivityData = {
+                    totalDuration: 45,
+                    totalDistance: 3.2,
+                    totalCaloriesBurned: 250,
+                    averageDaily: {
+                        duration: 45,
+                        distance: 3.2,
+                        caloriesBurned: 250
+                    }
+                };
+
+                // Create sample profile data
+                const sampleProfileData = {
+                    profile: {
+                        demographics: {
+                            firstName: 'User',
+                            lastName: 'Demo',
+                            age: 28,
+                            gender: 'Female',
+                            height: 165
+                        },
+                        healthDomains: [
+                            { name: 'diabetes', symptoms: [], data: {} },
+                            { name: 'sleep', symptoms: [], data: {} }
+                        ]
+                    }
+                };
+
+                // Set sample data
+                allHealthData = {
+                    health: sampleHealthData,
+                    nutrition: sampleNutritionData,
+                    activity: sampleActivityData,
+                    profile: sampleProfileData
+                };
+
+                console.log('Sample data created:', allHealthData);
+
+                // Initialize dashboard with sample data
+                await initializeDashboard();
+
+                // Hide empty state and show content
+                document.getElementById('empty-state').style.display = 'none';
+                document.getElementById('insights-content').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error creating sample data:', error);
+            }
+        }
+
+        // Fetch health data from API
+        async function fetchHealthData() {
+            try {
+                console.log('Fetching health data...');
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/health/me`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                console.log('Health data response:', response.status, response.ok);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Health data received:', data);
+                    return data;
+                } else {
+                    console.log('Health data fetch failed:', response.status);
+                    return {};
+                }
+            } catch (error) {
+                console.error('Error fetching health data:', error);
+                return {};
+            }
+        }
+
+        // Fetch nutrition data from API
+        async function fetchNutritionData() {
+            try {
+                console.log('Fetching nutrition data...');
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/nutrition/me/nutrition/summary?days=30`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                }).catch(() => ({ ok: false }));
+                console.log('Nutrition data response:', response.status, response.ok);
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Nutrition data received:', data);
+                    return data;
+                } else {
+                    console.log('Nutrition data fetch failed:', response.status);
+                    return {};
+                }
+            } catch (error) {
+                console.error('Error fetching nutrition data:', error);
+                return {};
+            }
+        }
+
+        // Fetch activity data from API
+        async function fetchActivityData() {
+            try {
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/activity/me/activities/summary`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                }).catch(() => ({ ok: false }));
+                return response.ok ? await response.json() : {};
+            } catch (error) {
+                console.error('Error fetching activity data:', error);
+                return {};
+            }
+        }
+
+        // Fetch profile data from API
+        async function fetchProfileData() {
+            try {
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/profile/me`, {
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+                return response.ok ? await response.json() : {};
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+                return {};
+            }
+        }
+
+        // Initialize dashboard components
+        async function initializeDashboard() {
+            calculateOverallHealthScore();
+            generateAlerts();
+            initializeCharts();
+            updateMetrics();
+        }
+
+        // Calculate overall health score
+        function calculateOverallHealthScore() {
+            // Get real data from localStorage
+            const healthData = JSON.parse(localStorage.getItem('healthData') || '{}');
+            const meals = JSON.parse(localStorage.getItem('userMeals') || '[]');
+            const sleepData = JSON.parse(localStorage.getItem('sleepData') || '{}');
+            const selectedDomains = JSON.parse(localStorage.getItem('selectedDomains') || '[]');
+
+            // Calculate individual scores
+            const hydrationScore = Math.min((healthData.water || 0) / 30, 1) * 100; // 3L = 100%
+            const activityScore = Math.min((healthData.miles || 0) / 5, 1) * 100; // 5 miles = 100%
+            const nutritionScore = meals.length > 0 ? Math.min(meals.reduce((sum, meal) => sum + (meal.nutrition?.calories || 0), 0) / 2000, 1) * 100 : 0;
+            const sleepScore = Object.keys(sleepData).length > 0 ? 100 : 0;
+
+            // Calculate overall score
+            const scores = [hydrationScore, activityScore, nutritionScore, sleepScore].filter(score => score > 0);
+            const overallScore = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
+
+            // Calculate goals achieved
+            let goalsMet = 0;
+            if (hydrationScore >= 80) goalsMet++;
+            if (activityScore >= 80) goalsMet++;
+            if (nutritionScore >= 80) goalsMet++;
+            if (sleepScore >= 80) goalsMet++;
+
+            // Update display
+            const overallScoreEl = document.getElementById('overall-score');
+            const trackingStreakEl = document.getElementById('tracking-streak');
+            const goalsAchievedEl = document.getElementById('goals-achieved');
+            const improvementTrendEl = document.getElementById('improvement-trend');
+
+            if (overallScoreEl) overallScoreEl.textContent = `${overallScore}%`;
+            if (trackingStreakEl) trackingStreakEl.textContent = selectedDomains.length;
+            if (goalsAchievedEl) goalsAchievedEl.textContent = `${goalsMet}/4`;
+            if (improvementTrendEl) {
+                improvementTrendEl.textContent = overallScore >= 70 ? '📈' : overallScore >= 50 ? '➡️' : '📉';
+            }
+        }
+
+        // Calculate domain-specific scores
+        function calculateDomainScore(domain, data) {
+            switch (domain) {
+                case 'health':
+                    return calculateHealthScore(data);
+                case 'nutrition':
+                    return calculateNutritionScore(data);
+                case 'activity':
+                    return calculateActivityScore(data);
+                case 'profile':
+                    return calculateProfileScore(data);
+                default:
+                    return 70; // Default score for other domains
+            }
+        }
+
+        function calculateHealthScore(data) {
+            if (!data || Object.keys(data).length === 0) return 0;
+
+            let score = 0;
+            let factors = 0;
+
+            // Weight factor
+            if (data.healthData && data.healthData.weight) {
+                const weight = data.healthData.weight;
+                if (weight > 0) {
+                    score += 25; // Base score for having weight data
+                    factors++;
+                }
+            }
+
+            // Water intake factor
+            if (data.healthData && data.healthData.water) {
+                const water = data.healthData.water;
+                if (water >= 8) score += 25;
+                else if (water >= 6) score += 20;
+                else if (water >= 4) score += 15;
+                else score += 10;
+                factors++;
+            }
+
+            // Mood factor
+            if (data.healthData && data.healthData.mood) {
+                const mood = data.healthData.mood;
+                score += (mood / 10) * 25;
+                factors++;
+            }
+
+            // Calories burned factor
+            if (data.healthData && data.healthData.calories) {
+                const calories = data.healthData.calories;
+                if (calories >= 2000) score += 25;
+                else if (calories >= 1500) score += 20;
+                else if (calories >= 1000) score += 15;
+                else score += 10;
+                factors++;
+            }
+
+            return factors > 0 ? Math.round(score / factors) : 0;
+        }
+
+        function calculateNutritionScore(data) {
+            if (!data || Object.keys(data).length === 0) return 0;
+
+            let score = 0;
+            let factors = 0;
+
+            // Daily calories
+            if (data.daily_calories) {
+                const calories = data.daily_calories;
+                if (calories >= 1800 && calories <= 2200) score += 30;
+                else if (calories >= 1500 && calories <= 2500) score += 20;
+                else score += 10;
+                factors++;
+            }
+
+            // Protein intake
+            if (data.daily_protein) {
+                const protein = data.daily_protein;
+                if (protein >= 50) score += 25;
+                else if (protein >= 30) score += 20;
+                else score += 10;
+                factors++;
+            }
+
+            // Meal consistency
+            if (data.meals_logged) {
+                const meals = data.meals_logged;
+                if (meals >= 3) score += 25;
+                else if (meals >= 2) score += 20;
+                else score += 10;
+                factors++;
+            }
+
+            // Hydration
+            if (data.daily_water) {
+                const water = data.daily_water;
+                if (water >= 8) score += 20;
+                else if (water >= 6) score += 15;
+                else score += 10;
+                factors++;
+            }
+
+            return factors > 0 ? Math.round(score / factors) : 0;
+        }
+
+        function calculateActivityScore(data) {
+            if (!data || Object.keys(data).length === 0) return 0;
+
+            let score = 0;
+            let factors = 0;
+
+            // Activity duration
+            if (data.total_duration) {
+                const duration = data.total_duration;
+                if (duration >= 60) score += 40;
+                else if (duration >= 30) score += 30;
+                else if (duration >= 15) score += 20;
+                else score += 10;
+                factors++;
+            }
+
+            // Activity frequency
+            if (data.activities_count) {
+                const count = data.activities_count;
+                if (count >= 5) score += 30;
+                else if (count >= 3) score += 25;
+                else if (count >= 1) score += 20;
+                else score += 10;
+                factors++;
+            }
+
+            // Calories burned
+            if (data.calories_burned) {
+                const calories = data.calories_burned;
+                if (calories >= 500) score += 30;
+                else if (calories >= 300) score += 25;
+                else if (calories >= 100) score += 20;
+                else score += 10;
+                factors++;
+            }
+
+            return factors > 0 ? Math.round(score / factors) : 0;
+        }
+
+        function calculateProfileScore(data) {
+            if (!data || Object.keys(data).length === 0) return 0;
+
+            let score = 0;
+            let factors = 0;
+
+            // Profile completeness
+            if (data.profile && data.profile.demographics) {
+                const demo = data.profile.demographics;
+                if (demo.firstName && demo.lastName) score += 25;
+                if (demo.dob) score += 25;
+                if (demo.gender) score += 25;
+                if (demo.height && demo.height > 0) score += 25;
+                factors++;
+            }
+
+            // Health domains
+            if (data.profile && data.profile.healthDomains) {
+                const domains = data.profile.healthDomains;
+                if (domains.length >= 3) score += 30;
+                else if (domains.length >= 2) score += 25;
+                else if (domains.length >= 1) score += 20;
+                else score += 10;
+                factors++;
+            }
+
+            return factors > 0 ? Math.round(score / factors) : 0;
+        }
+
+        // Calculate tracking streak
+        function calculateTrackingStreak() {
+            const today = new Date();
+            let streak = 0;
+
+            for (let i = 0; i < 30; i++) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                const dateStr = date.toISOString().split('T')[0];
+
+                let hasData = false;
+                Object.values(allHealthData).forEach(data => {
+                    if (data && data.some(entry =>
+                        new Date(entry.timestamp || entry.date).toISOString().split('T')[0] === dateStr
+                    )) {
+                        hasData = true;
+                    }
+                });
+
+                if (hasData) {
+                    streak++;
+                } else {
+                    break;
+                }
+            }
+
+            return streak;
+        }
+
+        // Calculate goals achieved
+        function calculateGoalsAchieved() {
+            // This would integrate with goal tracking from each domain
+            // For now, return a placeholder
+            return Math.floor(Math.random() * 5) + 1;
+        }
+
+        // Calculate improvement trend
+        function calculateImprovementTrend() {
+            // Analyze trends across domains
+            return "📈 Improving";
+        }
+
+        // Generate personalized recommendations
+
+        // Generate health alerts
+        function generateAlerts() {
+            const container = document.getElementById('alerts-container');
+            const alerts = [];
+
+            // Get data from localStorage
+            const healthData = JSON.parse(localStorage.getItem('healthData') || '{}');
+            const meals = JSON.parse(localStorage.getItem('userMeals') || '[]');
+            const sleepData = JSON.parse(localStorage.getItem('sleepData') || '{}');
+
+            // Check for concerning patterns in health data
+            if (healthData.water && healthData.water < 1000) {
+                alerts.push("⚠️ Low water intake detected. Aim for at least 2-3L daily for optimal hydration.");
+            }
+
+            if (healthData.mood && healthData.mood === '😢') {
+                alerts.push("⚠️ Your mood seems low today. Consider activities that boost your spirits.");
+            }
+
+            if (healthData.weight && (healthData.weight < 40 || healthData.weight > 150)) {
+                alerts.push("⚠️ Your weight reading seems unusual. Please verify and consult with a healthcare provider if needed.");
+            }
+
+            // Check nutrition data
+            if (meals.length === 0) {
+                alerts.push("⚠️ No meals logged today. Start tracking your nutrition for better health insights.");
+            } else {
+                const totalCalories = meals.reduce((sum, meal) => sum + (meal.nutrition?.calories || 0), 0);
+                if (totalCalories < 1000) {
+                    alerts.push("⚠️ Very low calorie intake detected. Ensure you're meeting your body's energy needs.");
+                }
+            }
+
+            // Check activity data
+            if (healthData.miles && healthData.miles < 1) {
+                alerts.push("⚠️ Very low activity level. Regular physical activity is important for overall health.");
+            }
+
+            // Check sleep data
+            if (Object.keys(sleepData).length === 0) {
+                alerts.push("💡 Start tracking your sleep to get insights into your rest patterns.");
+            }
+
+            if (alerts.length === 0) {
+                alerts.push("✅ No health alerts at this time. Keep up the good work!");
+                alerts.push("💡 Continue tracking your health data for personalized insights and recommendations.");
+            }
+
+            if (container) {
+                container.innerHTML = alerts.map(alert => `
+                    <div class="alert-item">
+                        <div class="alert-text">${alert}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Initialize charts
+        function initializeCharts() {
+            console.log('Initializing charts...');
+
+            if (typeof Chart === 'undefined') {
+                console.log('Chart.js not loaded, retrying...');
+                setTimeout(initializeCharts, 100);
+                return;
+            }
+
+            console.log('Chart.js loaded, creating charts...');
+
+            // Health Score Trend Chart
+            const scoreCtx = document.getElementById('healthScoreChart');
+            if (scoreCtx) {
+                // Generate sample data for the last 7 days
+                const labels = [];
+                const data = [];
+                const today = new Date();
+
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - i);
+                    labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                    data.push(Math.floor(Math.random() * 30) + 60); // Random score between 60-90
+                }
+
+                healthCharts.score = new Chart(scoreCtx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Health Score',
+                            data: data,
+                            borderColor: '#2ecc71',
+                            backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true, max: 100 }
+                        }
+                    }
+                });
+            }
+
+            // Domain Activity Chart
+            const activityCtx = document.getElementById('domainActivityChart');
+            if (activityCtx) {
+                const domainNames = Object.keys(allHealthData);
+                const activityCounts = domainNames.map(domain =>
+                    allHealthData[domain] ? allHealthData[domain].length : 0
+                );
+
+                healthCharts.activity = new Chart(activityCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: domainNames.map(name => name.charAt(0).toUpperCase() + name.slice(1)),
+                        datasets: [{
+                            label: 'Data Entries',
+                            data: activityCounts,
+                            backgroundColor: [
+                                '#e74c3c', '#3498db', '#2ecc71', '#f39c12', '#9b59b6',
+                                '#1abc9c', '#34495e', '#e67e22', '#95a5a6', '#f1c40f'
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: false }
+                        },
+                        scales: {
+                            y: { beginAtZero: true }
+                        }
+                    }
+                });
+            }
+
+            updateCharts();
+        }
+
+        // Update charts with data
+        function updateCharts() {
+            // Update health score chart with mock data
+            if (healthCharts.score) {
+                const labels = [];
+                const scores = [];
+
+                for (let i = 29; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    labels.push(date.toLocaleDateString());
+                    scores.push(Math.floor(Math.random() * 20) + 70); // Mock scores
+                }
+
+                healthCharts.score.data.labels = labels;
+                healthCharts.score.data.datasets[0].data = scores;
+                healthCharts.score.update();
+            }
+        }
+
+        // Update metrics
+        function updateMetrics() {
+            // Get real data from localStorage
+            const healthData = JSON.parse(localStorage.getItem('healthData') || '{}');
+            const meals = JSON.parse(localStorage.getItem('userMeals') || '[]');
+            const sleepData = JSON.parse(localStorage.getItem('sleepData') || '{}');
+            const selectedDomains = JSON.parse(localStorage.getItem('selectedDomains') || '[]');
+
+            // Calculate weekly metrics
+            const today = new Date();
+            const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+            // Count activities (water logs, meals, sleep entries)
+            const weeklyActivities = meals.filter(meal =>
+                new Date(meal.date || new Date().toISOString()) >= weekAgo
+            ).length + Object.keys(sleepData).filter(date =>
+                new Date(date) >= weekAgo
+            ).length + (healthData.water > 0 ? 1 : 0);
+
+            // Count readings (health domain entries)
+            const weeklyReadings = selectedDomains.length * 7; // Assuming daily entries
+
+            // Calculate goals met
+            let goalsMet = 0;
+            const totalGoals = 4; // hydration, activity, nutrition, sleep
+            if (healthData.water >= 2000) goalsMet++;
+            if (healthData.miles >= 5) goalsMet++;
+            if (meals.length > 0) goalsMet++;
+            if (Object.keys(sleepData).length > 0) goalsMet++;
+
+            // Calculate weekly score
+            const hydrationScore = Math.min((healthData.water || 0) / 30, 1) * 100;
+            const activityScore = Math.min((healthData.miles || 0) / 5, 1) * 100;
+            const nutritionScore = meals.length > 0 ? 100 : 0;
+            const sleepScore = Object.keys(sleepData).length > 0 ? 100 : 0;
+            const weeklyScore = Math.round((hydrationScore + activityScore + nutritionScore + sleepScore) / 4);
+
+            // Update weekly summary metrics
+            const weeklyActivitiesEl = document.getElementById('weekly-activities');
+            const weeklyReadingsEl = document.getElementById('weekly-readings');
+            const weeklyGoalsEl = document.getElementById('weekly-goals');
+            const weeklyScoreEl = document.getElementById('weekly-score');
+
+            if (weeklyActivitiesEl) weeklyActivitiesEl.textContent = weeklyActivities;
+            if (weeklyReadingsEl) weeklyReadingsEl.textContent = weeklyReadings;
+            if (weeklyGoalsEl) weeklyGoalsEl.textContent = `${goalsMet}/${totalGoals}`;
+            if (weeklyScoreEl) weeklyScoreEl.textContent = `${weeklyScore}%`;
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded, initializing health insights...');
+
+            // Immediate action - show content right away
+            console.log('DOMContentLoaded: Immediately showing content');
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('awareness-content');
+            const emptyState = document.getElementById('empty-state');
+
+            if (loading) {
+                loading.style.display = 'none';
+                console.log('DOMContentLoaded: Hidden loading');
+            }
+            if (content) {
+                content.style.display = 'block';
+                console.log('DOMContentLoaded: Shown content');
+            }
+            if (emptyState) {
+                emptyState.style.display = 'none';
+                console.log('DOMContentLoaded: Hidden empty state');
+            }
+
+            // Try to load emergency contacts
+            try {
+                console.log('Calling loadUserEmergencyContacts...');
+                loadUserEmergencyContacts();
+                console.log('loadUserEmergencyContacts called successfully');
+            } catch (error) {
+                console.log('Emergency contacts failed, but page shows:', error);
+            }
+
+            // Multiple fallbacks
+            setTimeout(() => {
+                if (loading && loading.style.display !== 'none') {
+                    console.log('Fallback 1: Force showing content');
+                    forceShowContent();
+                }
+            }, 1000);
+
+            setTimeout(() => {
+                if (loading && loading.style.display !== 'none') {
+                    console.log('Fallback 2: Force showing content');
+                    forceShowContent();
+                }
+            }, 3000);
+
+            // Also try to load emergency contacts after a delay
+            setTimeout(() => {
+                console.log('Delayed emergency contact loading...');
+                try {
+                    loadUserEmergencyContacts();
+                } catch (error) {
+                    console.log('Delayed emergency contacts failed:', error);
+                }
+            }, 2000);
+        });
+
+        // Simple initialization function that will definitely work
+        function initializeHealthInsights() {
+            console.log('Initializing body & mind awareness activities...');
+
+            // Simple, direct approach - just show the content
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('awareness-content');
+            const emptyState = document.getElementById('empty-state');
+
+            console.log('Elements found:', { loading, content, emptyState });
+
+            if (loading) {
+                loading.style.display = 'none';
+                console.log('Hidden loading element');
+            }
+            if (content) {
+                content.style.display = 'block';
+                console.log('Showed awareness content element');
+            }
+            if (emptyState) {
+                emptyState.style.display = 'none';
+                console.log('Hidden empty state element');
+            }
+
+            // Try to load emergency contacts, but don't let it block the page
+            try {
+                loadUserEmergencyContacts();
+            } catch (error) {
+                console.log('Emergency contacts loading failed, but page will still show');
+            }
+
+            console.log('Body & mind awareness activities initialized successfully');
+        }
+
+        // Load user's personal emergency contacts
+        function loadUserEmergencyContacts() {
+            console.log('🚨 loadUserEmergencyContacts function called!');
+            console.log('Loading user emergency contacts...');
+
+            // Debug: Check what's in localStorage
+            console.log('=== DEBUGGING LOCAL STORAGE ===');
+            console.log('userEmail:', localStorage.getItem('userEmail'));
+            console.log('accessToken exists:', !!localStorage.getItem('accessToken'));
+            console.log('accessToken length:', localStorage.getItem('accessToken')?.length || 0);
+            console.log('userProfile:', localStorage.getItem('userProfile'));
+            console.log('userData:', localStorage.getItem('userData'));
+            console.log('=== END DEBUGGING ===');
+
+            // Always try to fetch from API first to get the latest data
+            fetchUserEmergencyContactsFromAPI();
+
+            // Also try to get user data from localStorage as fallback
+            const userProfile = JSON.parse(localStorage.getItem('userProfile') || '{}');
+            const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+
+            console.log('Local storage userProfile:', userProfile);
+            console.log('Local storage userData:', userData);
+            console.log('Emergency contact from localStorage:', {
+                name: userProfile.profile?.medical?.emergencyContact || userData.profile?.medical?.emergencyContact,
+                phone: userProfile.profile?.medical?.emergencyPhone || userData.profile?.medical?.emergencyPhone
+            });
+
+            // Check for emergency contact data in the correct structure
+            let emergencyName = userProfile.profile?.medical?.emergencyContact || userData.profile?.medical?.emergencyContact || 'Not provided';
+            let emergencyNumber = userProfile.profile?.medical?.emergencyPhone || userData.profile?.medical?.emergencyPhone || 'Not provided';
+
+            // TEMPORARY: If no data found, show test data for debugging
+            if (emergencyName === 'Not provided' && emergencyNumber === 'Not provided') {
+                console.log('No emergency contact data found, showing test data for debugging');
+                emergencyName = 'Chinmaya (Test)';
+                emergencyNumber = '9060960151 (Test)';
+            }
+
+            // Update the emergency contact display
+            const emergencyNameEl = document.getElementById('user-emergency-name');
+            const emergencyNumberEl = document.getElementById('user-emergency-number');
+
+            console.log('Emergency contact elements found:', {
+                nameElement: !!emergencyNameEl,
+                numberElement: !!emergencyNumberEl
+            });
+
+            if (emergencyNameEl) {
+                emergencyNameEl.textContent = emergencyName;
+                if (emergencyName === 'Not provided') {
+                    emergencyNameEl.style.color = '#999';
+                    emergencyNameEl.style.fontStyle = 'italic';
+                } else {
+                    emergencyNameEl.style.color = '#333';
+                    emergencyNameEl.style.fontStyle = 'normal';
+                }
+            }
+
+            if (emergencyNumberEl) {
+                emergencyNumberEl.textContent = emergencyNumber;
+                if (emergencyNumber === 'Not provided') {
+                    emergencyNumberEl.style.color = '#999';
+                    emergencyNumberEl.style.fontStyle = 'italic';
+                } else {
+                    emergencyNumberEl.style.color = '#d32f2f';
+                    emergencyNumberEl.style.fontStyle = 'normal';
+                }
+            }
+
+            console.log('Emergency contact loaded from localStorage:', {
+                name: emergencyName,
+                phone: emergencyNumber
+            });
+        }
+
+        // Fetch user emergency contacts from API
+        async function fetchUserEmergencyContactsFromAPI() {
+            const currentUser = localStorage.getItem('userEmail');
+            const accessToken = localStorage.getItem('accessToken');
+
+            console.log('API fetch - Current user:', currentUser);
+            console.log('API fetch - Access token exists:', !!accessToken);
+
+            if (!currentUser || !accessToken) {
+                console.log('No user or token available for API fetch');
+                return;
+            }
+
+            try {
+                console.log('Fetching emergency contact from API...');
+
+                // Try to fetch user profile data
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/profile/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('API response status:', response.status);
+                console.log('API response ok:', response.ok);
+
+                if (response.ok) {
+                    const profileData = await response.json();
+                    console.log('Profile data received:', profileData);
+                    console.log('Profile structure:', profileData.profile);
+                    console.log('Medical data:', profileData.profile?.medical);
+                    console.log('Emergency contact from API:', {
+                        name: profileData.profile?.medical?.emergencyContact,
+                        phone: profileData.profile?.medical?.emergencyPhone
+                    });
+
+                    // Update emergency contact with API data
+                    const emergencyNameEl = document.getElementById('user-emergency-name');
+                    const emergencyNumberEl = document.getElementById('user-emergency-number');
+
+                    const emergencyName = profileData.profile?.medical?.emergencyContact || 'Not provided';
+                    const emergencyNumber = profileData.profile?.medical?.emergencyPhone || 'Not provided';
+
+                    console.log('Extracted emergency data:', {
+                        name: emergencyName,
+                        phone: emergencyNumber
+                    });
+
+                    if (emergencyNameEl) {
+                        emergencyNameEl.textContent = emergencyName;
+                        if (emergencyName !== 'Not provided') {
+                            emergencyNameEl.style.color = '#333';
+                            emergencyNameEl.style.fontStyle = 'normal';
+                        } else {
+                            emergencyNameEl.style.color = '#999';
+                            emergencyNameEl.style.fontStyle = 'italic';
+                        }
+                    }
+
+                    if (emergencyNumberEl) {
+                        emergencyNumberEl.textContent = emergencyNumber;
+                        if (emergencyNumber !== 'Not provided') {
+                            emergencyNumberEl.style.color = '#d32f2f';
+                            emergencyNumberEl.style.fontStyle = 'normal';
+                        } else {
+                            emergencyNumberEl.style.color = '#999';
+                            emergencyNumberEl.style.fontStyle = 'italic';
+                        }
+                    }
+
+                    // Save to localStorage for future use
+                    localStorage.setItem('userProfile', JSON.stringify(profileData));
+
+                    console.log('Emergency contact updated from API:', {
+                        name: emergencyName,
+                        phone: emergencyNumber
+                    });
+
+                } else {
+                    const errorText = await response.text();
+                    console.log('Failed to fetch profile data:', response.status, errorText);
+                }
+
+            } catch (error) {
+                console.error('Error fetching emergency contact from API:', error);
+            }
+        }
+
+        // Ayurvedic Dosha Modal Functions
+        function showAyurveda(doshaType) {
+            const modal = document.getElementById('ayurvedaModal');
+            const content = document.getElementById('ayurvedaModalContent');
+
+            const doshaData = {
+                vata: {
+                    icon: '🌪️',
+                    name: 'Vata Dosha',
+                    elements: 'Air & Space',
+                    description: 'Governs movement, circulation, breathing, and nervous system',
+                    characteristics: {
+                        physical: ['Thin, light frame', 'Dry, cool skin', 'Small, quick eyes', 'Brittle nails', 'Irregular teeth'],
+                        mental: ['Creative, enthusiastic', 'Quick-thinking', 'Light sleeper', 'Anxious when stressed', 'Quick to learn and forget'],
+                        digestive: ['Irregular appetite', 'Variable digestion', 'Prone to gas/bloating', 'May be constipated', 'Likes warm, sweet foods']
+                    },
+                    balancing: {
+                        foods: ['Warm soups and stews', 'Cooked vegetables', 'Nuts and seeds', 'Warm spices (ginger, cinnamon)', 'Healthy fats (ghee, olive oil)'],
+                        lifestyle: ['Regular routine', 'Warm environment', 'Gentle exercise', 'Adequate rest', 'Warm baths']
+                    }
+                },
+                pitta: {
+                    icon: '🔥',
+                    name: 'Pitta Dosha',
+                    elements: 'Fire & Water',
+                    description: 'Governs digestion, metabolism, and body temperature',
+                    characteristics: {
+                        physical: ['Medium, muscular build', 'Warm, fair skin', 'Sharp, penetrating eyes', 'Soft, flexible nails', 'Medium-sized teeth'],
+                        mental: ['Intelligent, focused', 'Sharp memory', 'Moderate sleep', 'Angry when stressed', 'Decisive, goal-oriented'],
+                        digestive: ['Strong, regular appetite', 'Strong digestion', 'May have heartburn', 'Regular bowel movements', 'Likes cool, sweet foods']
+                    },
+                    balancing: {
+                        foods: ['Fresh fruits (cucumber, melons)', 'Leafy greens', 'Cooling herbs (mint, cilantro)', 'Dairy products', 'Sweet and bitter tastes'],
+                        lifestyle: ['Cool environment', 'Moderate exercise', 'Regular meal times', 'Avoid excessive heat', 'Cool baths']
+                    }
+                },
+                kapha: {
+                    icon: '🌊',
+                    name: 'Kapha Dosha',
+                    elements: 'Water & Earth',
+                    description: 'Governs structure, stability, and lubrication in the body',
+                    characteristics: {
+                        physical: ['Large, solid build', 'Thick, smooth skin', 'Large, attractive eyes', 'Thick, strong nails', 'Large, white teeth'],
+                        mental: ['Calm, patient', 'Slow to learn, retains well', 'Deep, heavy sleep', 'Withdraws when stressed', 'Slow, methodical decisions'],
+                        digestive: ['Steady appetite', 'Slow but steady digestion', 'Regular, well-formed stools', 'Can skip meals easily', 'Likes light, warm foods']
+                    },
+                    balancing: {
+                        foods: ['Light, dry foods', 'Pungent spices (pepper, cayenne)', 'Light proteins (fish, chicken)', 'Warm beverages', 'Bitter and astringent tastes'],
+                        lifestyle: ['Active lifestyle', 'Regular exercise', 'Warm environment', 'Light meals', 'Stimulating activities']
+                    }
+                }
+            };
+
+            const dosha = doshaData[doshaType];
+
+            content.innerHTML = `
+                <div class="dosha-detail">
+                    <h2>${dosha.icon} ${dosha.name}</h2>
+                    <p><strong>Elements:</strong> ${dosha.elements}</p>
+                    <p>${dosha.description}</p>
+                    
+                    <div class="identification-section">
+                        <h4>🔍 How to Identify This Dosha</h4>
+                        <div class="trait-list">
+                            <div class="trait-item">
+                                <strong>Physical Traits:</strong>
+                                <ul style="margin: 8px 0; padding-left: 20px;">
+                                    ${dosha.characteristics.physical.map(trait => `<li>${trait}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="trait-item">
+                                <strong>Mental Traits:</strong>
+                                <ul style="margin: 8px 0; padding-left: 20px;">
+                                    ${dosha.characteristics.mental.map(trait => `<li>${trait}</li>`).join('')}
+                                </ul>
+                            </div>
+                            <div class="trait-item">
+                                <strong>Digestive Patterns:</strong>
+                                <ul style="margin: 8px 0; padding-left: 20px;">
+                                    ${dosha.characteristics.digestive.map(trait => `<li>${trait}</li>`).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>🥗 Balancing Foods</h3>
+                    <ul style="margin-left: 20px;">
+                        ${dosha.balancing.foods.map(food => `<li>${food}</li>`).join('')}
+                    </ul>
+                    
+                    <h3>🏃‍♀️ Lifestyle Tips</h3>
+                    <ul style="margin-left: 20px;">
+                        ${dosha.balancing.lifestyle.map(tip => `<li>${tip}</li>`).join('')}
+                    </ul>
+                </div>
+            `;
+
+            modal.style.display = 'flex';
+        }
+
+        function closeAyurvedaModal() {
+            document.getElementById('ayurvedaModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function (event) {
+            const modal = document.getElementById('ayurvedaModal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Emergency function to force show content
+        function forceShowContent() {
+            console.log('Force showing content...');
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('awareness-content');
+            const emptyState = document.getElementById('empty-state');
+
+            if (loading) {
+                loading.style.display = 'none';
+                console.log('Hidden loading element');
+            }
+            if (content) {
+                content.style.display = 'block';
+                console.log('Showed awareness content element');
+            }
+            if (emptyState) {
+                emptyState.style.display = 'none';
+                console.log('Hidden empty state element');
+            }
+
+            // Load emergency contacts
+            loadUserEmergencyContacts();
+        }
+
+        // Make functions globally available
+        window.forceShowContent = forceShowContent;
+        window.loadUserEmergencyContacts = loadUserEmergencyContacts;
+
+        // Immediate fallback - run as soon as script loads
+        setTimeout(() => {
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('awareness-content');
+            if (loading && content && loading.style.display !== 'none' && content.style.display === 'none') {
+                console.log('Immediate fallback: Showing content');
+                forceShowContent();
+            }
+        }, 100);
+
+        // Simple health score update
+        function updateHealthScore() {
+            console.log('Updating health score...');
+
+            // Get data from localStorage
+            const healthData = JSON.parse(localStorage.getItem('healthData') || '{}');
+            const meals = JSON.parse(localStorage.getItem('userMeals') || '[]');
+            const sleepData = JSON.parse(localStorage.getItem('sleepData') || '{}');
+            const selectedDomains = JSON.parse(localStorage.getItem('selectedDomains') || '[]');
+
+            // Calculate scores
+            const hydrationScore = Math.min((healthData.water || 0) / 30, 1) * 100;
+            const activityScore = Math.min((healthData.miles || 0) / 5, 1) * 100;
+            const nutritionScore = meals.length > 0 ? 100 : 0;
+            const sleepScore = Object.keys(sleepData).length > 0 ? 100 : 0;
+
+            const scores = [hydrationScore, activityScore, nutritionScore, sleepScore].filter(score => score > 0);
+            const overallScore = scores.length > 0 ? Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length) : 0;
+
+            // Calculate goals met
+            let goalsMet = 0;
+            if (hydrationScore >= 80) goalsMet++;
+            if (activityScore >= 80) goalsMet++;
+            if (nutritionScore >= 80) goalsMet++;
+            if (sleepScore >= 80) goalsMet++;
+
+            // Update display elements
+            const overallScoreEl = document.getElementById('overall-score');
+            const trackingStreakEl = document.getElementById('tracking-streak');
+            const goalsAchievedEl = document.getElementById('goals-achieved');
+            const improvementTrendEl = document.getElementById('improvement-trend');
+
+            if (overallScoreEl) {
+                overallScoreEl.textContent = `${overallScore}%`;
+                console.log('Updated overall score:', overallScore);
+            }
+            if (trackingStreakEl) {
+                trackingStreakEl.textContent = selectedDomains.length;
+                console.log('Updated tracking streak:', selectedDomains.length);
+            }
+            if (goalsAchievedEl) {
+                goalsAchievedEl.textContent = `${goalsMet}/4`;
+                console.log('Updated goals achieved:', goalsMet);
+            }
+            if (improvementTrendEl) {
+                improvementTrendEl.textContent = overallScore >= 70 ? '📈' : overallScore >= 50 ? '➡️' : '📉';
+                console.log('Updated improvement trend');
+            }
+        }
+
+        // Simple weekly metrics update
+        function updateWeeklyMetrics() {
+            console.log('Updating weekly metrics...');
+
+            const healthData = JSON.parse(localStorage.getItem('healthData') || '{}');
+            const meals = JSON.parse(localStorage.getItem('userMeals') || '[]');
+            const sleepData = JSON.parse(localStorage.getItem('sleepData') || '{}');
+            const selectedDomains = JSON.parse(localStorage.getItem('selectedDomains') || '[]');
+
+            // Calculate weekly activities
+            const weeklyActivities = meals.length + Object.keys(sleepData).length + (healthData.water > 0 ? 1 : 0);
+            const weeklyReadings = selectedDomains.length * 7;
+
+            // Calculate goals met
+            let goalsMet = 0;
+            if (healthData.water >= 2000) goalsMet++;
+            if (healthData.miles >= 5) goalsMet++;
+            if (meals.length > 0) goalsMet++;
+            if (Object.keys(sleepData).length > 0) goalsMet++;
+
+            // Calculate weekly score
+            const hydrationScore = Math.min((healthData.water || 0) / 30, 1) * 100;
+            const activityScore = Math.min((healthData.miles || 0) / 5, 1) * 100;
+            const nutritionScore = meals.length > 0 ? 100 : 0;
+            const sleepScore = Object.keys(sleepData).length > 0 ? 100 : 0;
+            const weeklyScore = Math.round((hydrationScore + activityScore + nutritionScore + sleepScore) / 4);
+
+            // Update elements
+            const weeklyActivitiesEl = document.getElementById('weekly-activities');
+            const weeklyReadingsEl = document.getElementById('weekly-readings');
+            const weeklyGoalsEl = document.getElementById('weekly-goals');
+            const weeklyScoreEl = document.getElementById('weekly-score');
+
+            if (weeklyActivitiesEl) {
+                weeklyActivitiesEl.textContent = weeklyActivities;
+                console.log('Updated weekly activities:', weeklyActivities);
+            }
+            if (weeklyReadingsEl) {
+                weeklyReadingsEl.textContent = weeklyReadings;
+                console.log('Updated weekly readings:', weeklyReadings);
+            }
+            if (weeklyGoalsEl) {
+                weeklyGoalsEl.textContent = `${goalsMet}/4`;
+                console.log('Updated weekly goals:', goalsMet);
+            }
+            if (weeklyScoreEl) {
+                weeklyScoreEl.textContent = `${weeklyScore}%`;
+                console.log('Updated weekly score:', weeklyScore);
+            }
+        }
+
+        // Simple alerts update
+        function updateAlerts() {
+            console.log('Updating alerts...');
+
+            const container = document.getElementById('alerts-container');
+            if (!container) {
+                console.log('Alerts container not found');
+                return;
+            }
+
+            const healthData = JSON.parse(localStorage.getItem('healthData') || '{}');
+            const meals = JSON.parse(localStorage.getItem('userMeals') || '[]');
+            const sleepData = JSON.parse(localStorage.getItem('sleepData') || '{}');
+
+            const alerts = [];
+
+            // Check for alerts
+            if (healthData.water && healthData.water < 1000) {
+                alerts.push("⚠️ Low water intake detected. Aim for at least 2-3L daily for optimal hydration.");
+            }
+
+            if (meals.length === 0) {
+                alerts.push("⚠️ No meals logged today. Start tracking your nutrition for better health insights.");
+            }
+
+            if (healthData.miles && healthData.miles < 1) {
+                alerts.push("⚠️ Very low activity level. Regular physical activity is important for overall health.");
+            }
+
+            if (Object.keys(sleepData).length === 0) {
+                alerts.push("💡 Start tracking your sleep to get insights into your rest patterns.");
+            }
+
+            if (alerts.length === 0) {
+                alerts.push("✅ No health alerts at this time. Keep up the good work!");
+                alerts.push("💡 Continue tracking your health data for personalized insights and recommendations.");
+            }
+
+            container.innerHTML = alerts.map(alert => `
+                <div class="alert-item">
+                    <div class="alert-text">${alert}</div>
+                </div>
+            `).join('');
+
+            console.log('Updated alerts:', alerts.length);
+        }
+
+        // Debug function to check what data is available
+        function debugData() {
+            console.log('=== DEBUGGING HEALTH INSIGHTS DATA ===');
+
+            const healthData = JSON.parse(localStorage.getItem('healthData') || '{}');
+            const meals = JSON.parse(localStorage.getItem('userMeals') || '[]');
+            const sleepData = JSON.parse(localStorage.getItem('sleepData') || '{}');
+            const selectedDomains = JSON.parse(localStorage.getItem('selectedDomains') || '[]');
+
+            console.log('Health Data:', healthData);
+            console.log('Meals:', meals);
+            console.log('Sleep Data:', sleepData);
+            console.log('Selected Domains:', selectedDomains);
+
+            // Check if elements exist
+            const overallScoreEl = document.getElementById('overall-score');
+            const alertsContainer = document.getElementById('alerts-container');
+            const content = document.getElementById('insights-content');
+
+            console.log('Overall Score Element:', overallScoreEl);
+            console.log('Alerts Container:', alertsContainer);
+            console.log('Content Element:', content);
+
+            console.log('=== END DEBUG ===');
+        }
+
+        // Make debug function available globally
+        window.debugData = debugData;
+
+        // Activity functions
+        function startActivity(activityType) {
+            console.log('Starting activity:', activityType);
+
+            const resultsDiv = document.getElementById('activity-results');
+            const titleDiv = document.getElementById('activity-title');
+            const contentDiv = document.getElementById('activity-content');
+
+            if (!resultsDiv || !titleDiv || !contentDiv) {
+                console.log('Activity results elements not found');
+                return;
+            }
+
+            // Set title and content based on activity type
+            switch (activityType) {
+                case 'breathing':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-lungs icon-title"></i> Breathing Exercise';
+                    contentDiv.innerHTML = `
+            <div class="breathing-exercise">
+                <h4>5-Minute Guided Breathing</h4>
+                <p>Find a comfortable position and follow the breathing pattern below:</p>
+                <div class="breathing-pattern">
+                    <div class="breath-step">
+                        <h5>1. Inhale (4 seconds)</h5>
+                        <p>Breathe in slowly through your nose, counting to 4</p>
+                    </div>
+                    <div class="breath-step">
+                        <h5>2. Hold (4 seconds)</h5>
+                        <p>Hold your breath gently, counting to 4</p>
+                    </div>
+                    <div class="breath-step">
+                        <h5>3. Exhale (6 seconds)</h5>
+                        <p>Breathe out slowly through your mouth, counting to 6</p>
+                    </div>
+                    <div class="breath-step">
+                        <h5>4. Rest (2 seconds)</h5>
+                        <p>Pause naturally before the next breath</p>
+                    </div>
+                </div>
+                <div class="breathing-timer">
+                    <div class="timer-circle">
+                        <span id="breath-timer">Ready to start</span>
+                    </div>
+                    <button onclick="startBreathingTimer()" class="start-btn">Start Breathing</button>
+                </div>
+            </div>
+        `;
+                    break;
+
+                case 'body-scan':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-eye icon-title"></i> Body Scan Meditation';
+                    contentDiv.innerHTML = `
+            <div class="body-scan">
+                <h4>10-Minute Body Scan</h4>
+                <p>Lie down comfortably and follow this guided body scan:</p>
+                <div class="scan-steps">
+                    <div class="scan-step">1. Start with your toes - notice any sensations</div>
+                    <div class="scan-step">2. Move to your feet - feel the weight and contact</div>
+                    <div class="scan-step">3. Scan your legs - notice temperature and tension</div>
+                    <div class="scan-step">4. Focus on your abdomen - feel your breathing</div>
+                    <div class="scan-step">5. Notice your chest and heart area</div>
+                    <div class="scan-step">6. Scan your arms and hands</div>
+                    <div class="scan-step">7. Move to your neck and shoulders</div>
+                    <div class="scan-step">8. Finally, notice your head and face</div>
+                </div>
+                <div class="scan-timer">
+                    <div class="timer-display">
+                        <span id="scan-timer">10:00</span>
+                    </div>
+                    <button onclick="startBodyScan()" class="start-btn">Start Body Scan</button>
+                </div>
+            </div>
+        `;
+                    break;
+
+                case 'mood-check':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-face-smile icon-title"></i> Mood Check-in';
+                    contentDiv.innerHTML = `
+            <div class="mood-check">
+                <h4>How are you feeling right now?</h4>
+                <div class="mood-options">
+                    <div class="mood-option" onclick="selectMood('😊', 'Happy')">
+                        <i class="fa-solid fa-face-laugh-beam mood-emoji"></i>
+                        <div class="mood-label">Happy</div>
+                    </div>
+                    <div class="mood-option" onclick="selectMood('😌', 'Calm')">
+                        <i class="fa-solid fa-face-smile mood-emoji"></i>
+                        <div class="mood-label">Calm</div>
+                    </div>
+                    <div class="mood-option" onclick="selectMood('😐', 'Neutral')">
+                        <i class="fa-solid fa-face-meh mood-emoji"></i>
+                        <div class="mood-label">Neutral</div>
+                    </div>
+                    <div class="mood-option" onclick="selectMood('😰', 'Anxious')">
+                        <i class="fa-solid fa-face-frown-open mood-emoji"></i>
+                        <div class="mood-label">Anxious</div>
+                    </div>
+                    <div class="mood-option" onclick="selectMood('😢', 'Sad')">
+                        <i class="fa-solid fa-face-sad-tear mood-emoji"></i>
+                        <div class="mood-label">Sad</div>
+                    </div>
+                    <div class="mood-option" onclick="selectMood('😴', 'Tired')">
+                        <i class="fa-solid fa-bed mood-emoji"></i>
+                        <div class="mood-label">Tired</div>
+                    </div>
+                </div>
+                <div id="mood-result" class="mood-result" style="display: none;">
+                    <h5>Your current mood: <span id="selected-mood"></span></h5>
+                    <p id="mood-suggestion"></p>
+                </div>
+            </div>
+        `;
+                    break;
+
+                case 'gratitude':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-hands-praying icon-title"></i> Gratitude Practice';
+                    contentDiv.innerHTML = `
+            <div class="gratitude-practice">
+                <h4>What are you grateful for today?</h4>
+                <p>Take a moment to reflect on the positive things in your life:</p>
+                <div class="gratitude-prompts">
+                    <div class="prompt-item">
+                        <h5>1. Something that made you smile today</h5>
+                        <textarea placeholder="Write about something that brought you joy..." class="gratitude-text"></textarea>
+                    </div>
+                    <div class="prompt-item">
+                        <h5>2. A person you're thankful for</h5>
+                        <textarea placeholder="Write about someone who means a lot to you..." class="gratitude-text"></textarea>
+                    </div>
+                    <div class="prompt-item">
+                        <h5>3. Something you accomplished</h5>
+                        <textarea placeholder="Write about something you're proud of..." class="gratitude-text"></textarea>
+                    </div>
+                </div>
+                <button onclick="saveGratitude()" class="save-btn">Save Gratitude</button>
+            </div>
+        `;
+                    break;
+
+                case 'stress-check':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-brain icon-title"></i> Stress Assessment';
+                    contentDiv.innerHTML = `
+            <div class="stress-assessment">
+                <h4>How stressed do you feel right now?</h4>
+                <div class="stress-scale">
+                    <div class="scale-item" onclick="selectStress(1)">
+                        <span class="stress-level">1</span>
+                        <span class="stress-label">Very Low</span>
+                    </div>
+                    <div class="scale-item" onclick="selectStress(2)">
+                        <span class="stress-level">2</span>
+                        <span class="stress-label">Low</span>
+                    </div>
+                    <div class="scale-item" onclick="selectStress(3)">
+                        <span class="stress-level">3</span>
+                        <span class="stress-label">Moderate</span>
+                    </div>
+                    <div class="scale-item" onclick="selectStress(4)">
+                        <span class="stress-level">4</span>
+                        <span class="stress-label">High</span>
+                    </div>
+                    <div class="scale-item" onclick="selectStress(5)">
+                        <span class="stress-level">5</span>
+                        <span class="stress-label">Very High</span>
+                    </div>
+                </div>
+                <div id="stress-result" class="stress-result" style="display: none;">
+                    <h5>Your stress level: <span id="stress-level"></span>/5</h5>
+                    <div id="stress-tips"></div>
+                </div>
+            </div>
+        `;
+                    break;
+
+                case 'energy-level':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-bolt icon-title"></i> Energy Check';
+                    contentDiv.innerHTML = `
+            <div class="energy-check">
+                <h4>How energetic do you feel right now?</h4>
+                <div class="energy-scale">
+                    <div class="energy-item" onclick="selectEnergy(1)">
+                        <span class="energy-level">1</span>
+                        <span class="energy-label">Very Low</span>
+                    </div>
+                    <div class="energy-item" onclick="selectEnergy(2)">
+                        <span class="energy-level">2</span>
+                        <span class="energy-label">Low</span>
+                    </div>
+                    <div class="energy-item" onclick="selectEnergy(3)">
+                        <span class="energy-level">3</span>
+                        <span class="energy-label">Moderate</span>
+                    </div>
+                    <div class="energy-item" onclick="selectEnergy(4)">
+                        <span class="energy-level">4</span>
+                        <span class="energy-label">High</span>
+                    </div>
+                    <div class="energy-item" onclick="selectEnergy(5)">
+                        <span class="energy-level">5</span>
+                        <span class="energy-label">Very High</span>
+                    </div>
+                </div>
+                <div id="energy-result" class="energy-result" style="display: none;">
+                    <h5>Your energy level: <span id="energy-level"></span>/5</h5>
+                    <div id="energy-tips"></div>
+                </div>
+            </div>
+        `;
+                    break;
+            }
+
+            resultsDiv.style.display = 'block';
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+        }
+
+        function closeActivityResults() {
+            const resultsDiv = document.getElementById('activity-results');
+            if (resultsDiv) {
+                resultsDiv.style.display = 'none';
+            }
+        }
+
+        // Activity-specific functions
+        // Activity-specific functions
+        function startBreathingTimer() {
+            const timer = document.getElementById('breath-timer');
+            const button = document.querySelector('.start-btn');
+            if (!timer) return;
+
+            // Disable button during exercise
+            if (button) button.disabled = true;
+
+            const breathingPhases = [
+                { name: 'Inhale', duration: 4, color: '#4CAF50' },
+                { name: 'Hold', duration: 4, color: '#2196F3' },
+                { name: 'Exhale', duration: 6, color: '#FF9800' },
+                { name: 'Rest', duration: 2, color: '#9C27B0' }
+            ];
+
+            let totalSeconds = 300; // 5 minutes total
+            let currentPhaseIndex = 0;
+            let phaseSeconds = breathingPhases[0].duration;
+            let cycleCount = 0;
+
+            timer.style.fontSize = '24px';
+            timer.style.fontWeight = 'bold';
+
+            const interval = setInterval(() => {
+                const phase = breathingPhases[currentPhaseIndex];
+                const timeLeft = Math.floor(totalSeconds / 60) + ':' + (totalSeconds % 60).toString().padStart(2, '0');
+
+                timer.style.color = phase.color;
+                timer.innerHTML = `
+                    <div style="font-size: 28px; margin-bottom: 10px;">${phase.name}</div>
+                    <div style="font-size: 20px;">${phaseSeconds}s</div>
+                    <div style="font-size: 14px; margin-top: 10px; color: #666;">Time remaining: ${timeLeft}</div>
+                    <div style="font-size: 12px; color: #999;">Cycle ${cycleCount + 1}</div>
+                `;
+
+                phaseSeconds--;
+                totalSeconds--;
+
+                // Move to next phase
+                if (phaseSeconds <= 0) {
+                    currentPhaseIndex = (currentPhaseIndex + 1) % breathingPhases.length;
+                    if (currentPhaseIndex === 0) cycleCount++;
+                    phaseSeconds = breathingPhases[currentPhaseIndex].duration;
+                }
+
+                // End exercise
+                if (totalSeconds <= 0) {
+                    clearInterval(interval);
+                    timer.style.color = '#4CAF50';
+                    timer.innerHTML = `
+                        <div style="font-size: 24px;">✨ Complete! ✨</div>
+                        <div style="font-size: 16px; margin-top: 10px;">Great job!</div>
+                        <div style="font-size: 14px; margin-top: 5px;">You completed ${cycleCount} breathing cycles</div>
+                    `;
+                    if (button) {
+                        button.disabled = false;
+                        button.textContent = 'Start Again';
+                    }
+                }
+            }, 1000);
+        }
+
+        function startBodyScan() {
+            const timer = document.getElementById('scan-timer');
+            if (!timer) return;
+
+            let seconds = 600; // 10 minutes
+            const interval = setInterval(() => {
+                const minutes = Math.floor(seconds / 60);
+                const remainingSeconds = seconds % 60;
+                timer.textContent = `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    timer.textContent = 'Body scan complete!';
+                }
+                seconds--;
+            }, 1000);
+        }
+
+        function selectMood(emoji, mood) {
+            const resultDiv = document.getElementById('mood-result');
+            const moodSpan = document.getElementById('selected-mood');
+            const suggestionP = document.getElementById('mood-suggestion');
+
+            if (resultDiv && moodSpan && suggestionP) {
+                moodSpan.textContent = emoji + ' ' + mood;
+
+                const suggestions = {
+                    'Happy': 'Great! Keep doing what makes you happy and share your joy with others.',
+                    'Calm': 'Wonderful! You\'re in a peaceful state. Try to maintain this calm energy.',
+                    'Neutral': 'That\'s perfectly fine. Sometimes neutral is exactly what we need.',
+                    'Anxious': 'It\'s okay to feel anxious. Try some deep breathing or gentle movement.',
+                    'Sad': 'It\'s okay to feel sad. Consider reaching out to someone you trust.',
+                    'Tired': 'Rest is important. Consider taking a short break or doing something gentle.'
+                };
+
+                suggestionP.textContent = suggestions[mood] || 'Thank you for checking in with yourself.';
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        function selectStress(level) {
+            const resultDiv = document.getElementById('stress-result');
+            const levelSpan = document.getElementById('stress-level');
+            const tipsDiv = document.getElementById('stress-tips');
+
+            if (resultDiv && levelSpan && tipsDiv) {
+                levelSpan.textContent = level;
+
+                const tips = {
+                    1: '<p>Excellent! You\'re feeling very relaxed. Keep up whatever you\'re doing.</p>',
+                    2: '<p>Good! You\'re managing stress well. Continue your current practices.</p>',
+                    3: '<p>Moderate stress is normal. Try some deep breathing or a short walk.</p>',
+                    4: '<p>High stress detected. Consider taking a break, doing breathing exercises, or talking to someone.</p>',
+                    5: '<p>Very high stress. Please consider reaching out for support and taking time to rest.</p>'
+                };
+
+                tipsDiv.innerHTML = tips[level] || '<p>Thank you for checking your stress levels.</p>';
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        function selectEnergy(level) {
+            const resultDiv = document.getElementById('energy-result');
+            const levelSpan = document.getElementById('energy-level');
+            const tipsDiv = document.getElementById('energy-tips');
+
+            if (resultDiv && levelSpan && tipsDiv) {
+                levelSpan.textContent = level;
+
+                const tips = {
+                    1: '<p>Very low energy. Consider resting, hydrating, or having a light snack.</p>',
+                    2: '<p>Low energy. Try some gentle movement or fresh air to boost your energy.</p>',
+                    3: '<p>Moderate energy. You\'re doing well! Consider some light activity to maintain it.</p>',
+                    4: '<p>High energy! Great! Use this energy for productive or enjoyable activities.</p>',
+                    5: '<p>Very high energy! Excellent! Channel this energy into something positive.</p>'
+                };
+
+                tipsDiv.innerHTML = tips[level] || '<p>Thank you for checking your energy levels.</p>';
+                resultDiv.style.display = 'block';
+            }
+        }
+
+        function saveGratitude() {
+            const textareas = document.querySelectorAll('.gratitude-text');
+            const gratitudeEntries = Array.from(textareas).map(textarea => textarea.value).filter(value => value.trim());
+
+            if (gratitudeEntries.length > 0) {
+                // Save to localStorage
+                const today = new Date().toISOString().split('T')[0];
+                const existingGratitude = JSON.parse(localStorage.getItem('gratitudeEntries') || '{}');
+                existingGratitude[today] = gratitudeEntries;
+                localStorage.setItem('gratitudeEntries', JSON.stringify(existingGratitude));
+
+                alert('Gratitude saved! Thank you for taking time to reflect on the positive things in your life.');
+            } else {
+                alert('Please write something you\'re grateful for before saving.');
+            }
+        }
+
+        // Home Remedies Functions
+        function searchRemedies() {
+            const searchTerm = document.getElementById('remedy-search').value.toLowerCase();
+            if (!searchTerm) {
+                alert('Please enter a search term');
+                return;
+            }
+
+            // Comprehensive search functionality with many more health concerns
+            const remedies = {
+                // Respiratory & Cold
+                'cold': 'cold', 'flu': 'cold', 'influenza': 'cold', 'runny nose': 'cold', 'congestion': 'cold', 'sneezing': 'cold',
+                'cough': 'cough', 'dry cough': 'cough', 'wet cough': 'cough', 'chest cough': 'cough',
+                'sore throat': 'sore-throat', 'throat': 'sore-throat', 'throat pain': 'sore-throat', 'hoarse': 'sore-throat',
+
+                // Head & Pain
+                'headache': 'headache', 'migraine': 'headache', 'head pain': 'headache', 'tension': 'headache',
+                'toothache': 'toothache', 'dental pain': 'toothache', 'tooth pain': 'toothache',
+                'earache': 'earache', 'ear pain': 'earache', 'ear infection': 'earache',
+
+                // Digestive
+                'stomach': 'stomach', 'nausea': 'stomach', 'vomiting': 'stomach', 'upset stomach': 'stomach',
+                'diarrhea': 'diarrhea', 'loose stool': 'diarrhea', 'stomach bug': 'diarrhea',
+                'constipation': 'constipation', 'bloated': 'constipation', 'gas': 'constipation',
+                'heartburn': 'heartburn', 'acid reflux': 'heartburn', 'indigestion': 'heartburn',
+
+                // Fever & Infection
+                'fever': 'fever', 'high temperature': 'fever', 'hot': 'fever',
+                'infection': 'infection', 'bacterial': 'infection', 'viral': 'infection',
+
+                // Sleep & Mental Health
+                'sleep': 'insomnia', 'insomnia': 'insomnia', 'can\'t sleep': 'insomnia', 'tired': 'insomnia',
+                'anxiety': 'anxiety', 'stress': 'anxiety', 'panic': 'anxiety', 'worried': 'anxiety',
+                'depression': 'depression', 'sad': 'depression', 'mood': 'depression',
+
+                // Skin & Allergies
+                'rash': 'rash', 'skin irritation': 'rash', 'hives': 'rash', 'allergic': 'rash',
+                'acne': 'acne', 'pimples': 'acne', 'breakout': 'acne',
+                'sunburn': 'sunburn', 'burn': 'sunburn',
+                'itchy': 'itchy', 'itching': 'itchy', 'pruritus': 'itchy',
+
+                // Musculoskeletal
+                'back pain': 'back-pain', 'backache': 'back-pain', 'spine': 'back-pain',
+                'joint pain': 'joint-pain', 'arthritis': 'joint-pain', 'stiff': 'joint-pain',
+                'muscle pain': 'muscle-pain', 'cramp': 'muscle-pain', 'sore muscle': 'muscle-pain',
+
+                // Women's Health
+                'period': 'menstrual', 'menstrual': 'menstrual', 'cramps': 'menstrual', 'pms': 'menstrual',
+                'pregnancy': 'pregnancy', 'morning sickness': 'pregnancy', 'nausea pregnancy': 'pregnancy',
+
+                // Eye & Vision
+                'eye strain': 'eye-strain', 'tired eyes': 'eye-strain', 'computer eyes': 'eye-strain',
+                'pink eye': 'pink-eye', 'conjunctivitis': 'pink-eye', 'eye infection': 'pink-eye',
+
+                // Urinary
+                'uti': 'uti', 'urinary tract': 'uti', 'bladder': 'uti', 'burning urine': 'uti',
+
+                // General Wellness
+                'fatigue': 'fatigue', 'exhausted': 'fatigue', 'low energy': 'fatigue',
+                'immune': 'immune', 'immunity': 'immune', 'weak immune': 'immune',
+                'dehydration': 'dehydration', 'thirsty': 'dehydration', 'dry mouth': 'dehydration'
+            };
+
+            const foundRemedy = Object.keys(remedies).find(key => searchTerm.includes(key));
+            if (foundRemedy) {
+                showRemedy(remedies[foundRemedy]);
+            } else {
+                // Show available search terms
+                const availableTerms = [
+                    'cold, flu, cough, sore throat', 'headache, migraine, toothache, earache',
+                    'stomach, nausea, diarrhea, constipation', 'fever, infection',
+                    'sleep, insomnia, anxiety, stress, depression', 'rash, acne, sunburn, itchy',
+                    'back pain, joint pain, muscle pain', 'period, menstrual, pregnancy',
+                    'eye strain, pink eye', 'uti, fatigue, immune, dehydration'
+                ];
+                alert(`Remedy not found. Try searching for:\n\n${availableTerms.join('\n')}\n\nOr click on the cards above for common conditions.`);
+            }
+        }
+
+        function showRemedy(remedyType) {
+            console.log('Showing remedy:', remedyType);
+
+            const modalDiv = document.getElementById('remedy-modal');
+            const titleDiv = document.getElementById('remedy-title');
+            const contentDiv = document.getElementById('remedy-content');
+
+            if (!modalDiv || !titleDiv || !contentDiv) {
+                console.log('Remedy modal elements not found');
+                return;
+            }
+
+            // Set title and content based on remedy type
+            switch (remedyType) {
+                case 'cold':
+                    titleDiv.textContent = '🤧 Common Cold Remedies';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🍯 Honey & Lemon</h5>
+                                    <p>Mix 1 tbsp honey with lemon juice in warm water. Drink 2-3 times daily.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧄 Garlic</h5>
+                                    <p>Crush 2-3 garlic cloves, mix with honey. Take twice daily for immune boost.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🥤 Ginger Tea</h5>
+                                    <p>Boil fresh ginger slices in water. Add honey and drink warm.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧂 Salt Water Gargle</h5>
+                                    <p>Gargle with warm salt water 3-4 times daily to soothe throat.</p>
+                                </div>
+                            </div>
+                            
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Pain Relief:</strong> Acetaminophen (Tylenol) or Ibuprofen (Advil)
+                                </div>
+                                <div class="med-item">
+                                    <strong>Decongestant:</strong> Pseudoephedrine (Sudafed) - for nasal congestion
+                                </div>
+                                <div class="med-item">
+                                    <strong>Cough Suppressant:</strong> Dextromethorphan (Robitussin)
+                                </div>
+                            </div>
+                            
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> If symptoms persist for more than 10 days, high fever (above 101°F), or difficulty breathing.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'headache':
+                    titleDiv.textContent = '🤕 Headache Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🧊 Cold Compress</h5>
+                                    <p>Apply ice pack wrapped in cloth to forehead for 15-20 minutes.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>☕ Caffeine</h5>
+                                    <p>Small amount of caffeine can help (coffee, tea) - but don't overdo it.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧘‍♀️ Relaxation</h5>
+                                    <p>Practice deep breathing, meditation, or gentle neck stretches.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>💧 Hydration</h5>
+                                    <p>Drink plenty of water - dehydration often causes headaches.</p>
+                                </div>
+                            </div>
+                            
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Pain Relief:</strong> Acetaminophen (Tylenol), Ibuprofen (Advil), or Aspirin
+                                </div>
+                                <div class="med-item">
+                                    <strong>Migraine Relief:</strong> Excedrin Migraine (contains caffeine)
+                                </div>
+                            </div>
+                            
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Sudden severe headache, headache with fever, neck stiffness, or vision changes.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'stomach':
+                    titleDiv.textContent = '🤢 Stomach Issues Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🍵 Ginger Tea</h5>
+                                    <p>Fresh ginger tea helps with nausea and digestion.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🍌 BRAT Diet</h5>
+                                    <p>Bananas, Rice, Applesauce, Toast - easy to digest foods.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🥤 Peppermint Tea</h5>
+                                    <p>Calms stomach muscles and reduces bloating.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧂 Electrolytes</h5>
+                                    <p>Drink clear fluids, sports drinks, or oral rehydration solutions.</p>
+                                </div>
+                            </div>
+                            
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Antacids:</strong> Tums, Rolaids, or Maalox for heartburn
+                                </div>
+                                <div class="med-item">
+                                    <strong>Anti-nausea:</strong> Dramamine or Pepto-Bismol
+                                </div>
+                                <div class="med-item">
+                                    <strong>Digestive Aid:</strong> Simethicone (Gas-X) for bloating
+                                </div>
+                            </div>
+                            
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Severe abdominal pain, persistent vomiting, blood in vomit or stool, or signs of dehydration.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'fever':
+                    titleDiv.textContent = '🌡️ Fever Management';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🧊 Cool Compress</h5>
+                                    <p>Apply cool, damp cloth to forehead, neck, and armpits.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🛁 Lukewarm Bath</h5>
+                                    <p>Take a lukewarm (not cold) bath to help reduce fever.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>💧 Stay Hydrated</h5>
+                                    <p>Drink plenty of fluids - water, herbal teas, clear broths.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>😴 Rest</h5>
+                                    <p>Get plenty of rest to help your body fight the infection.</p>
+                                </div>
+                            </div>
+                            
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Fever Reducer:</strong> Acetaminophen (Tylenol) or Ibuprofen (Advil)
+                                </div>
+                                <div class="med-item">
+                                    <strong>Dosage:</strong> Follow package instructions, don't exceed recommended dose
+                                </div>
+                            </div>
+                            
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Fever above 103°F, fever lasting more than 3 days, or fever with severe symptoms.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'cough':
+                    titleDiv.textContent = '😷 Cough Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🍯 Honey</h5>
+                                    <p>Take 1-2 teaspoons of honey directly or mix with warm water.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧄 Garlic & Honey</h5>
+                                    <p>Crush garlic, mix with honey. Take 1 tsp twice daily.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🥤 Warm Liquids</h5>
+                                    <p>Drink warm water, herbal teas, or clear broths frequently.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>💨 Steam Inhalation</h5>
+                                    <p>Inhale steam from hot water to loosen mucus.</p>
+                                </div>
+                            </div>
+                            
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Cough Suppressant:</strong> Dextromethorphan (Robitussin DM)
+                                </div>
+                                <div class="med-item">
+                                    <strong>Expectorant:</strong> Guaifenesin (Mucinex) to loosen mucus
+                                </div>
+                                <div class="med-item">
+                                    <strong>Throat Lozenges:</strong> Menthol or honey-based lozenges
+                                </div>
+                            </div>
+                            
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Cough lasting more than 3 weeks, coughing up blood, or difficulty breathing.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'sore-throat':
+                    titleDiv.textContent = '🫁 Sore Throat Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🧂 Salt Water Gargle</h5>
+                                    <p>Gargle with warm salt water (1/2 tsp salt in 8 oz water) 3-4 times daily.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🍯 Honey & Lemon</h5>
+                                    <p>Mix honey with lemon juice in warm water. Sip slowly.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧊 Ice Chips</h5>
+                                    <p>Suck on ice chips or popsicles to numb the pain.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>💧 Stay Hydrated</h5>
+                                    <p>Drink plenty of warm fluids to keep throat moist.</p>
+                                </div>
+                            </div>
+                            
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Pain Relief:</strong> Acetaminophen (Tylenol) or Ibuprofen (Advil)
+                                </div>
+                                <div class="med-item">
+                                    <strong>Throat Sprays:</strong> Chloraseptic or Cepacol throat spray
+                                </div>
+                                <div class="med-item">
+                                    <strong>Lozenges:</strong> Menthol or benzocaine throat lozenges
+                                </div>
+                            </div>
+                            
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Severe throat pain, difficulty swallowing, or symptoms lasting more than a week.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'insomnia':
+                    titleDiv.textContent = '😴 Sleep Issues Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🍵 Chamomile Tea</h5>
+                                    <p>Drink chamomile tea 30 minutes before bed for relaxation.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧘‍♀️ Relaxation Techniques</h5>
+                                    <p>Practice deep breathing, meditation, or progressive muscle relaxation.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🌡️ Cool Room</h5>
+                                    <p>Keep bedroom cool (65-68°F) and dark for better sleep.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>📱 No Screens</h5>
+                                    <p>Avoid screens 1 hour before bed - blue light disrupts sleep.</p>
+                                </div>
+                            </div>
+                            
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Sleep Aids:</strong> Diphenhydramine (Benadryl) or Doxylamine (Unisom)
+                                </div>
+                                <div class="med-item">
+                                    <strong>Melatonin:</strong> Natural sleep hormone supplement
+                                </div>
+                                <div class="med-item">
+                                    <strong>Valerian Root:</strong> Herbal supplement for relaxation
+                                </div>
+                            </div>
+                            
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Chronic insomnia, sleep apnea symptoms, or if sleep issues affect daily functioning.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'anxiety':
+                    titleDiv.textContent = '😰 Anxiety Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🧘‍♀️ Deep Breathing</h5>
+                                    <p>Practice 4-7-8 breathing: inhale 4, hold 7, exhale 8.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🍵 Herbal Teas</h5>
+                                    <p>Chamomile, lavender, or passionflower tea for calming effects.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🚶‍♀️ Physical Activity</h5>
+                                    <p>Regular exercise, even a 10-minute walk, helps reduce anxiety.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧠 Mindfulness</h5>
+                                    <p>Practice meditation, yoga, or grounding techniques.</p>
+                                </div>
+                            </div>
+                            
+                            <h4>Over-the-Counter Options:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Herbal Supplements:</strong> L-theanine, Ashwagandha, or Valerian root
+                                </div>
+                                <div class="med-item">
+                                    <strong>Magnesium:</strong> Can help with muscle tension and relaxation
+                                </div>
+                                <div class="med-item">
+                                    <strong>B-Complex Vitamins:</strong> Support nervous system health
+                                </div>
+                            </div>
+                            
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Severe anxiety, panic attacks, or if anxiety significantly impacts daily life.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                // New remedy cases for expanded search
+                case 'toothache':
+                    titleDiv.textContent = '🦷 Toothache Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🧊 Cold Compress</h5>
+                                    <p>Apply ice pack to cheek for 15-20 minutes to reduce swelling.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧂 Salt Water Rinse</h5>
+                                    <p>Rinse mouth with warm salt water 3-4 times daily.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5><i class="fa-solid fa-leaf"></i> Clove Oil</h5>
+                                    <p>Apply clove oil to affected area (dilute with carrier oil).</p>
+                                </div>
+                            </div>
+                            <div class="warning-box">
+                                <strong>⚠️ Important:</strong> See a dentist as soon as possible. Tooth pain often indicates serious dental issues.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'earache':
+                    titleDiv.textContent = '👂 Earache Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🔥 Warm Compress</h5>
+                                    <p>Apply warm (not hot) compress to ear for 15-20 minutes.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧄 Garlic Oil</h5>
+                                    <p>Warm garlic oil and put 2-3 drops in affected ear.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧂 Salt Sock</h5>
+                                    <p>Heat salt in a sock and place on ear for warmth.</p>
+                                </div>
+                            </div>
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Severe pain, fever, hearing loss, or discharge from ear.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'diarrhea':
+                    titleDiv.textContent = '💩 Diarrhea Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🍌 BRAT Diet</h5>
+                                    <p>Bananas, Rice, Applesauce, Toast - easy to digest foods.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>💧 Hydration</h5>
+                                    <p>Drink plenty of water, oral rehydration solutions, or coconut water.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🍯 Probiotics</h5>
+                                    <p>Yogurt with live cultures or probiotic supplements.</p>
+                                </div>
+                            </div>
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Anti-diarrheal:</strong> Loperamide (Imodium) - but avoid if fever present
+                                </div>
+                            </div>
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Blood in stool, severe dehydration, fever above 101°F, or symptoms lasting more than 2 days.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'constipation':
+                    titleDiv.textContent = '🚽 Constipation Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🥤 Increase Fiber</h5>
+                                    <p>Eat more fruits, vegetables, whole grains, and legumes.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>💧 Hydration</h5>
+                                    <p>Drink 8-10 glasses of water daily to soften stool.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🏃‍♀️ Exercise</h5>
+                                    <p>Regular physical activity helps stimulate bowel movements.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>☕ Warm Beverages</h5>
+                                    <p>Warm coffee or tea in the morning can stimulate bowel movement.</p>
+                                </div>
+                            </div>
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Fiber Supplements:</strong> Psyllium (Metamucil), Methylcellulose (Citrucel)
+                                </div>
+                                <div class="med-item">
+                                    <strong>Stool Softeners:</strong> Docusate sodium (Colace)
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'heartburn':
+                    titleDiv.textContent = '🔥 Heartburn Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🍯 Baking Soda</h5>
+                                    <p>Mix 1 tsp baking soda in 8 oz water and drink slowly.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🍌 Bananas</h5>
+                                    <p>Natural antacid properties help neutralize stomach acid.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧄 Ginger</h5>
+                                    <p>Ginger tea or ginger supplements can help reduce acid.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🍎 Apple Cider Vinegar</h5>
+                                    <p>1-2 tsp in water before meals (dilute well).</p>
+                                </div>
+                            </div>
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Antacids:</strong> Tums, Rolaids, Maalox
+                                </div>
+                                <div class="med-item">
+                                    <strong>H2 Blockers:</strong> Ranitidine (Zantac), Famotidine (Pepcid)
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'rash':
+                    titleDiv.textContent = '🔴 Skin Rash Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🧊 Cold Compress</h5>
+                                    <p>Apply cool, wet cloth to reduce itching and inflammation.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🥒 Oatmeal Bath</h5>
+                                    <p>Add colloidal oatmeal to lukewarm bath water.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5><i class="fa-solid fa-leaf"></i> Aloe Vera</h5>
+                                    <p>Apply pure aloe vera gel to soothe irritated skin.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🍯 Coconut Oil</h5>
+                                    <p>Apply virgin coconut oil to moisturize and reduce inflammation.</p>
+                                </div>
+                            </div>
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Topical Creams:</strong> Hydrocortisone cream (1%), Calamine lotion
+                                </div>
+                                <div class="med-item">
+                                    <strong>Antihistamines:</strong> Diphenhydramine (Benadryl) for itching
+                                </div>
+                            </div>
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Rash spreads rapidly, fever, difficulty breathing, or signs of infection.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'back-pain':
+                    titleDiv.textContent = '🫁 Back Pain Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🧊 Ice & Heat</h5>
+                                    <p>Ice for first 48 hours, then heat therapy for muscle relaxation.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧘‍♀️ Gentle Stretches</h5>
+                                    <p>Cat-cow stretches, knee-to-chest, and gentle yoga poses.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>💆‍♀️ Massage</h5>
+                                    <p>Self-massage or professional massage to relieve tension.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🛏️ Proper Sleep Position</h5>
+                                    <p>Sleep on side with pillow between knees, or on back with pillow under knees.</p>
+                                </div>
+                            </div>
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Pain Relief:</strong> Ibuprofen (Advil), Acetaminophen (Tylenol)
+                                </div>
+                                <div class="med-item">
+                                    <strong>Topical:</strong> Menthol creams, Capsaicin cream
+                                </div>
+                            </div>
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Severe pain, numbness, weakness, or pain lasting more than 2 weeks.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'menstrual':
+                    titleDiv.textContent = '🩸 Menstrual Cramp Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>🔥 Heat Therapy</h5>
+                                    <p>Heating pad or hot water bottle on lower abdomen for 15-20 minutes.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧘‍♀️ Gentle Exercise</h5>
+                                    <p>Light walking, yoga, or stretching can help reduce cramps.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🍵 Herbal Teas</h5>
+                                    <p>Ginger tea, chamomile, or raspberry leaf tea for natural relief.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🥜 Magnesium</h5>
+                                    <p>Magnesium supplements or foods rich in magnesium (nuts, dark chocolate).</p>
+                                </div>
+                            </div>
+                            <h4>Over-the-Counter Medications:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Pain Relief:</strong> Ibuprofen (Advil), Naproxen (Aleve)
+                                </div>
+                                <div class="med-item">
+                                    <strong>Menstrual Relief:</strong> Midol, Pamprin (contains pain reliever + diuretic)
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'eye-strain':
+                    titleDiv.textContent = '👁️ Eye Strain Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>👁️ 20-20-20 Rule</h5>
+                                    <p>Every 20 minutes, look at something 20 feet away for 20 seconds.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🧊 Cold Compress</h5>
+                                    <p>Apply cool, damp cloth to closed eyes for 10-15 minutes.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>💧 Blink More</h5>
+                                    <p>Consciously blink more often to keep eyes moisturized.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5><i class="fa-solid fa-leaf"></i> Cucumber Slices</h5>
+                                    <p>Place cool cucumber slices on closed eyes for 10 minutes.</p>
+                                </div>
+                            </div>
+                            <h4>Prevention Tips:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Screen Settings:</strong> Adjust brightness, contrast, and text size
+                                </div>
+                                <div class="med-item">
+                                    <strong>Lighting:</strong> Ensure proper lighting, avoid glare
+                                </div>
+                                <div class="med-item">
+                                    <strong>Position:</strong> Keep screen 20-26 inches away, slightly below eye level
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'uti':
+                    titleDiv.textContent = '🚽 UTI Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>💧 Hydration</h5>
+                                    <p>Drink plenty of water to flush bacteria from urinary tract.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🍇 Cranberry</h5>
+                                    <p>Cranberry juice or supplements (unsweetened) may help prevent bacteria adhesion.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🍯 D-Mannose</h5>
+                                    <p>Natural sugar that may help prevent bacteria from sticking to bladder walls.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5><i class="fa-solid fa-leaf"></i> Probiotics</h5>
+                                    <p>Probiotic supplements or yogurt to support healthy bacteria.</p>
+                                </div>
+                            </div>
+                            <div class="warning-box">
+                                <strong>⚠️ Important:</strong> UTIs often require antibiotics. See a doctor if symptoms persist or worsen.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'fatigue':
+                    titleDiv.textContent = '😴 Fatigue Relief';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <h4>Natural Home Remedies:</h4>
+                            <div class="remedy-list">
+                                <div class="remedy-item-detail">
+                                    <h5>💧 Hydration</h5>
+                                    <p>Dehydration is a common cause of fatigue. Drink 8-10 glasses of water daily.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🥗 Balanced Diet</h5>
+                                    <p>Eat regular meals with protein, complex carbs, and healthy fats.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>🏃‍♀️ Regular Exercise</h5>
+                                    <p>Even light exercise can boost energy levels and improve sleep.</p>
+                                </div>
+                                <div class="remedy-item-detail">
+                                    <h5>☀️ Sunlight</h5>
+                                    <p>Get 10-15 minutes of sunlight daily to regulate circadian rhythm.</p>
+                                </div>
+                            </div>
+                            <h4>Energy Boosters:</h4>
+                            <div class="medication-list">
+                                <div class="med-item">
+                                    <strong>Iron:</strong> If deficient, iron supplements can help with fatigue
+                                </div>
+                                <div class="med-item">
+                                    <strong>B Vitamins:</strong> B-complex vitamins support energy metabolism
+                                </div>
+                            </div>
+                            <div class="warning-box">
+                                <strong>⚠️ When to see a doctor:</strong> Persistent fatigue, unexplained weight loss, or other concerning symptoms.
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                default:
+                    titleDiv.textContent = '🔍 Remedy Not Found';
+                    contentDiv.innerHTML = `
+                        <div class="remedy-content">
+                            <p>Sorry, we don't have specific remedies for "${remedyType}" yet.</p>
+                            <p>Try searching for one of these common conditions:</p>
+                            <ul>
+                                <li>Cold, flu, cough, sore throat</li>
+                                <li>Headache, migraine, toothache</li>
+                                <li>Stomach issues, nausea, diarrhea</li>
+                                <li>Fever, infection</li>
+                                <li>Sleep problems, anxiety, stress</li>
+                                <li>Skin rash, acne, sunburn</li>
+                                <li>Back pain, joint pain</li>
+                                <li>Menstrual cramps</li>
+                                <li>Eye strain, UTI, fatigue</li>
+                            </ul>
+                        </div>
+                    `;
+                    break;
+            }
+
+            modalDiv.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        function closeRemedyModal() {
+            const modalDiv = document.getElementById('remedy-modal');
+            if (modalDiv) {
+                modalDiv.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Restore background scrolling
+            }
+        }
+
+        // Close modal when clicking outside of it
+        document.addEventListener('click', function (event) {
+            const modalDiv = document.getElementById('remedy-modal');
+            if (modalDiv && modalDiv.style.display === 'flex') {
+                if (event.target === modalDiv) {
+                    closeRemedyModal();
+                }
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeRemedyModal();
+            }
+        });
+
+        // Ayurveda Functions
+        function showAyurveda(doshaType) {
+            console.log('Showing Ayurveda:', doshaType);
+
+            const modalDiv = document.getElementById('remedy-modal');
+            const titleDiv = document.getElementById('remedy-title');
+            const contentDiv = document.getElementById('remedy-content');
+
+            if (!modalDiv || !titleDiv || !contentDiv) {
+                console.log('Ayurveda modal elements not found');
+                return;
+            }
+
+            switch (doshaType) {
+                case 'vata':
+                    titleDiv.textContent = '🌪️ Vata Dosha Balance';
+                    contentDiv.innerHTML = `
+                        <div class="ayurveda-content">
+                            <h4>Vata Characteristics:</h4>
+                            <p>Vata is associated with air and space elements. When balanced, it promotes creativity and vitality. When imbalanced, it can cause anxiety, insomnia, and digestive issues.</p>
+                            
+                            <h4>Balancing Foods:</h4>
+                            <div class="dosha-foods">
+                                <div class="food-category">
+                                    <h5>✅ Beneficial Foods:</h5>
+                                    <ul>
+                                        <li>Warm, cooked foods</li>
+                                        <li>Root vegetables (sweet potatoes, carrots)</li>
+                                        <li>Grains (rice, quinoa, oats)</li>
+                                        <li>Nuts and seeds (almonds, sesame)</li>
+                                        <li>Warm spices (ginger, cinnamon, cardamom)</li>
+                                        <li>Ghee and healthy oils</li>
+                                    </ul>
+                                </div>
+                                <div class="food-category">
+                                    <h5>❌ Avoid:</h5>
+                                    <ul>
+                                        <li>Raw, cold foods</li>
+                                        <li>Excessive caffeine</li>
+                                        <li>Dry, crunchy foods</li>
+                                        <li>Cold drinks and ice cream</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <h4>Lifestyle Recommendations:</h4>
+                            <div class="lifestyle-tips">
+                                <div class="tip-item">
+                                    <strong>Daily Routine:</strong> Maintain regular meal times and sleep schedule
+                                </div>
+                                <div class="tip-item">
+                                    <strong>Exercise:</strong> Gentle yoga, walking, swimming
+                                </div>
+                                <div class="tip-item">
+                                    <strong>Self-Care:</strong> Warm oil massage (Abhyanga), meditation
+                                </div>
+                                <div class="tip-item">
+                                    <strong>Environment:</strong> Keep warm, avoid drafts, use humidifier
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'pitta':
+                    titleDiv.textContent = '🔥 Pitta Dosha Balance';
+                    contentDiv.innerHTML = `
+                        <div class="ayurveda-content">
+                            <h4>Pitta Characteristics:</h4>
+                            <p>Pitta is associated with fire and water elements. When balanced, it promotes intelligence and courage. When imbalanced, it can cause anger, inflammation, and digestive issues.</p>
+                            
+                            <h4>Balancing Foods:</h4>
+                            <div class="dosha-foods">
+                                <div class="food-category">
+                                    <h5>✅ Beneficial Foods:</h5>
+                                    <ul>
+                                        <li>Cooling foods (cucumber, melons)</li>
+                                        <li>Sweet fruits (grapes, pears, mangoes)</li>
+                                        <li>Leafy greens (spinach, kale)</li>
+                                        <li>Dairy (milk, ghee, butter)</li>
+                                        <li>Cooling spices (coriander, fennel, mint)</li>
+                                        <li>Whole grains (barley, wheat, rice)</li>
+                                    </ul>
+                                </div>
+                                <div class="food-category">
+                                    <h5>❌ Avoid:</h5>
+                                    <ul>
+                                        <li>Spicy, hot foods</li>
+                                        <li>Alcohol and caffeine</li>
+                                        <li>Fried and oily foods</li>
+                                        <li>Excessive salt and sour foods</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <h4>Lifestyle Recommendations:</h4>
+                            <div class="lifestyle-tips">
+                                <div class="tip-item">
+                                    <strong>Daily Routine:</strong> Avoid midday sun, eat main meal at noon
+                                </div>
+                                <div class="tip-item">
+                                    <strong>Exercise:</strong> Swimming, moderate yoga, early morning walks
+                                </div>
+                                <div class="tip-item">
+                                    <strong>Self-Care:</strong> Cool water treatments, meditation, aromatherapy
+                                </div>
+                                <div class="tip-item">
+                                    <strong>Environment:</strong> Stay cool, avoid heat, use fans or AC
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+
+                case 'kapha':
+                    titleDiv.textContent = '🌊 Kapha Dosha Balance';
+                    contentDiv.innerHTML = `
+                        <div class="ayurveda-content">
+                            <h4>Kapha Characteristics:</h4>
+                            <p>Kapha is associated with water and earth elements. When balanced, it promotes strength and stability. When imbalanced, it can cause lethargy, weight gain, and congestion.</p>
+                            
+                            <h4>Balancing Foods:</h4>
+                            <div class="dosha-foods">
+                                <div class="food-category">
+                                    <h5>✅ Beneficial Foods:</h5>
+                                    <ul>
+                                        <li>Light, warm foods</li>
+                                        <li>Bitter and astringent vegetables</li>
+                                        <li>Legumes and beans</li>
+                                        <li>Light fruits (apples, pears, berries)</li>
+                                        <li>Warming spices (ginger, black pepper, turmeric)</li>
+                                        <li>Honey (in moderation)</li>
+                                    </ul>
+                                </div>
+                                <div class="food-category">
+                                    <h5>❌ Avoid:</h5>
+                                    <ul>
+                                        <li>Heavy, oily foods</li>
+                                        <li>Dairy products (except small amounts)</li>
+                                        <li>Sweet and salty foods</li>
+                                        <li>Cold drinks and ice cream</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <h4>Lifestyle Recommendations:</h4>
+                            <div class="lifestyle-tips">
+                                <div class="tip-item">
+                                    <strong>Daily Routine:</strong> Wake up early, avoid daytime naps
+                                </div>
+                                <div class="tip-item">
+                                    <strong>Exercise:</strong> Vigorous activities, running, dancing, hiking
+                                </div>
+                                <div class="tip-item">
+                                    <strong>Self-Care:</strong> Dry brushing, invigorating massage, meditation
+                                </div>
+                                <div class="tip-item">
+                                    <strong>Environment:</strong> Keep active, avoid dampness, use dehumidifier
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+
+            modalDiv.style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Prevent background scrolling
+        }
+
+        // Quick Tips Function
+        function showQuickTip(tipType) {
+            console.log('Showing quick tip:', tipType);
+
+            const modalDiv = document.getElementById('remedy-modal');
+            const titleDiv = document.getElementById('remedy-title');
+            const contentDiv = document.getElementById('remedy-content');
+
+            if (!modalDiv || !titleDiv || !contentDiv) {
+                console.log('Quick tip modal elements not found');
+                return;
+            }
+
+            switch (tipType) {
+                case 'hydration':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-droplet"></i> Hydration Hack';
+                    contentDiv.innerHTML = `
+            <div class="quick-tip-content">
+                <h4>Start Your Day Right</h4>
+                <p>Drinking a glass of water first thing in the morning helps:</p>
+                <ul>
+                    <li>Rehydrate your body after 8+ hours of sleep</li>
+                    <li>Boost your metabolism by 30%</li>
+                    <li>Improve brain function and focus</li>
+                    <li>Flush out toxins accumulated overnight</li>
+                </ul>
+                <div class="tip-action">
+                    <strong>Try this:</strong> Keep a glass of water by your bedside and drink it before getting out of bed.
+                </div>
+            </div>
+        `;
+                    break;
+
+                case 'posture':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-person-praying"></i> Posture Check';
+                    contentDiv.innerHTML = `
+            <div class="quick-tip-content">
+                <h4>Perfect Your Posture</h4>
+                <p>Good posture prevents back pain and improves confidence:</p>
+                <ul>
+                    <li>Keep your shoulders back and relaxed</li>
+                    <li>Align your ears over your shoulders</li>
+                    <li>Keep your feet flat on the floor</li>
+                    <li>Use a lumbar support cushion</li>
+                </ul>
+                <div class="tip-action">
+                    <strong>Set a reminder:</strong> Use your phone to remind you every hour to check your posture.
+                </div>
+            </div>
+        `;
+                    break;
+
+                case 'breathing':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-wind"></i> Stress Relief';
+                    contentDiv.innerHTML = `
+            <div class="quick-tip-content">
+                <h4>3-Breath Stress Relief</h4>
+                <p>When feeling overwhelmed, try this simple technique:</p>
+                <ol>
+                    <li><strong>Inhale</strong> slowly for 4 counts</li>
+                    <li><strong>Hold</strong> your breath for 4 counts</li>
+                    <li><strong>Exhale</strong> slowly for 6 counts</li>
+                    <li><strong>Repeat</strong> 2 more times</li>
+                </ol>
+                <div class="tip-action">
+                    <strong>Benefits:</strong> Reduces cortisol, lowers heart rate, and calms your nervous system.
+                </div>
+            </div>
+        `;
+                    break;
+
+                case 'movement':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-person-walking"></i> Micro Movement';
+                    contentDiv.innerHTML = `
+            <div class="quick-tip-content">
+                <h4>Move Every 30 Minutes</h4>
+                <p>Regular movement throughout the day:</p>
+                <ul>
+                    <li>Improves circulation and energy levels</li>
+                    <li>Reduces muscle stiffness and tension</li>
+                    <li>Boosts creativity and focus</li>
+                    <li>Prevents blood clots and varicose veins</li>
+                </ul>
+                <div class="tip-action">
+                    <strong>Simple moves:</strong> Stand up, stretch your arms overhead, do 10 squats, or take a quick walk around your space.
+                </div>
+            </div>
+        `;
+                    break;
+
+                case 'sleep':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-moon"></i> Sleep Quality';
+                    contentDiv.innerHTML = `
+            <div class="quick-tip-content">
+                <h4>Phone-Free Bedroom</h4>
+                <p>Keeping your phone away from bed improves sleep by:</p>
+                <ul>
+                    <li>Reducing blue light exposure before sleep</li>
+                    <li>Eliminating sleep-disrupting notifications</li>
+                    <li>Creating a mental separation from work/stress</li>
+                    <li>Allowing your brain to properly wind down</li>
+                </ul>
+                <div class="tip-action">
+                    <strong>Try this:</strong> Charge your phone in another room and use an old-fashioned alarm clock.
+                </div>
+            </div>
+        `;
+                    break;
+
+                case 'nutrition':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-apple-whole"></i> Smart Snacking';
+                    contentDiv.innerHTML = `
+            <div class="quick-tip-content">
+                <h4>Out of Sight, Out of Mind</h4>
+                <p>Strategic food placement influences your choices:</p>
+                <ul>
+                    <li>Keep healthy snacks at eye level in the fridge</li>
+                    <li>Store junk food in opaque containers</li>
+                    <li>Place fruits and vegetables on the counter</li>
+                    <li>Use smaller plates for portion control</li>
+                </ul>
+                <div class="tip-action">
+                    <strong>Pro tip:</strong> Pre-cut vegetables and store them in clear containers for easy access.
+                </div>
+            </div>
+        `;
+                    break;
+
+                case 'eye-strain':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-eye"></i> Eye Strain Relief';
+                    contentDiv.innerHTML = `
+            <div class="quick-tip-content">
+                <h4>Relax Your Eyes</h4>
+                <p>Ease eye strain caused by screens and long study sessions:</p>
+                <ul>
+                    <li>Follow the 20-20-20 rule</li>
+                    <li>Blink often</li>
+                    <li>Adjust brightness and avoid glare</li>
+                    <li>Keep the screen at an arm’s length</li>
+                </ul>
+                <div class="tip-action">
+                    <strong>Try this:</strong> Close your eyes for a minute and gently roll them.
+                </div>
+            </div>
+        `;
+                    break;
+
+                case 'energy':
+                    titleDiv.innerHTML = '<i class="fa-solid fa-bolt"></i> Energy Boost';
+                    contentDiv.innerHTML = `
+                        <div class="quick-tip-content">
+                            <h4>Natural Energy Boosters</h4>
+                            <p>Combat fatigue and boost your energy levels naturally throughout the day:</p>
+                            <ul>
+                                <li><strong>Power Nap:</strong> Take a 10-20 minute nap to recharge (not longer, or you'll feel groggy)</li>
+                                <li><strong>Protein Snacks:</strong> Eat nuts, Greek yogurt, or hard-boiled eggs for sustained energy</li>
+                                <li><strong>Move Your Body:</strong> A 5-minute walk or stretching session increases blood flow and oxygen</li>
+                                <li><strong>Cold Water Splash:</strong> Splash cold water on your face to instantly wake up your senses</li>
+                                <li><strong>Deep Breathing:</strong> Take 10 deep breaths to increase oxygen and alertness</li>
+                                <li><strong>Natural Light:</strong> Step outside for 5 minutes - sunlight signals your brain to be awake</li>
+                            </ul>
+                            <div class="tip-action">
+                                <strong>Avoid this:</strong> Don't reach for sugary snacks or excessive caffeine - they cause energy crashes later. Instead, combine complex carbs with protein for stable energy.
+                            </div>
+                            <div class="tip-action" style="margin-top: 15px; background-color: #e8f5e9; padding: 12px; border-radius: 8px;">
+                                <strong>🌟 Quick Energy Fix:</strong> Do 10 jumping jacks or climb a flight of stairs. Physical activity increases adrenaline and immediately boosts alertness!
+                            </div>
+                        </div>
+                    `;
+                    break;
+            }
+            modalDiv.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Navigation functionality
+        function initializeNavigation() {
+            const currentUser = localStorage.getItem('userEmail');
+            const accessToken = localStorage.getItem('accessToken');
+
+            if (!currentUser && !accessToken) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Profile dropdown functionality is handled by navigation.js
+        }
+
+        // Direct profile dropdown fix for Wellness Hub
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileCircle = document.getElementById('user-profile');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            if (profileCircle && profileDropdown) {
+                // Add click handler
+                profileCircle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Toggle dropdown
+                    if (profileDropdown.style.display === 'block') {
+                        profileDropdown.style.display = 'none';
+                    } else {
+                        profileDropdown.style.display = 'block';
+                        profileDropdown.style.position = 'absolute';
+                        profileDropdown.style.right = '0';
+                        profileDropdown.style.top = '100%';
+                        profileDropdown.style.backgroundColor = '#fff';
+                        profileDropdown.style.zIndex = '9999';
+                        profileDropdown.style.minWidth = '150px';
+                        profileDropdown.style.border = '1px solid #ddd';
+                        profileDropdown.style.borderRadius = '10px';
+                        profileDropdown.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                        profileDropdown.style.padding = '10px 0';
+                    }
+                });
+
+                // Hide dropdown when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                        profileDropdown.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="scripts/navigation.js"></script>
+
+    <!-- Final emergency script - last resort -->
+    <script>
+        console.log('Final emergency script running');
+        setTimeout(() => {
+            const loading = document.getElementById('loading');
+            const content = document.getElementById('awareness-content');
+            if (loading && content && loading.style.display !== 'none') {
+                console.log('FINAL EMERGENCY: Force showing content');
+                loading.style.display = 'none';
+                content.style.display = 'block';
+            }
+        }, 1000);
+    </script>
+</body>
+
+</html>

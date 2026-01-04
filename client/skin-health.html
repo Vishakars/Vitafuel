@@ -1,0 +1,1695 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | Skin Health Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/skin-health.css">
+    <link rel="stylesheet" href="css/commonstyles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/health-domain-common.js"></script>
+</head>
+
+<body>
+    <div class="floating-icon"><i class="fa-solid fa-soap"></i> <i class="fa-solid fa-spray-can-sparkles"></i></div>
+
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">U</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-spray-can-sparkles"></i> Skin Health Tracker</h1>
+            <p>Track your glow-up journey—log breakouts, hydration, treatments & skincare victories!</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Skin Hydration</h3>
+                        <div class="stat-value" id="hydration-level">0%</div>
+                        <div class="stat-goal">Target: 80%+</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-droplet"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Breakout Score</h3>
+                        <div class="stat-value" id="breakout-score">0</div>
+                        <div class="stat-goal">Scale: 1-10 (lower is better)</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Sun Protection</h3>
+                        <div class="stat-value" id="sun-protection">None</div>
+                        <div class="stat-goal">Daily application</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-sun"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Routine Consistency</h3>
+                        <div class="stat-value" id="consistency">0%</div>
+                        <div class="stat-goal">Build your routine!</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-calendar-check"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Sleep Quality</h3>
+                        <div class="stat-value" id="sleep-quality">0</div>
+                        <div class="stat-goal">Target: 7-9 hours</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-bed"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Water Intake</h3>
+                        <div class="stat-value" id="water-intake">0L</div>
+                        <div class="stat-goal">Target: 2.5-3L daily</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-glass-water"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tracking-form">
+            <h2><i class="fa-solid fa-pen-to-square"></i> Daily Skin Assessment</h2>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">Skin Type</label>
+                    <select class="form-select" id="skin-type">
+                        <option value="">Select skin type</option>
+                        <option value="oily">Oily</option>
+                        <option value="dry">Dry</option>
+                        <option value="combination">Combination</option>
+                        <option value="sensitive">Sensitive</option>
+                        <option value="normal">Normal</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">SPF Used</label>
+                    <select class="form-select" id="spf-level">
+                        <option value="none">None</option>
+                        <option value="15">SPF 15</option>
+                        <option value="30">SPF 30</option>
+                        <option value="50">SPF 50</option>
+                        <option value="50+">SPF 50+</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Sleep Hours</label>
+                    <input type="number" class="form-input" id="sleep-hours" min="0" max="12" step="0.5"
+                        placeholder="7.5">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Water Intake (Liters)</label>
+                    <input type="number" class="form-input" id="water-amount" min="0" max="10" step="0.1"
+                        placeholder="2.5">
+                </div>
+            </div>
+
+            <div class="sliders-container">
+                <h3 class="sliders-title">Daily Assessment Scales</h3>
+                <div class="form-group">
+                    <label class="form-label">Breakout Severity (1-10)</label>
+                    <input type="range" class="form-input" id="breakout-severity-slider" min="1" max="10" value="1">
+                    <span id="breakout-severity-value" class="slider-value">1</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Hydration Level (1-10)</label>
+                    <input type="range" class="form-input" id="hydration-level-slider" min="1" max="10" value="1">
+                    <span id="hydration-level-value" class="slider-value">1</span>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Stress Level (1-10)</label>
+                    <input type="range" class="form-input" id="stress-level-slider" min="1" max="10" value="1">
+                    <span id="stress-level-value" class="slider-value">1</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-face-smile"></i> Skin Concerns Today</label>
+                <div class="checkbox-group">
+
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="acne" value="acne">
+                        <label for="acne"><i class="fa-solid fa-circle-dot"></i> Acne / Breakouts</label>
+                    </div>
+
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="dryness" value="dryness">
+                        <label for="dryness"><i class="fa-solid fa-wind"></i> Dryness</label>
+                    </div>
+
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="oiliness" value="oiliness">
+                        <label for="oiliness"><i class="fa-solid fa-droplet"></i> Excess Oil</label>
+                    </div>
+
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="redness" value="redness">
+                        <label for="redness"><i class="fa-solid fa-face-frown"></i> Redness / Irritation</label>
+                    </div>
+
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="dark-circles" value="dark-circles">
+                        <label for="dark-circles"><i class="fa-solid fa-moon"></i> Dark Circles</label>
+                    </div>
+
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="wrinkles" value="wrinkles">
+                        <label for="wrinkles"><i class="fa-solid fa-wand-magic-sparkles"></i> Fine Lines</label>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label">Products Used Today</label>
+                <input type="text" class="form-input" id="products-used"
+                    placeholder="Cleanser, moisturizer, serum, treatments...">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Mood & Energy</label>
+                <select class="form-select" id="mood-energy">
+                    <option value="">How are you feeling?</option>
+                    <option value="excellent">Excellent</option>
+                    <option value="good">Good</option>
+                    <option value="neutral">Neutral</option>
+                    <option value="tired">Tired</option>
+                    <option value="stressed">Stressed</option>
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <label class="form-label">Notes & Observations</label>
+                <textarea class="form-input" id="skin-notes" rows="3"
+                    placeholder="Any reactions, improvements, concerns, or changes you noticed today..."></textarea>
+            </div>
+
+            <p id="validation-message" class="validation-error"
+                style="display:none; color:#ff4d4d; font-weight:600; margin-bottom:10px;">
+            </p>
+
+            <button class="btn btn-primary" onclick="logSkinAssessment()">
+                <i class="fa-solid fa-file-lines"></i> Log Today's Assessment
+            </button>
+        </div>
+
+        <div class="log-section">
+            <h2><i class="fa-solid fa-chart-line"></i> Skin Health Log</h2>
+
+            <!-- insight message goes here -->
+            <div id="insight-box" class="insight-message" style="margin-bottom:15px; font-weight:600; display:none;">
+            </div>
+
+            <div id="log-entries" class="scroll-log">
+                <div class="empty-state">
+                    <i class="fa-regular fa-face-smile"></i> No entries yet. Start tracking your skin health journey
+                    above!
+                </div>
+            </div>
+        </div>
+
+        <div id="smart-advice-card" class="stat-card">
+
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Personalized Smart Advice</h3>
+            <div class="tag-label">
+                <i class="fa-solid fa-heart-pulse"></i> Daily Skin Intelligence
+            </div>
+            <div id="smart-advice-text"></div>
+        </div>
+
+        <div id="weekly-summary" class="stat-card weekly-summary-card" style="display:none;"></div>
+
+        <div class="stat-card query-scanner">
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Ask Skin Helper</h3>
+            <input id="skin-query-input" class="form-input" placeholder="Example: dry skin, acne products, tanning...">
+
+            <button id="query-btn" class="btn btn-secondary" style="margin-top:10px;">
+                <i class="fa-solid fa-comment-medical"></i> Get Recommendation
+            </button>
+
+            <div id="query-response" class="ingredient-result" style="display:none;"></div>
+        </div>
+
+        <div class="stat-card ingredient-scanner">
+            <h3><i class="fa-solid fa-flask"></i> Ingredient Safety Scanner</h3>
+            <p style="font-size:14px; opacity:0.8;">Paste a product name or ingredient list. We'll evaluate it.</p>
+
+            <div style="position:relative;"> <!-- wrapper so suggestions align under input -->
+
+                <textarea id="ingredient-input" placeholder="Example: water, glycerin, salicylic acid..." rows="3"
+                    class="form-input"></textarea>
+
+                <!-- ADD IT HERE -->
+                <div id="ingredient-suggestions" class="suggestion-box"></div>
+
+            </div>
+
+            <button id="scan-btn" class="btn btn-primary" style="margin-top:10px;">
+                <i class="fa-solid fa-magnifying-glass"></i> Analyze Ingredients
+            </button>
+
+            <div id="ingredient-result" class="ingredient-result"></div>
+        </div>
+
+        <div class="tips-section">
+            <h2><i class="fa-solid fa-lightbulb"></i> Skin Care Tips & Reminders</h2>
+            <div class="tip-card"><i class="fa-solid fa-soap"></i> Always cleanse your face twice daily - morning and
+                evening to remove dirt, oil, and makeup.</div>
+            <div class="tip-card"><i class="fa-solid fa-sun"></i> Apply sunscreen every day, even indoors or on cloudy
+                days - UV rays penetrate windows.</div>
+            <div class="tip-card"><i class="fa-solid fa-pump-soap"></i> Introduce new products gradually (one at a time)
+                to avoid irritation.</div>
+            <div class="tip-card"><i class="fa-solid fa-droplet"></i> Stay hydrated - drink at least 8 glasses of water
+                daily for healthy, plump skin.</div>
+            <div class="tip-card"><i class="fa-solid fa-bed"></i> Get adequate sleep (7-9 hours) - your skin repairs and
+                regenerates overnight.</div>
+            <div class="tip-card"><i class="fa-solid fa-hand"></i> Avoid touching your face frequently to reduce
+                breakouts.</div>
+            <div class="tip-card"><i class="fa-solid fa-apple-whole"></i> Eat a balanced diet rich in antioxidants,
+                vitamins C & E, and omega-3 fatty acids.</div>
+            <div class="tip-card"><i class="fa-solid fa-person-rays"></i> Manage stress through meditation, exercise, or
+                hobbies - stress can trigger breakouts.</div>
+            <div class="tip-card"><i class="fa-solid fa-bed"></i> Change your pillowcase regularly (2-3 times per week)
+                to prevent bacteria buildup.</div>
+            <div class="tip-card"><i class="fa-solid fa-temperature-half"></i> Use lukewarm water when cleansing - hot
+                water strips natural oils.</div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+
+    <script>
+        // User authentication and profile management (keeping original code)
+        let currentUser =
+            localStorage.getItem('userEmail') ||
+            localStorage.getItem('recentEmail') ||
+            'guest';
+
+        function getUserKey(key) {
+            return `${currentUser}_${key}`;
+        }
+
+        // Load existing data from localStorage on page load.
+        let skinHealthData = JSON.parse(localStorage.getItem(getUserKey('skinHealthData'))) || [];
+
+        // Main function to log the skin assessment
+        function logSkinAssessment() {
+            // Get all form values
+            const assessment = {
+                date: new Date().toLocaleDateString(),
+                timestamp: new Date().toISOString(),
+                skinType: document.getElementById('skin-type').value,
+                breakoutSeverity: parseInt(document.getElementById('breakout-severity-slider').value),
+                hydrationLevel: parseInt(document.getElementById('hydration-level-slider').value),
+                stressLevel: parseInt(document.getElementById('stress-level-slider').value),
+                spfLevel: document.getElementById('spf-level').value,
+                sleepHours: parseFloat(document.getElementById('sleep-hours').value) || 0,
+                waterIntake: parseFloat(document.getElementById('water-amount').value) || 0,
+                productsUsed: document.getElementById('products-used').value,
+                moodEnergy: document.getElementById('mood-energy').value,
+                notes: document.getElementById('skin-notes').value,
+                concerns: []
+            };
+
+            // ---------------- VALIDATION GOES HERE ----------------
+            const validationMessage = document.getElementById('validation-message');
+            validationMessage.style.display = 'none';
+            validationMessage.textContent = "";
+
+            let errors = [];
+
+            if (!assessment.skinType) errors.push("Select your skin type.");
+            if (assessment.sleepHours === 0) errors.push("Enter sleep hours.");
+            if (assessment.waterIntake === 0) errors.push("Add your water intake.");
+            if (!assessment.moodEnergy) errors.push("Select your mood.");
+
+            if (errors.length > 0) {
+                validationMessage.textContent = "⚠️ " + errors.join(" ");
+                validationMessage.style.display = "block";
+                return;
+            }
+
+            // Get checked skin concerns
+            const concernCheckboxes = document.querySelectorAll('.checkbox-item input[type="checkbox"]:checked');
+            concernCheckboxes.forEach(checkbox => {
+                assessment.concerns.push(checkbox.value);
+            });
+
+            // Add the new assessment to the array
+            skinHealthData.unshift(assessment);
+
+            // Save the updated array to localStorage
+            localStorage.setItem(getUserKey('skinHealthData'), JSON.stringify(skinHealthData));
+
+            // Update stats
+            updateStats();
+
+            // Update log display
+            updateLogDisplay();
+            generateWeeklySummary();
+
+            // Show success message
+            validationMessage.style.color = "#28a745";
+            validationMessage.textContent = "✨ Entry saved successfully!";
+            validationMessage.style.display = "block";
+
+            // Show combined personalized insight
+            // Show skin insight (Smart Full Advice System)
+            const insightBox = document.getElementById("insight-box");
+
+            // Build the different sections of advice for this entry
+            const insight = generateInsight(assessment);
+            const recommendationMsg = analyzeSkinPatterns();
+            const productMsg = suggestProducts(assessment);
+            const diyMsg = getDIY(assessment);
+
+            // ---- Build beautiful UI version of Smart Advice ----
+            const finalInsight = `
+            <div class="smart-advice-card">
+                <p>${insight}</p>
+                <p>${recommendationMsg}</p>
+
+                <div class="advice-section-title" style="margin-top:15px; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-list-check"></i> Personalized Routine
+                </div>
+
+                <strong class="advice-highlight" style="margin-top:10px; display:flex; align-items:center; gap:6px;">
+                    <i class="fa-solid fa-sun"></i> Morning:
+                </strong>
+                <div class="advice-list">
+                    • Gentle cleanser<br>
+                    • Vitamin C serum<br>
+                    • Moisturizer<br>
+                    • <strong>SPF (mandatory)</strong>
+                </div>
+
+                <strong class="advice-highlight" style="margin-top:10px; display:flex; align-items:center; gap:6px;">
+                    <i class="fa-solid fa-moon"></i> Night:
+                </strong>
+                <div class="advice-list">
+                    • Cleanser<br>
+                    • Hydrating toner (optional)<br>
+                    • Moisturizer<br>
+                    • Lightweight gel moisturizer
+                </div>
+
+                <div class="advice-section-title" style="margin-top:15px; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-bottle-droplet"></i> Product Suggestions
+                </div>
+                <p>${productMsg}</p>
+
+                <div class="advice-section-title" style="margin-top:15px; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-flask-vial"></i> Home DIY Recommendation
+                </div>
+                <p>${diyMsg}</p>
+
+            </div>
+            `;
+
+            // ---- Send to main insight preview box ----
+            // insightBox.innerHTML = finalInsight;
+            // insightBox.style.display = "block";
+
+            // ---- Save persistent copy ----
+            localStorage.setItem(getUserKey("smartAdvice"), finalInsight);
+            localStorage.setItem(getUserKey("lastAdviceTimestamp"), new Date().toISOString());
+
+            // ---- Update the permanent advice card below the log ----
+            const adviceCard = document.getElementById("smart-advice-card");
+            const adviceText = document.getElementById("smart-advice-text");
+            adviceText.innerHTML = finalInsight;
+            adviceCard.classList.add("show");
+
+            // Reset form
+            resetForm();
+        }
+
+        function animateProgress(selector, percent) {
+            const bar = document.querySelector(selector);
+            if (!bar) return;
+
+            // Reset width first to trigger animation
+            bar.style.width = "0%";
+
+            setTimeout(() => {
+                bar.style.width = percent + "%";
+            }, 50);
+        }
+
+
+        // Function to update the stats on the dashboard
+        function updateStats() {
+            if (skinHealthData.length === 0) return;
+
+            const latestEntry = skinHealthData[0];
+
+            // --- Hydration Level ---
+            const hydrationPercent = Math.round((latestEntry.hydrationLevel / 10) * 100);
+            document.getElementById('hydration-level').textContent = hydrationPercent + '%';
+            animateProgress('.stat-card:nth-child(1) .progress-fill', hydrationPercent);
+
+            // --- Breakout Score ---
+            document.getElementById('breakout-score').textContent = latestEntry.breakoutSeverity;
+            const breakoutPercent = Math.round((latestEntry.breakoutSeverity / 10) * 100);
+            animateProgress('.stat-card:nth-child(2) .progress-fill', breakoutPercent);
+
+            // --- Sun Protection ---
+            const spfText = latestEntry.spfLevel === 'none' ? 'None' : `SPF ${latestEntry.spfLevel}`;
+            document.getElementById('sun-protection').textContent = spfText;
+            const spfPercent = latestEntry.spfLevel === 'none' ? 0 :
+                latestEntry.spfLevel === '15' ? 40 :
+                    latestEntry.spfLevel === '30' ? 70 :
+                        latestEntry.spfLevel === '50' ? 90 : 100;
+            animateProgress('.stat-card:nth-child(3) .progress-fill', spfPercent);
+
+            // --- Routine Consistency ---
+            const last7Days = skinHealthData.filter(entry => {
+                const entryDate = new Date(entry.timestamp);
+                const weekAgo = new Date();
+                weekAgo.setDate(weekAgo.getDate() - 7);
+                return entryDate >= weekAgo;
+            });
+
+            const consistencyPercent = Math.min(Math.round((last7Days.length / 7) * 100), 100);
+            document.getElementById('consistency').textContent = consistencyPercent + '%';
+            animateProgress('.stat-card:nth-child(4) .progress-fill', consistencyPercent);
+
+            // --- Sleep Quality ---
+            const sleepScore = latestEntry.sleepHours >= 7 && latestEntry.sleepHours <= 9 ? 10 :
+                latestEntry.sleepHours >= 6 && latestEntry.sleepHours < 7 ? 7 :
+                    latestEntry.sleepHours >= 9 && latestEntry.sleepHours <= 10 ? 8 : 5;
+
+            document.getElementById('sleep-quality').textContent = latestEntry.sleepHours + 'h';
+            const sleepPercent = Math.round((sleepScore / 10) * 100);
+            animateProgress('.stat-card:nth-child(5) .progress-fill', sleepPercent);
+
+            // --- Water Intake ---
+            document.getElementById('water-intake').textContent = latestEntry.waterIntake + 'L';
+            const waterPercent = Math.min(Math.round((latestEntry.waterIntake / 3) * 100), 100);
+            animateProgress('.stat-card:nth-child(6) .progress-fill', waterPercent);
+        }
+
+        function generateInsight(entry) {
+            let messages = [];
+
+            // Hydration Insight
+            if (entry.waterIntake < 1.5) {
+                messages.push(`<i class="fa-solid fa-droplet"></i> Low water intake — try drinking more to support hydrated, plump skin.`);
+            } else if (entry.waterIntake >= 2.5) {
+                messages.push(`<i class="fa-solid fa-glass-water"></i> Great hydration today — your skin barrier will thank you!`);
+            }
+
+            // Sleep Insight
+            if (entry.sleepHours < 6) {
+                messages.push(`<i class="fa-solid fa-bed"></i> You slept less than ideal — skin repairs best with <strong>7–9 hours</strong> of rest.`);
+            } else if (entry.sleepHours >= 7.5) {
+                messages.push(`<i class="fa-solid fa-moon"></i> Excellent sleep score — good rest equals a glowing complexion.`);
+            }
+
+            // Breakout Insight
+            if (entry.breakoutSeverity >= 7) {
+                messages.push(`<i class="fa-solid fa-triangle-exclamation"></i> Breakouts are high — avoid harsh exfoliation and focus on calming ingredients.`);
+            } else if (entry.breakoutSeverity <= 3) {
+                messages.push(`<i class="fa-solid fa-check-circle"></i> Breakouts are low — your routine is working, keep it up!`);
+            }
+
+            // Mood Insight
+            if (entry.moodEnergy === "stressed") {
+                messages.push(`<i class="fa-solid fa-brain"></i> Stress impacts the skin — try deep breathing or a 5-minute relaxation break.`);
+            }
+
+            // Sunscreen Check
+            if (entry.spfLevel === "none") {
+                messages.push(`<i class="fa-solid fa-sun"></i> Sunscreen missing — UV rays accelerate pigment spots and aging. Apply SPF!`);
+            } else {
+                messages.push(`<i class="fa-solid fa-shield-heart"></i> Great job applying sunscreen — consistent SPF is the biggest anti-aging win!`);
+            }
+
+            return messages.length > 0
+                ? messages[0]
+                : `<i class="fa-solid fa-face-smile"></i> Keep logging — consistency is the foundation of skin improvement!`;
+        }
+
+        function analyzeSkinPatterns() {
+            let lastEntries = skinHealthData.slice(0, 7);
+            let rec = [];
+
+            // Hydration Check
+            const lowHydrationDays = lastEntries.filter(e => e.waterIntake < 1.5).length;
+            if (lowHydrationDays >= 3) {
+                rec.push(`<i class="fa-solid fa-droplet"></i> You've been drinking less water lately. Aim for <strong>2.5–3L</strong> daily to keep skin elastic and hydrated.`);
+            }
+
+            // Stress Pattern
+            const highStressDays = lastEntries.filter(e => e.stressLevel >= 7).length;
+            if (highStressDays >= 3) {
+                rec.push(`<i class="fa-solid fa-brain"></i> Stress levels have been high. Try magnesium-rich foods (almonds, spinach) and <strong>10 mins of deep breathing.</strong>`);
+            }
+
+            // Breakout Pattern
+            const breakoutPattern = lastEntries.filter(e => e.breakoutSeverity >= 7).length;
+            if (breakoutPattern >= 2) {
+                rec.push(`<i class="fa-solid fa-triangle-exclamation"></i> Breakouts increasing — avoid harsh scrubs and try a <strong>clay/charcoal detox mask twice a week.</strong>`);
+            }
+
+            // Sunscreen Check
+            const noSPF = lastEntries.filter(e => e.spfLevel === "none").length;
+            if (noSPF >= 3) {
+                rec.push(`<i class="fa-solid fa-sun"></i> Sunscreen missed multiple days — UV exposure accelerates aging and pigmentation. Apply SPF daily.`);
+            }
+
+            return rec.length
+                ? rec.join("<br><br>")
+                : `<i class="fa-solid fa-circle-check"></i> Skin trend looks great — stay consistent!`;
+        }
+
+        function generateRoutine(entry) {
+
+            let routine = `<strong><i class="fa-solid fa-spa"></i> Personalized Routine for Today:</strong><br><br>`;
+
+            routine += `<i class="fa-solid fa-sun"></i> <u>Morning:</u><br>
+    • Gentle cleanser<br>
+    • Vitamin C serum<br>
+    • Moisturizer<br>
+    • <strong>SPF (mandatory)</strong><br><br>`;
+
+            routine += `<i class="fa-solid fa-moon"></i> <u>Night:</u><br>
+    • Cleanser<br>
+    • Hydrating toner (optional)<br>
+    • Moisturizer<br>`;
+
+            // Customize based on skin type
+            if (entry.skinType === "oily") {
+                routine += `• Niacinamide or Salicylic Acid (2–3x/week)<br>`;
+            }
+            else if (entry.skinType === "dry") {
+                routine += `• Hyaluronic Acid + Ceramide Cream<br>`;
+            }
+            else if (entry.skinType === "combination") {
+                routine += `• Lightweight gel moisturizer<br>`;
+            }
+            else if (entry.skinType === "sensitive") {
+                routine += `• Use fragrance-free calming serum (Centella/Chamomile)<br>`;
+            }
+
+            // Breakout routine
+            if (entry.breakoutSeverity >= 6) {
+                routine += `<i class="fa-solid fa-triangle-exclamation"></i> Spot treatment recommended (Benzoyl Peroxide / Tea Tree)<br>`;
+            }
+
+            // Stress / Tired check
+            if (entry.moodEnergy === "tired" || entry.moodEnergy === "stressed") {
+                routine += `<i class="fa-solid fa-heart-circle-bolt"></i> Add a 5-minute gentle facial massage or ice roller<br>`;
+            }
+
+            return routine;
+        }
+
+        function getDIY(entry) {
+            if (entry.breakoutSeverity >= 7) {
+                return `
+                    <i class="fa-solid fa-flask"></i> <strong>DIY Mask:</strong><br>
+                    Mix 1 tsp honey + 1 tsp aloe vera + a pinch of turmeric.  
+                    Apply for <strong>10–12 mins</strong>.
+                `;
+            }
+
+            if (entry.skinType === "dry") {
+                return `
+                <i class="fa-solid fa-droplet"></i> <strong>Hydration DIY:</strong><br>
+                Milk + honey mask (<strong>15 mins</strong>) helps soothe dry skin.
+                `;
+            }
+
+            if (entry.skinType === "oily") {
+                return `
+                <i class="fa-solid fa-leaf"></i> <strong>Green Tea Toner:</strong><br>
+                Dab cooled green tea on skin to balance oil & reduce inflammation.
+                `;
+            }
+
+            return `
+            <i class="fa-solid fa-face-smile"></i> Skin looks balanced — 
+            stick to gentle cleansing and moisturizer today.
+            `;
+        }
+
+        function suggestProducts(entry) {
+            if (entry.skinType === "oily")
+                return `<i class="fa-solid fa-bottle-droplet"></i> Recommended: Salicylic acid cleanser, niacinamide serum, lightweight gel moisturizer.`;
+
+            if (entry.skinType === "dry")
+                return `<i class="fa-solid fa-hand-holding-water"></i> Recommended: Hyaluronic acid serum, ceramide-rich moisturizer, barrier-repair creams.`;
+
+            if (entry.skinType === "sensitive")
+                return `<i class="fa-solid fa-seedling"></i> Recommended: Fragrance-free products, oat-based cleanser, aloe or Centella gel.`;
+
+            return `<i class="fa-solid fa-face-smile"></i> Keep using a gentle cleanser, moisturizer, and sunscreen.`;
+        }
+
+        function fullSmartAdvice(entry) {
+            return `
+        ${generateInsight(entry)} <br><br>
+        ${analyzeSkinPatterns()} <br><br>
+        ${generateRoutine(entry)} <br><br>
+        🧴 <strong>Product Suggestions:</strong><br>${suggestProducts(entry)}<br><br>
+        🍯 <strong>Home DIY Suggestion:</strong><br>${getDIY(entry)}
+    `;
+        }
+
+        function generateWeeklySummary() {
+            const today = new Date();
+            const weekAgo = new Date();
+            weekAgo.setDate(today.getDate() - 7);
+
+            const last7Entries = skinHealthData.filter(entry => {
+                const date = new Date(entry.timestamp);
+                return date >= weekAgo;
+            });
+
+            const summaryBox = document.getElementById("weekly-summary");
+
+            if (last7Entries.length < 2) {
+                summaryBox.style.display = "none";
+                return; // Not enough data yet
+            }
+
+            // Calculate averages
+            let avgSleep = (last7Entries.reduce((sum, e) => sum + e.sleepHours, 0) / last7Entries.length).toFixed(1);
+            let avgWater = (last7Entries.reduce((sum, e) => sum + e.waterIntake, 0) / last7Entries.length).toFixed(1);
+            let avgBreakouts = (last7Entries.reduce((sum, e) => sum + e.breakoutSeverity, 0) / last7Entries.length).toFixed(1);
+
+            const spfCount = last7Entries.filter(e => e.spfLevel !== "none").length;
+            const hydrationScore = Math.round((last7Entries.reduce((sum, e) => sum + e.hydrationLevel, 0) / last7Entries.length) * 10);
+
+            // Trend sentence
+            const trend =
+                avgBreakouts <= 3
+                    ? `<i class="fa-solid fa-star"></i> Breakouts improving!`
+                    : avgBreakouts >= 7
+                        ? `<i class="fa-solid fa-triangle-exclamation"></i> Breakouts high — routine check needed.`
+                        : `<i class="fa-solid fa-face-meh"></i> Moderate trend — keep tracking.`;
+
+            summaryBox.innerHTML = `
+                <div class="card-title">
+                    <i class="fa-solid fa-calendar-week"></i> <strong>Last 7 Days Summary</strong>
+                </div>
+                <ul style="list-style:none; padding:0; margin-top:12px; line-height:1.8;">
+                    <li><i class="fa-solid fa-droplet"></i> Average Water: <strong>${avgWater}L/day</strong></li>
+                    <li><i class="fa-solid fa-bed"></i> Average Sleep: <strong>${avgSleep}h/night</strong></li>
+                    <li><i class="fa-solid fa-sun"></i> Sunscreen Applied: <strong>${spfCount} days</strong></li>
+                    <li><i class="fa-solid fa-magnifying-glass"></i> Breakout Level: <strong>${avgBreakouts}/10</strong></li>
+                    <li><i class="fa-solid fa-spray-can-sparkles"></i> Hydration Score: <strong>${hydrationScore}%</strong></li>
+                </ul>
+
+                <div style="margin-top:12px; font-weight:600; font-size:15px;">
+                    ${trend}
+                </div>
+            `;
+            summaryBox.style.display = "block";
+        }
+
+        // Function to render the log entries on the page
+        function updateLogDisplay() {
+            const logContainer = document.getElementById('log-entries');
+
+            if (skinHealthData.length === 0) {
+                logContainer.innerHTML = '<div class="empty-state">No entries yet. Start tracking your skin health journey above! 🌟</div>';
+                return;
+            }
+
+            // Sort by date (newest first)
+            const sortedData = [...skinHealthData].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+            logContainer.innerHTML = '';
+
+            // Show last 5 entries
+            sortedData.slice(0, 5).forEach(entry => {
+                const concernsText = entry.concerns.length > 0 ? entry.concerns.join(', ') : 'None';
+                const moodIcon = entry.moodEnergy === 'excellent' ? '✨' :
+                    entry.moodEnergy === 'good' ? '😊' :
+                        entry.moodEnergy === 'neutral' ? '😐' :
+                            entry.moodEnergy === 'tired' ? '😴' :
+                                entry.moodEnergy === 'stressed' ? '😰' : '';
+
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                logEntry.innerHTML = `
+                <div class="log-date">${entry.date}</div>
+                <div class="log-details">
+                    <div><strong>Skin Type:</strong> ${entry.skinType || 'Not specified'}</div>
+                    <div><strong>Breakouts:</strong> ${entry.breakoutSeverity}/10</div>
+                    <div><strong>Hydration:</strong> ${entry.hydrationLevel}/10</div>
+                    <div><strong>Stress:</strong> ${entry.stressLevel}/10</div>
+                    <div><strong>SPF:</strong> ${entry.spfLevel === 'none' ? 'None' : 'SPF ' + entry.spfLevel}</div>
+                    <div><strong>Sleep:</strong> ${entry.sleepHours}h</div>
+                    <div><strong>Water:</strong> ${entry.waterIntake}L</div>
+                    <div><strong>Mood:</strong> ${entry.moodEnergy} ${moodIcon}</div>
+                    <div><strong>Concerns:</strong> ${concernsText}</div>
+                    ${entry.productsUsed ? `<div><strong>Products:</strong> ${entry.productsUsed}</div>` : ''}
+                    ${entry.notes ? `<div><strong>Notes:</strong> ${entry.notes}</div>` : ''}
+                </div>
+            `;
+                logContainer.appendChild(logEntry);
+
+                if (entry === sortedData[0]) {
+                    logContainer.scrollTo({
+                        top: 0,
+                        behavior: "smooth"
+                    });
+                }
+            });
+        }
+
+        // Reset all form fields
+        function resetForm() {
+            document.getElementById('skin-type').value = '';
+            document.getElementById('spf-level').value = 'none';
+            document.getElementById('sleep-hours').value = '';
+            document.getElementById('water-amount').value = '';
+            document.getElementById('breakout-severity-slider').value = '1';
+            document.getElementById('hydration-level-slider').value = '1';
+            document.getElementById('stress-level-slider').value = '1';
+            document.getElementById('products-used').value = '';
+            document.getElementById('mood-energy').value = '';
+            document.getElementById('skin-notes').value = '';
+
+            // Reset slider displays
+            document.getElementById('breakout-severity-value').textContent = '1';
+            document.getElementById('hydration-level-value').textContent = '1';
+            document.getElementById('stress-level-value').textContent = '1';
+
+            // Uncheck all checkboxes
+            const checkboxes = document.querySelectorAll('.checkbox-item input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+        }
+
+        // Check if it's a new day and auto-reset skin health data
+        function checkSkinHealthDailyReset() {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            const lastDate = localStorage.getItem('skinHealth_lastDate');
+
+            if (lastDate && lastDate !== today) {
+                console.log('✨ New day detected! Auto-resetting skin health data...');
+                console.log('Last date:', lastDate, 'Today:', today);
+
+                // Clear skin health data
+                const currentUser = localStorage.getItem('userEmail');
+                if (currentUser) {
+                    localStorage.removeItem(getUserKey('skinHealthData'));
+                    skinHealthData = [];
+                    updateStats();
+                    updateLogDisplay();
+                }
+
+                // Update last date
+                localStorage.setItem('skinHealth_lastDate', today);
+
+                // Show notification
+                if (typeof showNotification === 'function') {
+                    showNotification('🌅 Good morning! Skin health data has been reset for a fresh start!', 'success');
+                } else {
+                    console.log('🌅 Good morning! Skin health data has been reset for a fresh start!');
+                }
+            } else if (!lastDate) {
+                // First time - set today as last date
+                localStorage.setItem('skinHealth_lastDate', today);
+            }
+        }
+
+        const irritants = [
+            "alcohol denat", "fragrance", "parfum", "sls", "sodium lauryl sulfate",
+            "synthetic dye", "benzyl alcohol", "menthol", "peppermint", "lemon oil"
+        ];
+
+        const acneTriggers = [
+            "coconut oil", "lanolin", "isopropyl myristate", "mineral oil", "wheat germ oil"
+        ];
+
+        const sensitiveSkinSafe = [
+            "ceramide", "centella", "aloe", "niacinamide", "glycerin", "panthenol"
+        ];
+
+        // 🔍 Synonyms + AI Matching Categories
+        const skinKeywords = {
+            "dry skin": ["dry", "flaky", "peeling", "rough", "tight skin"],
+            "oily skin": ["oily", "greasy", "shiny skin"],
+            "acne": ["pimples", "breakouts", "zits", "acne"],
+            "tanning": ["tan", "sunburn", "sun damage", "dark from sun"],
+            "dark circles": ["under eye dark", "tired eyes", "eye bags"],
+            "sensitive skin": ["irritation", "burning", "redness", "itchy skin", "sensitive"],
+            "dull skin": ["dull", "no glow", "lifeless skin"],
+            "pigmentation": ["dark spots", "uneven tone", "hyperpigmentation"],
+            "wrinkles": ["fine lines", "aging skin", "wrinkles"],
+            "dehydration": ["dehydrated", "thirsty skin", "dry but oily"],
+            "texture": ["bumpy", "rough texture", "tiny bumps"]
+        };
+
+        // 🧪 Fuzzy Text Matching
+        function getSimilarity(str1, str2) {
+            let sameChars = 0;
+            const len = Math.min(str1.length, str2.length);
+            for (let i = 0; i < len; i++) {
+                if (str1[i] === str2[i]) sameChars++;
+            }
+            return sameChars / Math.max(str1.length, str2.length);
+        }
+
+        // 🧠 Smart Matching Engine
+        function findSkinCategories(input) {
+            const cleaned = input.toLowerCase().trim();
+            const matches = [];
+
+            // 1️⃣ Exact matches
+            if (skinAdviceLibrary[cleaned]) {
+                matches.push(cleaned);
+            }
+
+            // 2️⃣ Natural language / partial text matches
+            for (const category in skinKeywords) {
+                for (const keyword of skinKeywords[category]) {
+                    if (cleaned.includes(keyword) && !matches.includes(category)) {
+                        matches.push(category);
+                    }
+                }
+            }
+
+            // 3️⃣ Fuzzy matches (fallback)
+            if (matches.length === 0) {
+                let bestMatch = null;
+                let bestScore = 0;
+
+                for (const category in skinKeywords) {
+                    for (const keyword of skinKeywords[category]) {
+                        const score = getSimilarity(cleaned, keyword);
+
+                        if (score > bestScore && score > 0.45) {
+                            bestScore = score;
+                            bestMatch = category;
+                        }
+                    }
+                }
+
+                if (bestMatch) matches.push(bestMatch);
+            }
+
+            return matches.length > 0 ? matches : null;
+        }
+
+        function generateSmartRoutine(matches) {
+
+            let routineAM = [];
+            let routinePM = [];
+            let warnings = [];
+            let extras = [];
+
+            // Base essentials (always included)
+            routineAM.push("Gentle Cleanser 🧼");
+            routineAM.push("Moisturizer 💧");
+            routineAM.push("Sunscreen SPF 50 ☀️ (mandatory)");
+
+            routinePM.push("Gentle Cleanser 🧼");
+            routinePM.push("Moisturizer 💧");
+
+            // Apply logic based on detected concerns
+            matches.forEach(condition => {
+
+                switch (condition) {
+
+                    case "dry skin":
+                        routinePM.push("Ceramide moisturizer 🧴 (Essential)");
+                        extras.push("Apply products on damp skin for better absorption.");
+                        break;
+
+                    case "oily skin":
+                        routineAM.push("Niacinamide Serum ✨ (Optional but helpful)");
+                        routinePM.push("Light Gel Moisturizer 💦");
+                        break;
+
+                    case "acne":
+                        routinePM.push("Salicylic Acid (BHA) 🧪 2–3x/week");
+                        warnings.push("Avoid using BHA and retinol on the same night.");
+                        break;
+
+                    case "tanning":
+                    case "pigmentation":
+                        routineAM.push("Vitamin C Serum 🍊");
+                        routinePM.push("Alpha Arbutin / Kojic Acid 🌙");
+                        break;
+
+                    case "texture":
+                        routinePM.push("Exfoliating Toner (AHA) 🧪 1–2x/week");
+                        warnings.push("Do not mix AHA/BHA with retinol or Vitamin C if irritation occurs.");
+                        break;
+
+                    case "wrinkles":
+                        routinePM.push("Retinol Serum 🌙 (1–2x/week)");
+                        warnings.push("Retinol increases sun sensitivity — SPF is more important.");
+                        break;
+
+                    case "dark circles":
+                        routinePM.push("Caffeine Eye Cream 👁️");
+                        break;
+
+                    case "sensitive skin":
+                        routinePM.push("Barrier Repair Cream 🛡️ (Essential)");
+                        warnings.push("Avoid fragrance, scrubs, lemon DIY, and harsh exfoliants.");
+                        break;
+
+                    case "dehydration":
+                        routineAM.push("Hyaluronic Acid 💦 (before moisturizer)");
+                        break;
+
+                    case "dull skin":
+                        routineAM.push("Vitamin C Serum 🍊");
+                        extras.push("Weekly exfoliation helps brighten dull skin.");
+                        break;
+                }
+            });
+
+            return `
+        <div style="margin-top:10px;">
+            <strong><i class="fa-solid fa-sun"></i> MORNING ROUTINE:</strong>
+            <ul style="margin-left:12px; margin-top:6px;">${routineAM.map(i => `<li>${i}</li>`).join("")}</ul>
+
+            <br>
+
+            <strong><i class="fa-solid fa-moon"></i> NIGHT ROUTINE:</strong>
+            <ul style="margin-left:12px; margin-top:6px;">${routinePM.map(i => `<li>${i}</li>`).join("")}</ul>
+
+            ${warnings.length ? `
+                <br><strong style="color:#c0392b;"><i class="fa-solid fa-triangle-exclamation"></i> IMPORTANT WARNINGS:</strong>
+                <ul style="margin-left:12px; margin-top:6px;">${warnings.map(i => `<li>${i}</li>`).join("")}</ul>
+            ` : ""}
+
+            ${extras.length ? `
+                <br><strong><i class="fa-solid fa-lightbulb"></i> EXTRA CARE TIPS:</strong>
+                <ul style="margin-left:12px; margin-top:6px;">${extras.map(i => `<li>${i}</li>`).join("")}</ul>
+            ` : ""}
+        </div>
+    `;
+        }
+
+
+        // ⭐⭐⭐ ADD SKIN ADVICE LIBRARY RIGHT HERE ⭐⭐⭐
+
+        const skinAdviceLibrary = {
+            "dry skin": {
+                icon: "💧",
+                message: "Dry skin needs hydration and barrier repair.",
+                products: [
+                    "CeraVe Moisturizing Cream",
+                    "Clinique Moisture Surge",
+                    "Simple Rich Hydrating Moisturizer"
+                ],
+                tips: "Use hyaluronic acid + ceramide moisturizer. Avoid foaming cleansers."
+            },
+
+            "oily skin": {
+                icon: "✨",
+                message: "Oily skin prefers lightweight gel formulas.",
+                products: [
+                    "Neutrogena Hydro Boost Water Gel",
+                    "The Ordinary Niacinamide",
+                    "Minimalist Salicylic Acid 2%"
+                ],
+                tips: "Avoid thick creams; use niacinamide or BHA weekly."
+            },
+
+            "acne": {
+                icon: "🔴",
+                message: "Acne needs exfoliation and pore care.",
+                products: [
+                    "Benzoyl Peroxide 2.5%",
+                    "Paula’s Choice BHA",
+                    "Minimalist Salicylic Acid"
+                ],
+                tips: "Avoid scrubbing; introduce retinoids slowly."
+            },
+
+            "tanning": {
+                icon: "☀️",
+                message: "Tanning requires sunscreen + brightening ingredients.",
+                products: [
+                    "Vitamin C serum",
+                    "Alpha Arbutin",
+                    "SPF 50 sunscreen"
+                ],
+                tips: "Use sunscreen daily and vitamin C every morning."
+            },
+
+            "dark circles": {
+                icon: "🌙",
+                message: "Dark circles respond to caffeine and sleep.",
+                products: [
+                    "The Ordinary Caffeine Solution",
+                    "Mamaearth Under Eye Cream",
+                    "Minimalist Retinol Eye Cream"
+                ],
+                tips: "Sleep 7–9 hours and avoid rubbing under eyes."
+            },
+
+            "sensitive skin": {
+                message: "Sensitive skin requires gentle, fragrance-free and soothing products.",
+                products: [
+                    "Avene Tolerance Cream",
+                    "Cetaphil Gentle Cleanser",
+                    "La Roche-Posay Cicaplast"
+                ],
+                tips: "Avoid exfoliants, essential oils, scrubs, and strong fragrances."
+            },
+
+            "dull skin": {
+                message: "Dull skin improves with exfoliation and brightening ingredients.",
+                products: [
+                    "AHA Glycolic Toner",
+                    "Vitamin C Serum",
+                    "Hyaluronic Acid"
+                ],
+                tips: "Exfoliate once weekly and use antioxidants daily."
+            },
+
+            "pigmentation": {
+                message: "Pigmentation requires targeted brightening and consistent SPF.",
+                products: [
+                    "Alpha Arbutin",
+                    "Kojic Acid",
+                    "Niacinamide 10%"
+                ],
+                tips: "Use SPF daily. Avoid lemon DIY — it's irritating."
+            },
+
+            "wrinkles": {
+                message: "Wrinkles benefit from retinol and hydration support.",
+                products: [
+                    "Retinol Serum",
+                    "Peptides Serum",
+                    "Hyaluronic Acid + Moisturizer"
+                ],
+                tips: "Introduce retinol slowly and focus on moisturization."
+            },
+
+            "dehydration": {
+                message: "Dehydrated skin needs moisture retention rather than oils.",
+                products: [
+                    "Hyaluronic Acid",
+                    "Snail Mucin",
+                    "Ceramide Cream"
+                ],
+                tips: "Apply products on damp skin and avoid alcohol-heavy products."
+            },
+
+            "texture": {
+                message: "Visible texture improves with exfoliation and barrier strengthening.",
+                products: [
+                    "BHA Salicylic Acid",
+                    "AHA Glycolic Acid",
+                    "Niacinamide"
+                ],
+                tips: "Avoid over-exfoliating — 1–2 times weekly is enough."
+            }
+        };
+
+        // ------------------ FETCH PRODUCT INGREDIENTS (IMPROVED MATCH LOGIC) ------------------
+
+        async function fetchProductIngredients(productName) {
+            const endpoint = `https://world.openbeautyfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(productName)}&search_simple=1&action=process&fields=product_name,brands,ingredients_text,image_url&json=1`;
+
+            try {
+                const response = await fetch(endpoint);
+                const data = await response.json();
+
+                if (!data?.products?.length) {
+                    return null; // No results
+                }
+
+                // Normalize search string for better matching
+                const searchLower = productName.toLowerCase();
+
+                let product = null;
+
+                // Normalize search input
+                const searchWords = searchLower.split(" ").filter(word => word.length > 2);
+
+                // Score each product
+                let scored = data.products.map(p => {
+                    const name = (p.product_name || "").toLowerCase();
+                    const brand = (p.brands || "").toLowerCase();
+
+                    let score = 0;
+                    searchWords.forEach(word => {
+                        if (name.includes(word)) score += 2;
+                        if (brand.includes(word)) score += 1;
+                    });
+
+                    return { ...p, score };
+                });
+
+                // Pick the highest scoring product (but must have ingredients)
+                scored = scored
+                    .filter(p => p.score > 0 && p.ingredients_text)
+                    .sort((a, b) => b.score - a.score);
+
+                product = scored[0] || null;
+
+                // 3️⃣ If still not found, fallback to the first product with ingredient text
+                if (!product) {
+                    product = data.products.find(p => p.ingredients_text);
+                }
+
+                if (!product || !product.ingredients_text) {
+                    return null; // We found a product but it has no ingredients info
+                }
+
+                return {
+                    name: product.product_name || productName,
+                    brand: product.brands || "",
+                    ingredients: product.ingredients_text,
+                    image: product.image_url || null
+                };
+
+            } catch (error) {
+                console.error("❌ API Error:", error);
+                return null;
+            }
+        }
+
+        function analyzeIngredients(text) {
+            const ingredients = text.toLowerCase().split(/,|\n|;/).map(i => i.trim());
+
+            let score = 0;
+            let breakdown = [];
+
+            ingredients.forEach(item => {
+                let status = "neutral";
+                let icon = "🟡";
+                let message = "";
+
+                if (irritants.includes(item)) {
+                    status = "bad";
+                    icon = "🔴";
+                    score += 3;
+                    message = "May irritate or dry skin.";
+                } else if (acneTriggers.includes(item)) {
+                    status = "warning";
+                    icon = "⚠️";
+                    score += 2;
+                    message = "Can clog pores / worsen acne.";
+                } else if (sensitiveSkinSafe.includes(item)) {
+                    status = "good";
+                    icon = "🟢";
+                    message = "Skin-friendly & beneficial.";
+                } else {
+                    message = "Neutral ingredient.";
+                }
+
+                breakdown.push({
+                    name: item,
+                    status,
+                    icon,
+                    message
+                });
+            });
+
+            const goodMatch = ingredients.some(i => sensitiveSkinSafe.includes(i));
+
+            let level = "safe";
+            let message = `🟢 Safe — No major irritants detected.`;
+            let recommendation = goodMatch
+                ? `✨ Contains soothing ingredients like ceramides/aloe.`
+                : `🙂 Neutral formula — consider adding barrier-repair moisturizer.`;
+
+
+            if (score > 3 && score <= 6) {
+                level = "warning";
+                message = `⚠️ Mild irritation risk.`;
+                recommendation = `🧴 Patch test recommended — avoid overuse on sensitive skin.`;
+            }
+
+            if (score > 6) {
+                level = "danger";
+                message = `🚨 High-risk formulation — multiple irritants detected.`;
+                recommendation = `❌ Consider switching to fragrance-free or gentle alternatives.`;
+            }
+
+            return { score, level, message, recommendation, breakdown };
+        }
+
+        // Initialize the page on DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // ------------------ DAILY RESET CHECK ------------------
+            checkSkinHealthDailyReset();
+
+
+            // ------------------ RESTORE SMART ADVICE ------------------
+            const savedAdvice = localStorage.getItem(getUserKey("smartAdvice"));
+            const adviceCard = document.getElementById("smart-advice-card");
+            const adviceText = document.getElementById("smart-advice-text");
+
+            if (savedAdvice) {
+                adviceText.innerHTML = savedAdvice;
+                adviceCard.classList.add("show");
+            }
+
+
+            // ------------------ RESTORE INSIGHT BOX ------------------
+            const savedInsight = localStorage.getItem(getUserKey("lastInsight"));
+            const insightBoxElement = document.getElementById("insight-box");
+
+            if (savedInsight) {
+                insightBoxElement.innerHTML = savedInsight;
+                insightBoxElement.style.display = "block";
+            }
+
+
+            // ------------------ SLIDER SYNC ------------------
+            const breakoutSlider = document.getElementById('breakout-severity-slider');
+            const breakoutValue = document.getElementById('breakout-severity-value');
+            if (breakoutSlider && breakoutValue) {
+                breakoutSlider.addEventListener('input', () => {
+                    breakoutValue.textContent = breakoutSlider.value;
+                });
+            }
+
+            const hydrationSlider = document.getElementById('hydration-level-slider');
+            const hydrationValue = document.getElementById('hydration-level-value');
+            if (hydrationSlider && hydrationValue) {
+                hydrationSlider.addEventListener('input', () => {
+                    hydrationValue.textContent = hydrationSlider.value;
+                });
+            }
+
+            const stressSlider = document.getElementById('stress-level-slider');
+            const stressValue = document.getElementById('stress-level-value');
+            if (stressSlider && stressValue) {
+                stressSlider.addEventListener('input', () => {
+                    stressValue.textContent = stressSlider.value;
+                });
+            }
+
+
+            // ------------------ UPDATE PAGE DATA ------------------
+            updateStats();
+            updateLogDisplay();
+            generateWeeklySummary();
+
+
+            // ------------------ INGREDIENT SAFETY SCANNER (IMPROVED WITH FAILOVER) ------------------
+
+            function looksLikeIngredientList(text) {
+                const lower = text.toLowerCase();
+
+                // Ingredient keywords library
+                const ingredientHints = /(water|extract|acid|oil|zinc|glycerin|niacinamide|vitamin|ceramide|panthenol|retinol|fragrance|parfum|glycol)/i;
+
+                // Rule 1: Has commas → definitely a list
+                if (text.includes(",")) return true;
+
+                // Rule 2: Has semicolons
+                if (text.includes(";")) return true;
+
+                // Rule 3: Count matching ingredient keywords
+                const matches = lower.match(ingredientHints);
+                if (matches && matches.length >= 3) return true;
+
+                return false;
+            }
+
+            // ------------------ INGREDIENT SAFETY SCANNER (API + MANUAL + FA ICONS) ------------------
+            const scanBtn = document.getElementById("scan-btn");
+
+            // ---- AUTOCOMPLETE PRODUCT TYPEAHEAD ----
+            const autoInput = document.getElementById("ingredient-input");
+            const suggestionBox = document.getElementById("ingredient-suggestions");
+            let typingTimer;
+            const API_DELAY = 400;
+
+            autoInput.addEventListener("input", () => {
+                clearTimeout(typingTimer);
+                const text = autoInput.value.trim();
+
+                if (text.length < 3) {
+                    suggestionBox.style.display = "none";
+                    return;
+                }
+
+                typingTimer = setTimeout(() => fetchSuggestions(text), API_DELAY);
+            });
+
+            async function fetchSuggestions(query) {
+                const url = `https://world.openbeautyfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&fields=product_name,brands,image_url&json=1`;
+
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+
+                    if (!data?.products?.length) {
+                        suggestionBox.style.display = "none";
+                        return;
+                    }
+
+                    suggestionBox.innerHTML = "";
+
+                    data.products.slice(0, 6).forEach(p => {
+                        if (!p.product_name) return;
+
+                        const item = document.createElement("div");
+                        item.className = "suggestion-item";
+
+                        item.innerHTML = `
+                <i class="fa-solid fa-flask"></i> ${p.product_name}
+                ${p.brands ? `<span style="opacity:0.7;">(${p.brands})</span>` : ""}
+            `;
+
+                        item.addEventListener("click", () => {
+                            autoInput.value = p.product_name;
+                            suggestionBox.style.display = "none";
+                        });
+
+                        suggestionBox.appendChild(item);
+                    });
+
+                    suggestionBox.style.display = "block";
+
+                } catch (err) {
+                    console.error("Autocomplete Error:", err);
+                }
+            }
+
+            // Hide suggestions when clicking outside
+            document.addEventListener("click", (e) => {
+                if (!suggestionBox.contains(e.target) && e.target !== autoInput) {
+                    suggestionBox.style.display = "none";
+                }
+            });
+
+            if (scanBtn) {
+                scanBtn.addEventListener("click", async () => {
+                    const input = document.getElementById("ingredient-input").value.trim();
+                    const resultBox = document.getElementById("ingredient-result");
+
+                    // ---- No Input ----
+                    if (!input) {
+                        resultBox.style.display = "block";
+                        resultBox.className = "ingredient-result warning";
+                        resultBox.innerHTML = `
+                            <i class="fa-solid fa-circle-exclamation"></i> 
+                            <strong>Please enter a product name or ingredient list.</strong>
+                        `;
+                        return;
+                    }
+
+                    // ---- Loading ----
+                    resultBox.style.display = "block";
+                    resultBox.className = "ingredient-result loading";
+                    resultBox.innerHTML = `
+                        <i class="fa-solid fa-spinner fa-spin"></i> 
+                        <strong>Searching product database...</strong>
+                    `;
+
+                    // ---- API Request ----
+                    const productData = await fetchProductIngredients(input);
+
+                    // ------------------------------------------
+                    // -------- PRODUCT FOUND (WITH API) --------
+                    // ------------------------------------------
+                    if (productData?.ingredients) {
+                        const analysis = analyzeIngredients(productData.ingredients);
+
+                        resultBox.className = "ingredient-result " + analysis.level;
+                        resultBox.innerHTML = `
+                            <strong><i class="fa-solid fa-bottle-droplet"></i> Product Found:</strong> ${productData.name}<br>
+                            ${productData.brand ? `<i class="fa-solid fa-tag"></i> <strong>${productData.brand}</strong><br>` : ""}
+                            <br>
+                            ${productData.image ? `<img src="${productData.image}" width="120" style="border-radius:10px;margin-bottom:10px;">` : ""}
+
+                            <div style="margin-bottom:10px;">${analysis.message}</div>
+
+                            <!-- Risk Meter -->
+                            <div class="risk-meter">
+                                <div class="risk-fill risk-${analysis.level}" style="width:${Math.min(analysis.score * 10, 100)}%"></div>
+                            </div>
+
+                            <br><strong>🧪 Ingredient Breakdown:</strong><br><br>
+
+                            ${analysis.breakdown.map(item => `
+                                <div class="ingredient-row">
+                                    ${item.icon} <strong>${item.name}</strong>
+                                    <span style="opacity:0.7;">— ${item.message}</span>
+                                </div>
+                            `).join("")}
+
+                            <br>${analysis.recommendation}
+                        `;
+                        return;
+                    }
+
+                    // -----------------------------------------
+                    // -------- NO MATCH + NOT INGREDIENT LIST -
+                    // -----------------------------------------
+                    if (!looksLikeIngredientList(input)) {
+                        resultBox.className = "ingredient-result warning";
+                        resultBox.innerHTML = `
+                            <i class="fa-solid fa-circle-question"></i> 
+                            <strong>No product found!</strong><br><br>
+
+                            <i class="fa-solid fa-lightbulb"></i> Try pasting the full ingredient list instead.<br><br>
+
+                            <code style="font-family: 'Georgia',serif; font-size:14px; font-weight:600; letter-spacing:0.5px; color:#6b4e37;">
+                                Example: Water, Niacinamide, Glycerin, Zinc PCA...
+                            </code>
+                        `;
+                        return;
+                    }
+
+                    // -----------------------------------------
+                    // -------- MANUAL INGREDIENT ANALYSIS -----
+                    // -----------------------------------------
+                    const manual = analyzeIngredients(input);
+
+                    resultBox.className = "ingredient-result " + manual.level;
+                    resultBox.innerHTML = `
+                        <i class="fa-solid fa-magnifying-glass"></i> 
+                        <strong>No online match — analyzing text input:</strong><br><br>
+
+                        <div style="margin-bottom:10px;">${manual.message}</div>
+
+                        <div class="risk-meter">
+                            <div class="risk-fill risk-${manual.level}" style="width:${Math.min(manual.score * 10, 100)}%"></div>
+                        </div>
+
+                        <br><strong>🧪 Ingredient Breakdown:</strong><br><br>
+
+                        ${manual.breakdown.map(item => `
+                            <div class="ingredient-row">
+                                ${item.icon} <strong>${item.name}</strong>
+                                <span style="opacity:0.7;">— ${item.message}</span>
+                            </div>
+                        `).join("")}
+
+                        <br>${manual.recommendation}
+                    `;
+                });
+            }
+            const queryBtn = document.getElementById("query-btn");
+            const queryInput = document.getElementById("skin-query-input");
+            const queryResponse = document.getElementById("query-response");
+
+            // Icon mapping for display instead of emojis
+            const iconMap = {
+                "dry skin": `<i class="fa-solid fa-droplet"></i>`,
+                "oily skin": `<i class="fa-solid fa-fire-flame-simple"></i>`,
+                "acne": `<i class="fa-solid fa-circle-exclamation"></i>`,
+                "tanning": `<i class="fa-solid fa-sun"></i>`,
+                "dark circles": `<i class="fa-solid fa-moon"></i>`,
+                "sensitive skin": `<i class="fa-solid fa-heart-crack"></i>`,
+                "dull skin": `<i class="fa-solid fa-face-meh"></i>`,
+                "pigmentation": `<i class="fa-solid fa-palette"></i>`,
+                "wrinkles": `<i class="fa-solid fa-wand-magic-sparkles"></i>`,
+                "blackheads": `<i class="fa-solid fa-bug"></i>`,
+                "whiteheads": `<i class="fa-solid fa-circle-dot"></i>`,
+                "redness": `<i class="fa-solid fa-fire"></i>`,
+                "large pores": `<i class="fa-solid fa-magnifying-glass"></i>`,
+                "fungal acne": `<i class="fa-solid fa-bacteria"></i>`,
+                "dehydration": `<i class="fa-solid fa-droplet-slash"></i>`,
+                "sun damage": `<i class="fa-solid fa-sun-plant-wilt"></i>`,
+                "texture": `<i class="fa-solid fa-layer-group"></i>`,
+                "uneven tone": `<i class="fa-solid fa-adjust"></i>`,
+                "eczema": `<i class="fa-solid fa-bandage"></i>`,
+                "rosacea": `<i class="fa-solid fa-heart"></i>`,
+                "barrier damage": `<i class="fa-solid fa-shield-halved"></i>`,
+                "anti aging": `<i class="fa-solid fa-hourglass-half"></i>`,
+                "black marks": `<i class="fa-solid fa-circle-half-stroke"></i>`
+            };
+
+            if (queryBtn) {
+                queryBtn.addEventListener("click", () => {
+                    const query = queryInput.value.toLowerCase().trim();
+
+                    if (!query) {
+                        queryResponse.style.display = "block";
+                        queryResponse.className = "ingredient-result warning";
+                        queryResponse.innerHTML = `
+                            <i class="fa-solid fa-circle-exclamation"></i> 
+                            <strong>Please enter a skin concern.</strong><br>
+                            Example: <i>dry skin, acne, tanning...</i>
+                        `;
+                        return;
+                    }
+
+                    const matches = findSkinCategories(query);
+
+                    if (!matches) {
+                        queryResponse.style.display = "block";
+                        queryResponse.className = "ingredient-result warning";
+                        queryResponse.innerHTML = `
+                            <i class="fa-solid fa-question-circle"></i> 
+                            <strong>No match found.</strong><br><br>
+                            Try keywords like:<br>
+                            <strong>dry skin, acne, tanning, sensitive skin, dark circles…</strong>
+                        `;
+                        return;
+                    }
+
+                    // ⭐ MULTI-MATCH DISPLAY ⭐
+                    queryResponse.style.display = "block";
+                    queryResponse.className = "ingredient-result safe";
+
+                    queryResponse.innerHTML =
+                        matches.map(match => {
+                            const data = skinAdviceLibrary[match];
+                            const icon = iconMap[match] || `<i class="fa-solid fa-wand-magic-sparkles"></i>`;
+
+                            return `
+                                <div class="advice-block" style="padding:12px; margin-bottom:12px; border-bottom:1px dashed #c9c9c9;">
+                                    ${icon} <strong style="font-size:16px;">${match.toUpperCase()}</strong><br><br>
+
+                                    <p style="margin-bottom:10px;">${data.message}</p>
+
+                                    <strong><i class="fa-solid fa-bottle-droplet"></i> Recommended Products:</strong>
+                                    <ul style="margin-left:14px; margin-top:6px;">
+                                        ${data.products.map(p => `<li>${p}</li>`).join("")}
+                                    </ul>
+
+                                    <br>
+                                    <strong><i class="fa-solid fa-lightbulb"></i> Tips:</strong><br>
+                                    ${data.tips}
+                                </div>
+                            `;
+                        }).join("") +
+
+                        // ⭐ Smart Routine Mode Section ⭐
+                        `
+                        <div class="routine-box" style="margin-top:20px; padding:14px; border-radius:12px; background:#fff7ed;">
+                            <strong style="font-size:17px;">
+                                <i class="fa-solid fa-spa"></i> SMART ROUTINE MODE
+                            </strong><br><br>
+
+                            ${generateSmartRoutine(matches)}
+                        </div>
+
+                        <div style="font-weight:bold; text-align:center; margin-top:14px; opacity:.85;">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Personalized advice based on multiple detected skin concerns.
+                        </div>
+                        `;
+                });
+            }
+        });
+
+        const fullName = localStorage.getItem(`${currentUser}_name`) || currentUser?.split('@')[0] || 'User';
+        const firstName = fullName.trim().split(" ")[0];
+        const firstInitial = firstName[0].toUpperCase();
+
+        const profileCircle = document.getElementById("user-profile");
+        const profileDropdown = document.getElementById("profileDropdown");
+
+        if (profileCircle) {
+            profileCircle.textContent = firstInitial;
+            profileCircle.title = firstName;
+        }
+
+        // Add click handler for profile dropdown
+        if (profileDropdown) {
+            profileCircle.addEventListener("click", () => {
+                profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
+            });
+
+            // Hide dropdown when clicking outside
+            window.addEventListener("click", function (e) {
+                if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

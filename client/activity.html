@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VitaFuel | Activity Tracker</title>
+  <script src="port-redirect.js"></script>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/activity.css">
+  <link rel="stylesheet" href="css/commonstyles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <header class="navbar">
+    <div class="hero-img1">
+      <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="health-insights.html">Wellness Hub</a>
+      <a href="recommendations.html">Recommendations</a>
+      <a href="chatbot.html">Chatbot</a>
+      <a href="shopping-list.html">Shopping List</a>
+      <div class="profile-container">
+        <div class="profile-circle" id="user-profile">U</div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="profile.html">My Profile</a>
+          <a href="settings.html">Settings</a>
+          <a href="about.html">About</a>
+          <a href="#" onclick="logout()">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="header">
+      <h1>Activity Tracker <i class="fa-solid fa-person-running"></i></h1>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-tab="today"><i class="fa-solid fa-calendar-day"></i> Today</button>
+      <button class="nav-tab" data-tab="log"><i class="fa-solid fa-plus-circle"></i> Quick Log</button>
+      <button class="nav-tab" data-tab="history"><i class="fa-solid fa-clock-rotate-left"></i> History</button>
+      <button class="nav-tab" data-tab="analytics"><i class="fa-solid fa-chart-line"></i> Analytics</button>
+    </div>
+
+    <!-- Today's Activities Tab -->
+    <div id="today" class="tab-content active">
+      <!-- Overview Cards -->
+      <div class="overview-section">
+        <div class="overview-card duration">
+          <div class="overview-icon">⏱️</div>
+          <div class="overview-content">
+            <div class="overview-value" id="today-duration">0</div>
+            <div class="overview-label">Minutes Active</div>
+          </div>
+        </div>
+        <div class="overview-card calories">
+          <div class="overview-icon">🔥</div>
+          <div class="overview-content">
+            <div class="overview-value" id="today-calories">0</div>
+            <div class="overview-label">Calories Burned</div>
+          </div>
+        </div>
+        <div class="overview-card distance">
+          <div class="overview-icon">📏</div>
+          <div class="overview-content">
+            <div class="overview-value" id="today-distance">0.0</div>
+            <div class="overview-label">Distance (km)</div>
+          </div>
+        </div>
+        <div class="overview-card activities">
+          <div class="overview-icon">🏃‍♂️</div>
+          <div class="overview-content">
+            <div class="overview-value" id="today-activities">0</div>
+            <div class="overview-label">Activities Logged</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Popular Activities - Quick Select -->
+      <div class="activity-types-section">
+        <h3><i class="fa-solid fa-fire"></i> Quick Select Activity</h3>
+        <p class="section-subtitle">Tap an activity to log it quickly</p>
+        <div class="activity-types-grid" id="activity-types-grid">
+          <!-- Activity types will be populated here -->
+        </div>
+      </div>
+
+      <!-- Today's Activities List -->
+      <div class="activities-list-section">
+        <h3><i class="fa-solid fa-list"></i> Today's Activities</h3>
+        <div id="today-activities-list">
+          <div class="empty-state">
+            <div class="empty-state-icon"><i class="fa-solid fa-person-running"></i></div>
+            <div class="empty-state-text">No activities logged today</div>
+            <div class="empty-state-subtext">Start your fitness journey by logging your first activity!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Log Tab -->
+    <div id="log" class="tab-content">
+      <div class="quick-log-section">
+        <div class="quick-log-card">
+          <h3><i class="fa-solid fa-plus-circle"></i> Log Activity</h3>
+          <p class="section-subtitle">Record your workout details</p>
+          <div class="quick-log-form">
+            <div class="form-group">
+              <label class="form-label" for="log-activity-type"><i class="fa-solid fa-dumbbell"></i> Activity Type</label>
+              <select id="log-activity-type" class="form-select" required>
+                <option value="">Select activity...</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="log-duration"><i class="fa-solid fa-clock"></i> Duration (minutes)</label>
+                <input type="number" id="log-duration" class="form-input" min="1" max="480" placeholder="30" required />
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="log-intensity"><i class="fa-solid fa-gauge-high"></i> Intensity</label>
+                <select id="log-intensity" class="form-select" required>
+                  <option value="low">Low</option>
+                  <option value="moderate" selected>Moderate</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="log-distance"><i class="fa-solid fa-route"></i> Distance (km) - Optional</label>
+              <input type="number" id="log-distance" class="form-input" min="0" step="0.1" placeholder="0.0" />
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="log-notes"><i class="fa-solid fa-note-sticky"></i> Notes - Optional</label>
+              <textarea id="log-notes" class="form-input" rows="3" placeholder="How did it feel? Any notes?"></textarea>
+            </div>
+            <div class="form-group">
+              <button class="btn btn-primary btn-large" onclick="logActivity()">
+                <i class="fa-solid fa-check"></i> Log Activity
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Tab -->
+    <div id="analytics" class="tab-content">
+      <div class="analytics-section">
+        <h3><i class="fa-solid fa-chart-line"></i> Activity Analytics</h3>
+        
+        <!-- Time Period Filter -->
+        <div class="analytics-filters">
+          <button class="filter-btn active" data-period="7">Last 7 Days</button>
+          <button class="filter-btn" data-period="30">Last 30 Days</button>
+          <button class="filter-btn" data-period="90">Last 3 Months</button>
+        </div>
+        
+        <!-- Analytics Cards -->
+        <div class="analytics-cards">
+          <div class="analytics-card">
+            <div class="card-icon">📈</div>
+            <div class="card-content">
+              <div class="card-title">Activity Trend</div>
+              <div class="card-value" id="activity-trend">+12%</div>
+              <div class="card-subtitle">vs last period</div>
+            </div>
+          </div>
+          
+          <div class="analytics-card">
+            <div class="card-icon">🔥</div>
+            <div class="card-content">
+              <div class="card-title">Avg Calories/Day</div>
+              <div class="card-value" id="avg-calories">245</div>
+              <div class="card-subtitle">calories burned</div>
+            </div>
+          </div>
+          
+          <div class="analytics-card">
+            <div class="card-icon">⏱️</div>
+            <div class="card-content">
+              <div class="card-title">Avg Duration</div>
+              <div class="card-value" id="avg-duration">28</div>
+              <div class="card-subtitle">minutes per workout</div>
+            </div>
+          </div>
+          
+          <div class="analytics-card">
+            <div class="card-icon">🏃‍♂️</div>
+            <div class="card-content">
+              <div class="card-title">Most Popular</div>
+              <div class="card-value" id="popular-activity">Running</div>
+              <div class="card-subtitle">favorite activity</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Activity Distribution -->
+        <div class="activity-distribution">
+          <h4>📊 Activity Distribution</h4>
+          <div class="distribution-chart" id="activity-distribution">
+            <!-- Chart will be populated here -->
+          </div>
+        </div>
+        
+        <!-- Weekly Heatmap -->
+        <div class="weekly-heatmap">
+          <h4>🗓️ Weekly Activity Heatmap</h4>
+          <div class="heatmap-container" id="weekly-heatmap">
+            <!-- Heatmap will be populated here -->
+          </div>
+        </div>
+        
+        <!-- Insights -->
+        <div class="insights-section">
+          <h4>💡 Personal Insights</h4>
+          <div class="insights-list" id="activity-insights">
+            <!-- Insights will be populated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- History Tab -->
+    <div id="history" class="tab-content">
+      <div class="history-section">
+        <h3><i class="fa-solid fa-clock-rotate-left"></i> Activity History</h3>
+        
+        <div class="history-filters">
+          <button class="filter-btn active" data-period="7">Last 7 Days</button>
+          <button class="filter-btn" data-period="30">Last 30 Days</button>
+          <button class="filter-btn" data-period="90">Last 3 Months</button>
+          <button class="filter-btn" data-period="all">All Time</button>
+        </div>
+        
+        <div class="history-list" id="history-list">
+          <div class="empty-state">
+            <div class="empty-state-icon">📊</div>
+            <div class="empty-state-text">No activity history found</div>
+            <div class="empty-state-subtext">Start logging activities to see your progress here!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Activity data
+    // Popular activities - simplified list
+    const activityTypes = [
+      { name: 'Running', icon: '🏃‍♂️', calories: 10, id: 'running' },
+      { name: 'Walking', icon: '🚶‍♀️', calories: 5, id: 'walking' },
+      { name: 'Cycling', icon: '🚴‍♂️', calories: 8, id: 'cycling' },
+      { name: 'Swimming', icon: '🏊‍♀️', calories: 12, id: 'swimming' },
+      { name: 'Yoga', icon: '🧘‍♀️', calories: 4, id: 'yoga' },
+      { name: 'Gym', icon: '🏋️‍♂️', calories: 15, id: 'gym' }
+    ];
+
+    const ACTIVITY_CACHE_KEY = 'activities';
+    const ACTIVITY_GOALS_KEY = 'activityGoals';
+
+    const getApiBaseUrl = () => window.API_BASE_URL || deriveApiBase();
+    let activities = [];
+    let goals = JSON.parse(localStorage.getItem(ACTIVITY_GOALS_KEY) || '{"daily": 60, "weekly": 300, "monthly": 1200}');
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', async function() {
+      console.log('Activity page initializing...');
+      try {
+        activities = loadActivitiesFromCache();
+        await hydrateActivities();
+        initializeActivityPage();
+        setupEventListeners();
+        populateActivitySelectors();
+        setupAnalyticsFilters();
+        refreshActivityUI();
+        console.log('Activity page initialized successfully');
+      } catch (error) {
+        console.error('Error initializing activity page:', error);
+      }
+    });
+
+    function deriveApiBase() {
+      if (window.location.port && window.location.port !== '3000') {
+        return `${window.location.origin}/api`;
+      }
+      return `${window.location.protocol}//${window.location.hostname}:8005/api`;
+    }
+
+    function loadActivitiesFromCache() {
+      try {
+        const cached = JSON.parse(localStorage.getItem(ACTIVITY_CACHE_KEY) || '[]');
+        return cached.map(activity => ({
+          ...activity,
+          id: activity.id || generateClientId(),
+          serverId: activity.serverId || activity._id || null,
+          date: activity.date || (activity.timestamp ? activity.timestamp.split('T')[0] : new Date().toISOString().split('T')[0])
+        }));
+      } catch (error) {
+        console.warn('Failed to parse cached activities, resetting cache.', error);
+        return [];
+      }
+    }
+
+    function persistActivities() {
+      localStorage.setItem(ACTIVITY_CACHE_KEY, JSON.stringify(activities));
+    }
+
+    function isAuthenticated() {
+      return !!localStorage.getItem('accessToken');
+    }
+
+    function authHeaders(extra = {}) {
+      const token = localStorage.getItem('accessToken');
+      if (!token) return { ...extra };
+      return { ...extra, 'Authorization': `Bearer ${token}` };
+    }
+
+    function generateClientId() {
+      return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    }
+
+    async function hydrateActivities() {
+      if (!isAuthenticated()) {
+        return;
+      }
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/activity/me/activities`, {
+          headers: authHeaders()
+        });
+        if (response.ok) {
+          const data = await response.json();
+          activities = Array.isArray(data) ? data.map(normalizeServerActivity) : [];
+          persistActivities();
+        } else {
+          console.warn('Failed to load activities from API, falling back to cached data.');
+        }
+      } catch (error) {
+        console.error('Error loading activities from API:', error);
+      }
+    }
+
+    async function syncActivityWithServer(activity) {
+      if (!isAuthenticated()) {
+        return;
+      }
+
+      try {
+        const payload = {
+          activity_type: activity.type,
+          duration_minutes: activity.duration,
+          intensity: activity.intensity,
+          calories_burned: activity.calories,
+          distance_km: activity.distance || 0,
+          notes: activity.notes || '',
+          timestamp: activity.timestamp
+        };
+
+        const response = await fetch(`${getApiBaseUrl()}/activity/me/activities`, {
+          method: 'POST',
+          headers: authHeaders({ 'Content-Type': 'application/json' }),
+          body: JSON.stringify(payload)
+        });
+
+        if (response.ok) {
+          const result = await response.json().catch(() => ({}));
+          if (result?.id) {
+            activity.serverId = result.id;
+            persistActivities();
+          }
+        } else {
+          console.warn('Failed to sync activity:', await response.text());
+        }
+      } catch (error) {
+        console.error('Error syncing activity:', error);
+      }
+    }
+
+    function normalizeServerActivity(entry) {
+      const typeId = normalizeActivityType(entry.activity_type);
+      const meta = getActivityMeta(typeId, entry.activity_type);
+      const date = entry.date || (entry.timestamp ? entry.timestamp.split('T')[0] : new Date().toISOString().split('T')[0]);
+      return {
+        id: entry.clientId || entry.id || entry._id || generateClientId(),
+        serverId: entry.id || entry._id || null,
+        type: typeId,
+        name: meta.name,
+        duration: entry.duration_minutes ?? entry.duration ?? 0,
+        intensity: entry.intensity || 'moderate',
+        calories: Math.round(entry.calories_burned ?? entry.calories ?? 0),
+        distance: Number(entry.distance_km ?? entry.distance ?? 0),
+        notes: entry.notes || '',
+        date,
+        timestamp: entry.timestamp || `${date}T00:00:00Z`
+      };
+    }
+
+    function normalizeActivityType(value) {
+      if (!value) return 'custom';
+      const normalized = value.toString().toLowerCase();
+      const directMatch = activityTypes.find(type => type.id === normalized);
+      if (directMatch) return directMatch.id;
+      const nameMatch = activityTypes.find(type => type.name.toLowerCase() === normalized);
+      return nameMatch ? nameMatch.id : normalized;
+    }
+
+    function getActivityMeta(typeId, fallbackName = 'Custom Activity') {
+      const meta = activityTypes.find(type => type.id === typeId);
+      if (meta) return meta;
+      return {
+        id: typeId,
+        name: fallbackName || 'Custom Activity',
+        icon: '🏃‍♀️',
+        calories: 6
+      };
+    }
+
+    function refreshActivityUI(historyPeriod) {
+      const activeHistoryFilter = historyPeriod || document.querySelector('.history-filters .filter-btn.active')?.getAttribute('data-period') || '7';
+      updateTodayStats();
+      updateTodayActivities();
+      loadHistory(activeHistoryFilter);
+      updateAnalytics();
+    }
+
+    function initializeActivityPage() {
+      populateActivityTypes();
+      populateActivitySelectors();
+      updateTodayActivities();
+    }
+
+    function populateActivityTypes() {
+      const grid = document.getElementById('activity-types-grid');
+      if (!grid) {
+        console.error('Activity types grid not found');
+        return;
+      }
+      
+      grid.innerHTML = '';
+      
+      activityTypes.forEach(type => {
+        const card = document.createElement('div');
+        card.className = 'activity-type-card';
+        card.innerHTML = `
+          <div class="activity-type-icon">${type.icon}</div>
+          <div class="activity-type-name">${type.name}</div>
+          <div class="activity-type-calories">~${type.calories} cal/min</div>
+        `;
+        card.addEventListener('click', (e) => {
+          e.preventDefault();
+          selectActivityType(type, e);
+        });
+        grid.appendChild(card);
+      });
+    }
+
+
+    function selectActivityType(type, event) {
+      // Remove previous selection
+      document.querySelectorAll('.activity-type-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      
+      // Add selection to clicked card
+      if (event && event.target) {
+        const clickedCard = event.target.closest('.activity-type-card');
+        if (clickedCard) {
+          clickedCard.classList.add('selected');
+        }
+      }
+      
+      // Switch to Quick Log tab and auto-fill the form
+      switchTab('log');
+      
+      // Auto-fill the log form
+      setTimeout(() => {
+        const logActivityType = document.getElementById('log-activity-type');
+        if (logActivityType) {
+          logActivityType.value = type.id;
+        }
+        
+        // Focus on duration field for quick entry
+        const durationInput = document.getElementById('log-duration');
+        if (durationInput) {
+          durationInput.focus();
+        }
+      }, 200);
+    }
+
+    function setupEventListeners() {
+      // Tab navigation
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', function() {
+          switchTab(this.getAttribute('data-tab'));
+        });
+      });
+
+      // History filters
+      document.querySelectorAll('.history-filters .filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.history-filters .filter-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          loadHistory(this.getAttribute('data-period'));
+        });
+      });
+
+      // Profile dropdown
+      const profileCircle = document.getElementById('user-profile');
+      const profileDropdown = document.getElementById('profileDropdown');
+      
+      if (profileCircle && profileDropdown) {
+        const userEmail = localStorage.getItem('userEmail');
+        if (userEmail) {
+          profileCircle.textContent = userEmail.charAt(0).toUpperCase();
+        }
+        
+        profileCircle.addEventListener('click', function(e) {
+          e.stopPropagation();
+          profileDropdown.classList.toggle('show');
+        });
+        
+        document.addEventListener('click', function() {
+          profileDropdown.classList.remove('show');
+        });
+      }
+    }
+
+    function switchTab(tabName) {
+      console.log('Switching to tab:', tabName);
+      
+      // Hide all tab contents
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      // Remove active class from all tabs
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected tab content
+      const targetContent = document.getElementById(tabName);
+      if (targetContent) {
+        targetContent.classList.add('active');
+      } else {
+        console.error('Tab content not found:', tabName);
+        return;
+      }
+      
+      // Add active class to clicked tab
+      const targetTab = document.querySelector(`[data-tab="${tabName}"]`);
+      if (targetTab) {
+        targetTab.classList.add('active');
+      } else {
+        console.error('Tab button not found:', tabName);
+      }
+    }
+
+    function logQuickActivity() {
+      const type = document.getElementById('quick-activity-type').value;
+      const duration = parseInt(document.getElementById('quick-duration').value);
+      const intensity = document.getElementById('quick-intensity').value;
+      
+      if (!type || !duration) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      const activityType = activityTypes.find(t => t.id === type);
+      const calories = Math.round(activityType.calories * duration * getIntensityMultiplier(intensity));
+      
+      const activity = {
+        id: generateClientId(),
+        serverId: null,
+        type: type,
+        name: activityType.name,
+        duration: duration,
+        intensity: intensity,
+        calories: calories,
+        distance: 0,
+        notes: '',
+        date: new Date().toISOString().split('T')[0],
+        timestamp: new Date().toISOString()
+      };
+      
+      activities.push(activity);
+      persistActivities();
+      syncActivityWithServer(activity);
+      localStorage.setItem('vitafuel_has_logged_activity', '1');
+      
+      // Clear form
+      document.getElementById('quick-activity-type').value = '';
+      document.getElementById('quick-duration').value = '';
+      document.getElementById('quick-intensity').value = 'moderate';
+      
+      refreshActivityUI();
+      showNotification(`${activityType.name} logged successfully!`, 'success');
+    }
+
+    // Unified logActivity function for the simplified form
+    function logActivity() {
+      const type = document.getElementById('log-activity-type').value;
+      const duration = parseInt(document.getElementById('log-duration').value);
+      const intensity = document.getElementById('log-intensity').value;
+      const distance = parseFloat(document.getElementById('log-distance').value) || 0;
+      const notes = document.getElementById('log-notes').value;
+      
+      if (!type || !duration) {
+        showNotification('Please fill in all required fields', 'error');
+        return;
+      }
+      
+      const activityType = activityTypes.find(t => t.id === type);
+      if (!activityType) {
+        showNotification('Invalid activity type', 'error');
+        return;
+      }
+      
+      const calories = Math.round(activityType.calories * duration * getIntensityMultiplier(intensity));
+      
+      const activity = {
+        id: generateClientId(),
+        serverId: null,
+        type: type,
+        name: activityType.name,
+        duration: duration,
+        intensity: intensity,
+        calories: calories,
+        distance: distance,
+        notes: notes,
+        date: new Date().toISOString().split('T')[0],
+        timestamp: new Date().toISOString()
+      };
+      
+      activities.push(activity);
+      persistActivities();
+      syncActivityWithServer(activity);
+      localStorage.setItem('vitafuel_has_logged_activity', '1');
+      
+      // Clear form
+      document.getElementById('log-activity-type').value = '';
+      document.getElementById('log-duration').value = '';
+      document.getElementById('log-intensity').value = 'moderate';
+      document.getElementById('log-distance').value = '';
+      document.getElementById('log-notes').value = '';
+      
+      // Switch to Today tab to see the logged activity
+      switchTab('today');
+      refreshActivityUI();
+      showNotification(`${activityType.name} logged successfully! 🎉`, 'success');
+    }
+
+    function getIntensityMultiplier(intensity) {
+      switch(intensity) {
+        case 'low': return 0.7;
+        case 'moderate': return 1.0;
+        case 'high': return 1.3;
+        default: return 1.0;
+      }
+    }
+
+    function updateTodayStats() {
+      const today = new Date().toISOString().split('T')[0];
+      const todayActivities = activities.filter(activity => activity.date === today);
+      
+      const totalDuration = todayActivities.reduce((sum, activity) => sum + activity.duration, 0);
+      const totalCalories = todayActivities.reduce((sum, activity) => sum + activity.calories, 0);
+      const totalDistance = todayActivities.reduce((sum, activity) => sum + (activity.distance || 0), 0);
+      const activityCount = todayActivities.length;
+      
+      document.getElementById('today-duration').textContent = totalDuration;
+      document.getElementById('today-calories').textContent = totalCalories;
+      document.getElementById('today-distance').textContent = totalDistance.toFixed(1);
+      document.getElementById('today-activities').textContent = activityCount;
+    }
+
+    function updateTodayActivities() {
+      const today = new Date().toISOString().split('T')[0];
+      const todayActivities = activities.filter(activity => activity.date === today);
+      const container = document.getElementById('today-activities-list');
+      
+      if (todayActivities.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon"><i class="fa-solid fa-person-running"></i></div>
+            <div class="empty-state-text">No activities logged today</div>
+            <div class="empty-state-subtext">Start your fitness journey by logging your first activity!</div>
+          </div>
+        `;
+        return;
+      }
+      
+      container.innerHTML = '';
+      todayActivities.reverse().forEach(activity => {
+        const activityType = getActivityMeta(activity.type, activity.name);
+        const item = document.createElement('div');
+        item.className = 'activity-item new';
+        item.innerHTML = `
+          <div class="activity-icon">${activityType.icon}</div>
+          <div class="activity-details">
+            <div class="activity-name">${activity.name}</div>
+            <div class="activity-meta">
+              ${activity.duration} min • ${activity.calories} cal • ${activity.intensity} intensity
+              ${activity.distance > 0 ? ` • ${activity.distance} km` : ''}
+            </div>
+          </div>
+          <div class="activity-actions">
+            <button class="btn btn-danger btn-small" onclick="deleteActivity('${activity.id}')">
+              🗑️
+            </button>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function deleteActivity(activityId) {
+      if (!confirm('Are you sure you want to delete this activity?')) {
+        return;
+      }
+
+      const target = activities.find(activity => activity.id === activityId);
+      activities = activities.filter(activity => activity.id !== activityId);
+      persistActivities();
+      refreshActivityUI();
+      showNotification('Activity deleted successfully!', 'success');
+
+      if (target?.serverId && isAuthenticated()) {
+        deleteActivityFromServer(target.serverId);
+      }
+    }
+
+    async function deleteActivityFromServer(serverId) {
+      try {
+        const response = await fetch(`${getApiBaseUrl()}/activity/me/activities/${serverId}`, {
+          method: 'DELETE',
+          headers: authHeaders()
+        });
+        if (!response.ok) {
+          console.warn('Failed to delete activity on server:', await response.text());
+        }
+      } catch (error) {
+        console.error('Error deleting activity on server:', error);
+      }
+    }
+
+    function updateGoals() {
+      const today = new Date().toISOString().split('T')[0];
+      const todayActivities = activities.filter(activity => activity.date === today);
+      const totalDuration = todayActivities.reduce((sum, activity) => sum + activity.duration, 0);
+      
+      // Update daily goal
+      const dailyProgress = Math.min((totalDuration / goals.daily) * 100, 100);
+      document.getElementById('daily-progress').style.width = dailyProgress + '%';
+      document.getElementById('daily-current').textContent = totalDuration;
+      document.getElementById('daily-target').textContent = goals.daily;
+      
+      // Update weekly goal (last 7 days)
+      const weekStart = new Date();
+      weekStart.setDate(weekStart.getDate() - 6);
+      const weekActivities = activities.filter(activity => 
+        new Date(activity.date) >= weekStart
+      );
+      const weekDuration = weekActivities.reduce((sum, activity) => sum + activity.duration, 0);
+      const weeklyProgress = Math.min((weekDuration / goals.weekly) * 100, 100);
+      document.getElementById('weekly-progress').style.width = weeklyProgress + '%';
+      document.getElementById('weekly-current').textContent = weekDuration;
+      document.getElementById('weekly-target').textContent = goals.weekly;
+      
+      // Update monthly goal (last 30 days)
+      const monthStart = new Date();
+      monthStart.setDate(monthStart.getDate() - 29);
+      const monthActivities = activities.filter(activity => 
+        new Date(activity.date) >= monthStart
+      );
+      const monthDuration = monthActivities.reduce((sum, activity) => sum + activity.duration, 0);
+      const monthlyProgress = Math.min((monthDuration / goals.monthly) * 100, 100);
+      document.getElementById('monthly-progress').style.width = monthlyProgress + '%';
+      document.getElementById('monthly-current').textContent = monthDuration;
+      document.getElementById('monthly-target').textContent = goals.monthly;
+    }
+
+    function loadHistory(period = '7') {
+      const container = document.getElementById('history-list');
+      let filteredActivities = [...activities];
+      
+      if (period !== 'all') {
+        const days = parseInt(period);
+        const startDate = new Date();
+        startDate.setDate(startDate.getDate() - days);
+        filteredActivities = activities.filter(activity => 
+          new Date(activity.date) >= startDate
+        );
+      }
+      
+      if (filteredActivities.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📊</div>
+            <div class="empty-state-text">No activity history found</div>
+            <div class="empty-state-subtext">Start logging activities to see your progress here!</div>
+          </div>
+        `;
+        return;
+      }
+      
+      // Group activities by date
+      const groupedActivities = {};
+      filteredActivities.forEach(activity => {
+        if (!groupedActivities[activity.date]) {
+          groupedActivities[activity.date] = [];
+        }
+        groupedActivities[activity.date].push(activity);
+      });
+      
+      container.innerHTML = '';
+      Object.keys(groupedActivities).sort().reverse().forEach(date => {
+        const dayActivities = groupedActivities[date];
+        const totalDuration = dayActivities.reduce((sum, activity) => sum + activity.duration, 0);
+        const totalCalories = dayActivities.reduce((sum, activity) => sum + activity.calories, 0);
+        
+        const item = document.createElement('div');
+        item.className = 'history-item';
+        item.innerHTML = `
+          <div class="history-date">${formatDate(date)}</div>
+          <div class="history-activities">
+            ${dayActivities.map(activity => 
+              `<span class="history-activity">${activity.name} (${activity.duration}min)</span>`
+            ).join('')}
+          </div>
+          <div class="history-total">${totalDuration}min • ${totalCalories}cal</div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const today = new Date();
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1);
+      
+      if (dateString === today.toISOString().split('T')[0]) {
+        return 'Today';
+      } else if (dateString === yesterday.toISOString().split('T')[0]) {
+        return 'Yesterday';
+      } else {
+        return date.toLocaleDateString('en-US', { 
+          weekday: 'short', 
+          month: 'short', 
+          day: 'numeric' 
+        });
+      }
+    }
+
+    function updateGoalSettings() {
+      const dailyGoal = parseInt(document.getElementById('daily-goal').value);
+      const weeklyGoal = parseInt(document.getElementById('weekly-goal').value);
+      const monthlyGoal = parseInt(document.getElementById('monthly-goal').value);
+      
+      goals = {
+        daily: dailyGoal,
+        weekly: weeklyGoal,
+        monthly: monthlyGoal
+      };
+      
+      localStorage.setItem(ACTIVITY_GOALS_KEY, JSON.stringify(goals));
+      updateGoals();
+      showNotification('Goals updated successfully!', 'success');
+    }
+
+    function showNotification(message, type = 'info') {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = `notification notification-${type}`;
+      notification.textContent = message;
+      notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${type === 'success' ? '#4CAF50' : type === 'error' ? '#F44336' : '#2196F3'};
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        z-index: 1000;
+        animation: slideIn 0.3s ease;
+      `;
+      
+      document.body.appendChild(notification);
+      
+      // Remove notification after 3 seconds
+      setTimeout(() => {
+        notification.remove();
+      }, 3000);
+    }
+
+    // Timer functionality
+    let timerInterval = null;
+    let timerStartTime = null;
+    let timerPausedTime = 0;
+    let currentActivity = null;
+
+    function startTimer() {
+      const activityType = document.getElementById('timer-activity').value;
+      if (!activityType) {
+        alert('Please select an activity type');
+        return;
+      }
+      
+      currentActivity = activityType;
+      timerStartTime = Date.now() - timerPausedTime;
+      
+      document.getElementById('start-timer').style.display = 'none';
+      document.getElementById('pause-timer').style.display = 'inline-block';
+      document.getElementById('stop-timer').style.display = 'inline-block';
+      document.getElementById('timer-stats').style.display = 'flex';
+      document.getElementById('timer-status').textContent = 'Workout in progress...';
+      
+      timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerPausedTime = Date.now() - timerStartTime;
+      
+      document.getElementById('pause-timer').style.display = 'none';
+      document.getElementById('start-timer').style.display = 'inline-block';
+      document.getElementById('timer-status').textContent = 'Workout paused';
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      const duration = Math.floor((Date.now() - timerStartTime) / 1000 / 60);
+      
+      if (duration > 0) {
+        const activityType = activityTypes.find(t => t.id === currentActivity);
+        const calories = Math.round(activityType.calories * duration);
+        
+        const activity = {
+          id: generateClientId(),
+          serverId: null,
+          type: currentActivity,
+          name: activityType.name,
+          duration: duration,
+          intensity: 'moderate',
+          calories: calories,
+          date: new Date().toISOString().split('T')[0],
+          timestamp: new Date().toISOString()
+        };
+        
+        activities.push(activity);
+        persistActivities();
+        syncActivityWithServer(activity);
+        localStorage.setItem('vitafuel_has_logged_activity', '1');
+        refreshActivityUI();
+        showNotification(`Workout completed! ${duration} minutes of ${activityType.name} logged.`, 'success');
+      }
+      
+      resetTimer();
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerStartTime = null;
+      timerPausedTime = 0;
+      currentActivity = null;
+      
+      document.getElementById('timer-display').textContent = '00:00:00';
+      document.getElementById('start-timer').style.display = 'inline-block';
+      document.getElementById('pause-timer').style.display = 'none';
+      document.getElementById('stop-timer').style.display = 'none';
+      document.getElementById('timer-stats').style.display = 'none';
+      document.getElementById('timer-status').textContent = 'Ready to start';
+    }
+
+    function updateTimer() {
+      const elapsed = Math.floor((Date.now() - timerStartTime) / 1000);
+      const hours = Math.floor(elapsed / 3600);
+      const minutes = Math.floor((elapsed % 3600) / 60);
+      const seconds = elapsed % 60;
+      
+      document.getElementById('timer-display').textContent = 
+        `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      
+      // Update live stats
+      const duration = Math.floor(elapsed / 60);
+      if (currentActivity) {
+        const activityType = activityTypes.find(t => t.id === currentActivity);
+        const calories = Math.round(activityType.calories * duration);
+        
+        document.getElementById('timer-duration').textContent = `${duration} min`;
+        document.getElementById('timer-calories').textContent = `${calories} cal`;
+      }
+    }
+
+    function quickStartActivity(activityType) {
+      document.getElementById('timer-activity').value = activityType;
+      startTimer();
+    }
+
+    // Templates functionality
+    const workoutTemplates = {
+      'morning-routine': [
+        { type: 'yoga', duration: 15, intensity: 'low' },
+        { type: 'walking', duration: 15, intensity: 'moderate' }
+      ],
+      'cardio-blast': [
+        { type: 'running', duration: 20, intensity: 'high' },
+        { type: 'gym', duration: 25, intensity: 'high' }
+      ],
+      'strength-training': [
+        { type: 'gym', duration: 60, intensity: 'moderate' }
+      ],
+      'recovery-day': [
+        { type: 'yoga', duration: 20, intensity: 'low' }
+      ],
+      'weekend-adventure': [
+        { type: 'hiking', duration: 120, intensity: 'moderate' }
+      ],
+      'quick-burn': [
+        { type: 'gym', duration: 15, intensity: 'high' }
+      ]
+    };
+
+    function loadTemplate(templateId) {
+      const template = workoutTemplates[templateId];
+      if (!template) return;
+      
+      // Switch to Quick Log tab
+      switchTab('log');
+      
+      // Clear existing activities in template
+      document.getElementById('template-activities-list').innerHTML = '';
+      
+      // Add template activities
+      template.forEach(activity => {
+        addActivityToTemplate(activity.type, activity.duration, activity.intensity);
+      });
+      
+      showNotification('Template loaded! Review and log your workout.', 'success');
+    }
+
+    function addActivityToTemplate(type = '', duration = '', intensity = 'moderate') {
+      const container = document.getElementById('template-activities-list');
+      const activityDiv = document.createElement('div');
+      activityDiv.className = 'template-activity-item';
+      activityDiv.innerHTML = `
+        <div class="form-group">
+          <select class="form-select template-activity-type">
+            <option value="">Select activity...</option>
+            ${activityTypes.map(t => `<option value="${t.id}" ${t.id === type ? 'selected' : ''}>${t.name}</option>`).join('')}
+          </select>
+        </div>
+        <div class="form-group">
+          <input type="number" class="form-input template-activity-duration" placeholder="Duration (min)" value="${duration}" min="1" max="480" />
+        </div>
+        <div class="form-group">
+          <select class="form-select template-activity-intensity">
+            <option value="low" ${intensity === 'low' ? 'selected' : ''}>Low</option>
+            <option value="moderate" ${intensity === 'moderate' ? 'selected' : ''}>Moderate</option>
+            <option value="high" ${intensity === 'high' ? 'selected' : ''}>High</option>
+          </select>
+        </div>
+        <button class="btn btn-danger btn-small" onclick="removeActivityFromTemplate(this)">🗑️</button>
+      `;
+      container.appendChild(activityDiv);
+    }
+
+    function removeActivityFromTemplate(button) {
+      button.parentElement.remove();
+    }
+
+    function saveCustomTemplate() {
+      const templateName = document.getElementById('template-name').value;
+      if (!templateName) {
+        alert('Please enter a template name');
+        return;
+      }
+      
+      const activities = [];
+      document.querySelectorAll('.template-activity-item').forEach(item => {
+        const type = item.querySelector('.template-activity-type').value;
+        const duration = parseInt(item.querySelector('.template-activity-duration').value);
+        const intensity = item.querySelector('.template-activity-intensity').value;
+        
+        if (type && duration) {
+          activities.push({ type, duration, intensity });
+        }
+      });
+      
+      if (activities.length === 0) {
+        alert('Please add at least one activity to the template');
+        return;
+      }
+      
+      // Save template to localStorage
+      const templates = JSON.parse(localStorage.getItem('customTemplates') || '{}');
+      templates[templateName] = activities;
+      localStorage.setItem('customTemplates', JSON.stringify(templates));
+      
+      showNotification('Custom template saved successfully!', 'success');
+      
+      // Clear form
+      document.getElementById('template-name').value = '';
+      document.getElementById('template-activities-list').innerHTML = '';
+    }
+
+    // Achievements functionality
+    const achievements = [
+      { id: 'first-workout', title: 'First Steps', description: 'Complete your first workout', icon: '🎯', unlocked: false },
+      { id: 'week-streak', title: 'Week Warrior', description: 'Work out for 7 consecutive days', icon: '🔥', unlocked: false },
+      { id: 'month-streak', title: 'Monthly Master', description: 'Work out for 30 consecutive days', icon: '💪', unlocked: false },
+      { id: 'calorie-burner', title: 'Calorie Burner', description: 'Burn 1000 calories in a single day', icon: '🔥', unlocked: false },
+      { id: 'marathon-runner', title: 'Marathon Runner', description: 'Run for 2 hours straight', icon: '🏃‍♂️', unlocked: false },
+      { id: 'yoga-master', title: 'Yoga Master', description: 'Complete 50 yoga sessions', icon: '🧘‍♀️', unlocked: false },
+      { id: 'gym-enthusiast', title: 'Gym Enthusiast', description: 'Complete 100 gym workouts', icon: '🏋️‍♂️', unlocked: false },
+      { id: 'early-bird', title: 'Early Bird', description: 'Work out before 7 AM', icon: '🌅', unlocked: false }
+    ];
+
+    function checkAchievements() {
+      const today = new Date().toISOString().split('T')[0];
+      const todayActivities = activities.filter(activity => activity.date === today);
+      
+      // First workout achievement
+      if (activities.length >= 1 && !achievements[0].unlocked) {
+        unlockAchievement(0);
+      }
+      
+      // Week streak achievement
+      const streak = calculateStreak();
+      if (streak >= 7 && !achievements[1].unlocked) {
+        unlockAchievement(1);
+      }
+      
+      // Month streak achievement
+      if (streak >= 30 && !achievements[2].unlocked) {
+        unlockAchievement(2);
+      }
+      
+      // Calorie burner achievement
+      const todayCalories = todayActivities.reduce((sum, activity) => sum + activity.calories, 0);
+      if (todayCalories >= 1000 && !achievements[3].unlocked) {
+        unlockAchievement(3);
+      }
+      
+      // Marathon runner achievement
+      const runningActivities = activities.filter(activity => activity.type === 'running');
+      const longRuns = runningActivities.filter(activity => activity.duration >= 120);
+      if (longRuns.length >= 1 && !achievements[4].unlocked) {
+        unlockAchievement(4);
+      }
+      
+      // Yoga master achievement
+      const yogaActivities = activities.filter(activity => activity.type === 'yoga');
+      if (yogaActivities.length >= 50 && !achievements[5].unlocked) {
+        unlockAchievement(5);
+      }
+      
+      // Gym enthusiast achievement
+      const gymActivities = activities.filter(activity => activity.type === 'gym');
+      if (gymActivities.length >= 100 && !achievements[6].unlocked) {
+        unlockAchievement(6);
+      }
+      
+      // Early bird achievement
+      const earlyActivities = activities.filter(activity => {
+        const hour = new Date(activity.timestamp).getHours();
+        return hour < 7;
+      });
+      if (earlyActivities.length >= 1 && !achievements[7].unlocked) {
+        unlockAchievement(7);
+      }
+    }
+
+    function unlockAchievement(index) {
+      achievements[index].unlocked = true;
+      showNotification(`🏆 Achievement Unlocked: ${achievements[index].title}!`, 'success');
+      updateAchievementsDisplay();
+    }
+
+    function calculateStreak() {
+      const sortedDates = [...new Set(activities.map(a => a.date))].sort().reverse();
+      let streak = 0;
+      let currentDate = new Date();
+      
+      for (let date of sortedDates) {
+        const activityDate = new Date(date);
+        const diffTime = currentDate - activityDate;
+        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+        
+        if (diffDays === streak) {
+          streak++;
+          currentDate = activityDate;
+        } else {
+          break;
+        }
+      }
+      
+      return streak;
+    }
+
+    function updateAchievementsDisplay() {
+      const unlockedCount = achievements.filter(a => a.unlocked).length;
+      const streak = calculateStreak();
+      const totalWorkouts = activities.length;
+      
+      document.getElementById('total-achievements').textContent = unlockedCount;
+      document.getElementById('current-streak').textContent = streak;
+      document.getElementById('total-workouts').textContent = totalWorkouts;
+      
+      const grid = document.getElementById('achievements-grid');
+      grid.innerHTML = '';
+      
+      achievements.forEach(achievement => {
+        const card = document.createElement('div');
+        card.className = `achievement-card ${achievement.unlocked ? 'unlocked' : ''}`;
+        card.innerHTML = `
+          <div class="achievement-icon">${achievement.icon}</div>
+          <div class="achievement-title">${achievement.title}</div>
+          <div class="achievement-description">${achievement.description}</div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Analytics functionality
+    function updateAnalytics() {
+      const period = document.querySelector('.analytics-filters .filter-btn.active')?.getAttribute('data-period') || '7';
+      const days = parseInt(period);
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - days);
+      
+      const filteredActivities = activities.filter(activity => 
+        new Date(activity.date) >= startDate
+      );
+      
+      if (filteredActivities.length === 0) {
+        document.getElementById('activity-trend').textContent = '0%';
+        document.getElementById('avg-calories').textContent = '0';
+        document.getElementById('avg-duration').textContent = '0';
+        document.getElementById('popular-activity').textContent = 'None';
+        updateActivityDistribution([]);
+        updateWeeklyHeatmap();
+        updateActivityInsights([]);
+        return;
+      }
+      
+      // Calculate analytics
+      const totalCalories = filteredActivities.reduce((sum, activity) => sum + activity.calories, 0);
+      const totalDuration = filteredActivities.reduce((sum, activity) => sum + activity.duration, 0);
+      const avgCalories = Math.round(totalCalories / Math.max(days, 1));
+      const avgDuration = Math.round(totalDuration / Math.max(filteredActivities.length, 1));
+      
+      // Most popular activity
+      const activityCounts = {};
+      filteredActivities.forEach(activity => {
+        activityCounts[activity.type] = (activityCounts[activity.type] || 0) + 1;
+      });
+      const popularActivity = Object.keys(activityCounts).reduce((a, b) => 
+        activityCounts[a] > activityCounts[b] ? a : b
+      );
+      const popularActivityName = getActivityMeta(popularActivity, popularActivity).name;
+      
+      // Activity trend (simplified)
+      const currentPeriod = filteredActivities.length;
+      const previousPeriod = activities.filter(activity => {
+        const activityDate = new Date(activity.date);
+        const prevStartDate = new Date();
+        prevStartDate.setDate(prevStartDate.getDate() - (days * 2));
+        const prevEndDate = new Date();
+        prevEndDate.setDate(prevEndDate.getDate() - days);
+        return activityDate >= prevStartDate && activityDate < prevEndDate;
+      }).length;
+      
+      const trend = previousPeriod > 0 ? Math.round(((currentPeriod - previousPeriod) / previousPeriod) * 100) : 0;
+      
+      // Update display
+      document.getElementById('activity-trend').textContent = `${trend > 0 ? '+' : ''}${trend}%`;
+      document.getElementById('avg-calories').textContent = avgCalories;
+      document.getElementById('avg-duration').textContent = avgDuration;
+      document.getElementById('popular-activity').textContent = popularActivityName;
+      
+      // Update activity distribution chart
+      updateActivityDistribution(filteredActivities);
+      
+      // Update weekly heatmap
+      updateWeeklyHeatmap();
+      
+      // Update insights
+      updateActivityInsights(filteredActivities);
+    }
+
+    function updateActivityDistribution(activities) {
+      const container = document.getElementById('activity-distribution');
+      const activityCounts = {};
+      
+      activities.forEach(activity => {
+        activityCounts[activity.type] = (activityCounts[activity.type] || 0) + 1;
+      });
+      
+      container.innerHTML = '';
+      const counts = Object.values(activityCounts);
+      if (counts.length === 0) {
+        container.innerHTML = '<p class="empty-state-subtext" style="text-align:center;">Log activities to see distribution.</p>';
+        return;
+      }
+
+      const maxCount = Math.max(...counts);
+      Object.entries(activityCounts).forEach(([type, count]) => {
+        const meta = getActivityMeta(type, type);
+        const height = maxCount > 0 ? (count / maxCount) * 150 : 0;
+        
+        const bar = document.createElement('div');
+        bar.className = 'chart-bar';
+        bar.style.height = `${height}px`;
+        bar.title = `${meta.name}: ${count} workout${count === 1 ? '' : 's'}`;
+        container.appendChild(bar);
+      });
+    }
+
+    function updateWeeklyHeatmap() {
+      const container = document.getElementById('weekly-heatmap');
+      if (!container) return;
+
+      const statsByDate = groupActivitiesByDate();
+      const today = new Date();
+      container.innerHTML = '';
+
+      for (let offset = 27; offset >= 0; offset--) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - offset);
+        const key = date.toISOString().split('T')[0];
+        const stats = statsByDate[key] || { duration: 0 };
+        const level = getHeatmapLevel(stats.duration);
+
+        const day = document.createElement('div');
+        day.className = `heatmap-day ${level}`;
+        day.title = `${date.toLocaleDateString()} • ${stats.duration} min`;
+        container.appendChild(day);
+      }
+    }
+
+    function groupActivitiesByDate() {
+      return activities.reduce((acc, activity) => {
+        const key = activity.date;
+        if (!acc[key]) {
+          acc[key] = { duration: 0, calories: 0, count: 0 };
+        }
+        acc[key].duration += activity.duration;
+        acc[key].calories += activity.calories;
+        acc[key].count += 1;
+        return acc;
+      }, {});
+    }
+
+    function getHeatmapLevel(duration) {
+      if (duration >= 60) return 'level-3';
+      if (duration >= 30) return 'level-2';
+      if (duration > 0) return 'level-1';
+      return 'level-0';
+    }
+
+    function updateActivityInsights(activities) {
+      const container = document.getElementById('activity-insights');
+      const insights = [];
+      
+      if (activities.length === 0) {
+        insights.push('Start logging activities to see personalized insights!');
+      } else {
+        const totalCalories = activities.reduce((sum, activity) => sum + activity.calories, 0);
+        const avgDuration = activities.reduce((sum, activity) => sum + activity.duration, 0) / activities.length;
+        
+        insights.push(`You've burned ${totalCalories} calories in the last ${activities.length} workouts.`);
+        insights.push(`Your average workout duration is ${Math.round(avgDuration)} minutes.`);
+        
+        const runningActivities = activities.filter(a => a.type === 'running');
+        if (runningActivities.length > 0) {
+          insights.push(`You've completed ${runningActivities.length} running sessions. Keep it up!`);
+        }
+        
+        const streak = calculateStreak();
+        if (streak > 0) {
+          insights.push(`You're on a ${streak}-day workout streak! Amazing dedication!`);
+        }
+      }
+      
+      container.innerHTML = insights.map(insight => 
+        `<div class="insight-item"><div class="insight-text">${insight}</div></div>`
+      ).join('');
+    }
+
+    // Populate activity selectors in forms
+    function populateActivitySelectors() {
+      const selectors = ['log-activity-type'];
+      selectors.forEach(selectorId => {
+        const selector = document.getElementById(selectorId);
+        if (selector) {
+          selector.innerHTML = '<option value="">Select activity...</option>';
+          activityTypes.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type.id;
+            option.textContent = type.name;
+            selector.appendChild(option);
+          });
+        }
+      });
+    }
+
+    function setupAnalyticsFilters() {
+      document.querySelectorAll('.analytics-filters .filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.analytics-filters .filter-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          updateAnalytics();
+        });
+      });
+    }
+
+    function logout() {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userEmail');
+      window.location.href = 'index.html';
+    }
+  </script>
+  <script src="scripts/navigation.js"></script>
+</body>
+</html>

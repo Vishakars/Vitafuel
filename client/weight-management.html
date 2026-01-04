@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | Weight Management</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/weight-management.css" />
+    <link rel="stylesheet" href="css/commonstyles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/user-auth.js"></script>
+    <script src="js/health-domain-common.js"></script>
+    <script src="js/mongodb-integration.js"></script>
+</head>
+
+<body>
+    <div class="floating-icon"><i class="fa-solid fa-scale-balanced"></i> <i class="fa-solid fa-dumbbell"></i></div>
+
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">V</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-scale-balanced"></i> Weight Management</h1>
+            <p>Track your progress with clean, simple tools</p>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div id="display-current">-- kg</div>
+                <div><i class="fa-solid fa-weight-scale"></i> Current Weight</div>
+            </div>
+            <div class="stat-card">
+                <div id="display-bmi">--</div>
+                <div><i class="fa-solid fa-ruler"></i> BMI</div>
+            </div>
+            <div class="stat-card">
+                <div id="weight-change">0 kg</div>
+                <div><i class="fa-solid fa-arrow-trend-down"></i> Weekly Change</div>
+            </div>
+            <div class="stat-card">
+                <div id="goal-progress-text">0%</div>
+                <div><i class="fa-solid fa-bullseye"></i> Goal Progress</div>
+            </div>
+        </div>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Goals & Logging -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-bullseye"></i></div>
+                    <div class="card-title">Set Goals & Log Weight</div>
+                </div>
+
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 style="color: #4b3621; margin-bottom: 1rem; font-size: 1.1rem;">Set Your Goals</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Current Weight (kg)</label>
+                            <input type="number" class="form-input" id="current-weight" step="0.1" placeholder="70.5">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Target Weight (kg)</label>
+                            <input type="number" class="form-input" id="target-weight" step="0.1" placeholder="65.0">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Height (cm)</label>
+                            <input type="number" class="form-input" id="height" placeholder="170">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Timeline</label>
+                            <select class="form-select" id="timeline">
+                                <option value="1">1 Month</option>
+                                <option value="3">3 Months</option>
+                                <option value="6">6 Months</option>
+                                <option value="12">1 Year</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn" onclick="setGoals()"><i class="fa-solid fa-flag-checkered"></i> Set
+                        Goals</button>
+                </div>
+
+                <div>
+                    <h3 style="color: #4b3621; margin-bottom: 1rem; font-size: 1.1rem;">Log Today's Weight</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Weight (kg)</label>
+                            <input type="number" class="form-input" id="log-weight" step="0.1" placeholder="70.2">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Date</label>
+                            <input type="date" class="form-input" id="log-date">
+                        </div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <button class="btn btn-secondary" onclick="logWeight()"><i
+                                class="fa-solid fa-pen-to-square"></i> Log Weight</button>
+                        <button class="btn" onclick="clearWeightLog()"
+                            style="background: linear-gradient(135deg, #e53e3e, #c53030);">
+                            <i class="fa-solid fa-trash"></i> Clear Log
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress & Insights -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                    <div class="card-title">Progress & Insights</div>
+                </div>
+
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <div class="progress-circle" id="progress-circle">
+                        <div class="progress-inner">
+                            <div class="progress-percentage" id="progress-percentage">0%</div>
+                            <div class="progress-label">Complete</div>
+                        </div>
+                    </div>
+                    <div id="progress-details" style="color: #4a5568;">
+                        <p><strong>Starting:</strong> -- kg</p>
+                        <p><strong>Current:</strong> -- kg</p>
+                        <p><strong>Target:</strong> -- kg</p>
+                        <p><strong>Remaining:</strong> -- kg</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 style="color: #4b3621; margin-bottom: 1rem; font-size: 1.1rem;">Quick Actions</h3>
+                    <div class="quick-actions">
+                        <button class="action-btn bmi" onclick="calculateBMIAction()"><i
+                                class="fa-solid fa-ruler-vertical"></i> Calculate BMI</button>
+                        <button class="action-btn history" onclick="viewHistory()"><i
+                                class="fa-solid fa-clock-rotate-left"></i> View History</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calorie Budget Calculator -->
+        <div class="card" id="calorie-section" style="margin-top: 2rem;">
+            <div class="card-header">
+                <div class="card-icon"><i class="fa-solid fa-fire-flame-simple"></i></div>
+                <div class="card-title">Daily Calorie Budget</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Age</label>
+                <input type="number" id="age" class="form-input" placeholder="Enter age">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Activity Level</label>
+                <select id="activity-level" class="form-select">
+                    <option value="1.2">Sedentary (Little to no exercise)</option>
+                    <option value="1.375">Lightly Active (1–3 workouts/week)</option>
+                    <option value="1.55">Moderately Active (3–5 workouts/week)</option>
+                    <option value="1.725">Very Active (6–7 workouts/week)</option>
+                    <option value="1.9">Super Active (Intense training/physical job)</option>
+                </select>
+            </div>
+
+            <button class="btn btn-secondary" onclick="calculateCalorieBudget()">
+                <i class="fa-solid fa-calculator"></i> Calculate
+            </button>
+
+            <div id="calorie-results" style="margin-top: 1.5rem; display:none;">
+                <p><strong>BMR:</strong> <span id="bmr-value">--</span> kcal/day</p>
+                <div class="calorie-grid">
+                    <div class="calorie-card">
+                        <i class="fas fa-apple-alt"></i> Weight Loss:
+                        <span id="loss-value">--</span> kcal
+                    </div>
+                    <div class="calorie-card">
+                        <i class="fas fa-balance-scale"></i> Maintain:
+                        <span id="maintain-value">--</span> kcal
+                    </div>
+                    <div class="calorie-card">
+                        <i class="fas fa-dumbbell"></i> Gain Muscle:
+                        <span id="gain-value">--</span> kcal
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Tips & Motivation -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon"><i class="fa-solid fa-dumbbell"></i></div>
+                <div class="card-title">Daily Motivation</div>
+            </div>
+            <div id="motivation-container">
+                <div class="motivation-quote">
+                    <p id="daily-quote"><i class="fa-solid fa-quote-left"></i> "Every step forward is progress, no
+                        matter how small."</p>
+                    <button class="btn btn-secondary" onclick="getNewQuote()" style="margin-top: 0.5rem;">
+                        <i class="fa-solid fa-repeat"></i> New Quote
+                    </button>
+                </div>
+                <div class="health-tip">
+                    <h4><i class="fa-solid fa-lightbulb"></i> Today's Health Tip</h4>
+                    <p id="health-tip-text">Stay hydrated! Drinking water before meals can help with portion control.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Goal Achievement System -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon"><i class="fa-solid fa-trophy"></i></div>
+                <div class="card-title">Achievements</div>
+            </div>
+            <div id="achievements-container">
+                <div class="achievement-item" id="first-log">
+                    <div class="achievement-icon"><i class="fa-solid fa-pen-to-square"></i></div>
+                    <div class="achievement-content">
+                        <h4>First Log</h4>
+                        <p>Log your first weight entry</p>
+                        <div class="achievement-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill-small" id="first-log-progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="achievement-item" id="week-streak">
+                    <div class="achievement-icon"><i class="fa-solid fa-fire"></i></div>
+                    <div class="achievement-content">
+                        <h4>Week Streak</h4>
+                        <p>Log weight for 7 consecutive days</p>
+                        <div class="achievement-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill-small" id="week-streak-progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="achievement-item" id="goal-reached">
+                    <div class="achievement-icon"><i class="fa-solid fa-bullseye"></i></div>
+                    <div class="achievement-content">
+                        <h4>Goal Reached</h4>
+                        <p>Reach your target weight</p>
+                        <div class="achievement-progress">
+                            <div class="progress-bar-small">
+                                <div class="progress-fill-small" id="goal-reached-progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Smart Insights -->
+        <div class="card" id="insights-card" style="margin-top: 2rem;">
+            <div class="card-header">
+                <div class="card-icon"><i class="fa-solid fa-brain"></i></div>
+                <div class="card-title">Smart Insights</div>
+            </div>
+
+            <div id="insight-list" style="padding: 1rem; color: #4b3621; font-size: 0.95rem;">
+                <p><i class="fa-solid fa-spinner fa-spin"></i> Analyzing your patterns...</p>
+            </div>
+        </div>
+
+        <!-- Mini Challenges -->
+        <div class="card" id="mini-challenges" style="margin-top: 2rem;">
+            <div class="card-header">
+                <div class="card-icon"><i class="fa-solid fa-star"></i></div>
+                <div class="card-title">Mini Challenges</div>
+            </div>
+
+            <p style="color:#6b4f37; margin-bottom:1rem;">Complete daily challenges to earn badges and celebrate
+                milestones!</p>
+
+            <div class="challenge-grid">
+
+                <!-- 3-Day Streak -->
+                <div class="challenge-item" data-key="streak3" onclick="toggleChallenge('streak3')">
+                    <span><i class="fa-solid fa-calendar-check"></i> Log weight 3 days in a row</span>
+                    <span class="status">❌</span>
+                </div>
+
+                <!-- No sugar -->
+                <div class="challenge-item" data-key="noSugar" onclick="toggleChallenge('noSugar')">
+                    <span><i class="fa-solid fa-apple-whole"></i> No sugar today</span>
+                    <span class="status">❌</span>
+                </div>
+
+                <!-- Water -->
+                <div class="challenge-item" data-key="water2L" onclick="toggleChallenge('water2L')">
+                    <span><i class="fa-solid fa-droplet"></i> Drink 2L water</span>
+                    <span class="status">❌</span>
+                </div>
+
+                <!-- Steps -->
+                <div class="challenge-item" data-key="steps5000" onclick="toggleChallenge('steps5000')">
+                    <span><i class="fa-solid fa-person-walking"></i> 5,000+ steps</span>
+                    <span class="status">❌</span>
+                </div>
+
+            </div>
+
+            <div id="challenge-badge" style="display:none; margin-top:1rem; text-align:center;">
+                <h3 style="color:#8a5a34;">🎉 Challenge Completed!</h3>
+                <p>You earned a badge! Keep going!</p>
+            </div>
+        </div>
+
+
+        <!-- Weight History & Chart -->
+        <div class="card">
+            <div class="card-header">
+                <div class="card-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="card-title">Weight History & Trends</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+                <div>
+                    <h3 style="color: #4b3621; margin-bottom: 1rem; font-size: 1.1rem;">Recent Entries</h3>
+                    <div id="weight-entries" style="max-height: 300px; overflow-y: auto;">
+                        <div style="text-align: center; padding: 2rem; color: #8b6c58;">
+                            <div style="font-size: 3rem; margin-bottom: 1rem;"><i class="fa-solid fa-pen-to-square"></i>
+                            </div>
+                            <h3 style="color: #4b3621; margin-bottom: 0.5rem;">No entries yet</h3>
+                            <p>Start logging your weight to track your progress!</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 style="color: #4b3621; margin-bottom: 1rem; font-size: 1.1rem;">Progress Chart</h3>
+                    <div class="chart-container">
+                        <canvas id="weightChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips-section">
+            <h2><i class="fa-solid fa-lightbulb"></i> Weight Management Tips & Reminders</h2>
+
+            <div class="tip-card"><i class="fa-solid fa-utensils"></i> Focus on balanced meals with protein, veggies,
+                and whole grains rather than restrictive dieting.</div>
+
+            <div class="tip-card"><i class="fa-solid fa-glass-water"></i> Drink a glass of water before meals — it helps
+                improve digestion and prevent overeating.</div>
+
+            <div class="tip-card"><i class="fa-solid fa-person-walking"></i> Aim for at least 30 minutes of physical
+                activity daily — walking counts!</div>
+
+            <div class="tip-card"><i class="fa-solid fa-scale-balanced"></i> Weigh yourself at the same time each day
+                for accurate tracking.</div>
+
+            <div class="tip-card"><i class="fa-solid fa-moon"></i> Prioritize good sleep — poor sleep affects hunger
+                hormones and metabolism.</div>
+
+            <div class="tip-card"><i class="fa-solid fa-stopwatch"></i> Eat slowly — it takes 20 minutes for your brain
+                to register fullness.</div>
+
+            <div class="tip-card"><i class="fa-solid fa-apple-whole"></i> Choose whole, unprocessed foods when possible
+                — they keep you full longer.</div>
+
+            <div class="tip-card"><i class="fa-solid fa-ban"></i> Avoid skipping meals — it may lead to cravings and
+                overeating later.</div>
+
+            <div class="tip-card"><i class="fa-solid fa-fire"></i> Build strength — increasing muscle helps boost
+                metabolism even at rest.</div>
+
+            <div class="tip-card"><i class="fa-solid fa-face-smile"></i> Celebrate progress — even small improvements
+                count. Consistency beats perfection.</div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+
+    <script>
+        // Clean, simple weight management functions
+        const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+        const weightManager = new HealthDomainManager('weight-management', currentUser);
+
+        let weightEntries = weightManager.data;
+        let userGoals = {};
+
+        // Initialize the app
+        // Check if it's a new day and auto-reset weight data
+        function checkWeightDailyReset() {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            const lastDate = localStorage.getItem('weight_lastDate');
+
+            if (lastDate && lastDate !== today) {
+                console.log('⚖️ New day detected! Auto-resetting weight data...');
+                console.log('Last date:', lastDate, 'Today:', today);
+
+                // Clear weight data
+                const currentUser = localStorage.getItem('userEmail');
+                if (currentUser) {
+                    localStorage.removeItem(`${currentUser}_weightData`);
+                    localStorage.removeItem(`${currentUser}_weightLogs`);
+                    localStorage.removeItem(`${currentUser}_weightGoals`);
+                }
+
+                // Update last date
+                localStorage.setItem('weight_lastDate', today);
+
+                // Show notification
+                if (typeof showNotification === 'function') {
+                    showNotification('🌅 Good morning! Weight data has been reset for a fresh start!', 'success');
+                } else {
+                    console.log('🌅 Good morning! Weight data has been reset for a fresh start!');
+                }
+            } else if (!lastDate) {
+                // First time - set today as last date
+                localStorage.setItem('weight_lastDate', today);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+
+            // 🔹 Reset weight data if it's a new day
+            checkWeightDailyReset();
+
+            // 🔹 NEW → Weekly challenge reset
+            checkWeeklyReset();
+
+            // 🔹 User authentication check
+            if (!window.userAuth || !window.userAuth.isUserAuthenticated()) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // 🔹 Ensure user-specific data
+            window.userAuth.ensureDataIsolation();
+
+            // 🔹 Load saved database/user data
+            await loadUserData();
+
+            // 🔹 Update UI components
+            updateDisplays();
+            setTodayDate();
+            initChart();
+            setupAutoBMI();
+            updateAchievements();
+
+            // 🔹 NEW → Display challenge progress after loading user data
+            updateChallenges();
+            generateInsights();
+            checkSmartReminders();
+
+            // 🔹 Load daily motivation / tips
+            getNewHealthTip();
+
+            // ------------------------------
+            // Force BMI calculation fallback
+            // ------------------------------
+            setTimeout(() => {
+                const height = parseFloat(document.getElementById('height').value);
+                const weight = parseFloat(document.getElementById('current-weight').value);
+
+                if (height && weight) {
+                    const bmi = calculateBMI(weight, height);
+                    document.getElementById('display-bmi').textContent = bmi;
+                }
+            }, 1000);
+
+            // ------------------------------
+            // Immediate BMI calculation
+            // ------------------------------
+            setTimeout(() => {
+                const height = parseFloat(document.getElementById('height').value);
+                const weight = parseFloat(document.getElementById('current-weight').value);
+
+                if (height && weight) {
+                    const bmi = calculateBMI(weight, height);
+                    document.getElementById('display-bmi').textContent = bmi;
+                }
+            }, 100);
+
+            // 🔍 Debug Console Logs
+            console.log('User Goals:', userGoals);
+            console.log('Weight Entries:', weightEntries);
+            console.log('Current Weight:', getCurrentWeight());
+        });
+
+        // Set today's date as default
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('log-date').value = today;
+        }
+
+        // Auto-calculate BMI when form values change
+        function setupAutoBMI() {
+            const heightInput = document.getElementById('height');
+            const currentWeightInput = document.getElementById('current-weight');
+            const logWeightInput = document.getElementById('log-weight');
+
+            // Add event listeners to auto-calculate BMI
+            heightInput.addEventListener('input', calculateAutoBMI);
+            currentWeightInput.addEventListener('input', calculateAutoBMI);
+            logWeightInput.addEventListener('input', calculateAutoBMI);
+        }
+
+        function calculateAutoBMI() {
+            const height = parseFloat(document.getElementById('height').value);
+            const currentWeight = parseFloat(document.getElementById('current-weight').value);
+            const logWeight = parseFloat(document.getElementById('log-weight').value);
+
+            console.log('Auto BMI calculation - Height:', height, 'Current Weight:', currentWeight, 'Log Weight:', logWeight);
+
+            // Use log weight if available, otherwise use current weight from goals
+            const weight = logWeight || currentWeight;
+
+            if (height && weight) {
+                const bmi = calculateBMI(weight, height);
+                document.getElementById('display-bmi').textContent = bmi;
+                console.log(`Auto BMI calculated: ${bmi} (Weight: ${weight}kg, Height: ${height}cm)`);
+            } else {
+                console.log('Auto BMI calculation failed - missing height or weight');
+            }
+        }
+
+        // Load user data
+        async function loadUserData() {
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                if (accessToken && currentUser) {
+                    // Load weight entries
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const weightResponse = await fetch(`${apiBaseUrl}/obesity/me`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (weightResponse.ok) {
+                        const data = await weightResponse.json();
+                        if (data && data.length > 0) {
+                            weightEntries = data;
+                            weightManager.data = data;
+                        } else {
+                            const savedEntries = JSON.parse(localStorage.getItem('weightEntries') || '[]');
+                            weightEntries = savedEntries;
+                        }
+                    } else {
+                        const savedEntries = JSON.parse(localStorage.getItem('weightEntries') || '[]');
+                        weightEntries = savedEntries;
+                    }
+
+                    // Load user profile data (including height and weight from registration)
+                    console.log('Fetching profile data with token:', accessToken ? 'Token exists' : 'No token');
+                    const profileResponse = await fetch(`${apiBaseUrl}/profile/me`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    console.log('Profile response status:', profileResponse.status);
+                    if (profileResponse.ok) {
+                        const profileData = await profileResponse.json();
+                        console.log('Profile data loaded:', profileData);
+
+                        // Extract height and weight from registration data
+                        if (profileData.profile && profileData.profile.demographics) {
+                            const demographics = profileData.profile.demographics;
+                            console.log('Demographics found:', demographics);
+                            if (demographics.height && demographics.weight) {
+                                // Auto-populate form fields with registration data
+                                document.getElementById('height').value = demographics.height;
+                                document.getElementById('current-weight').value = demographics.weight;
+
+                                // Calculate BMI automatically
+                                const bmi = calculateBMI(demographics.weight, demographics.height);
+                                document.getElementById('display-bmi').textContent = bmi;
+                                console.log(`BMI calculated from registration data: ${bmi} (Weight: ${demographics.weight}kg, Height: ${demographics.height}cm)`);
+                            } else {
+                                console.log('Height or weight missing from demographics:', { height: demographics.height, weight: demographics.weight });
+                            }
+                        } else {
+                            console.log('Profile or demographics not found in response:', profileData);
+                        }
+                    } else {
+                        const errorText = await profileResponse.text();
+                        console.error('Profile API error:', profileResponse.status, errorText);
+                    }
+                } else {
+                    const savedEntries = JSON.parse(localStorage.getItem('weightEntries') || '[]');
+                    weightEntries = savedEntries;
+                }
+            } catch (error) {
+                console.error('Error loading user data:', error);
+                const savedEntries = JSON.parse(localStorage.getItem('weightEntries') || '[]');
+                weightEntries = savedEntries;
+            }
+
+            const savedGoals = JSON.parse(localStorage.getItem('userGoals') || '{}');
+            userGoals = savedGoals;
+        }
+
+        // Save user data
+        function saveUserData() {
+            localStorage.setItem('weightEntries', JSON.stringify(weightEntries));
+            localStorage.setItem('userGoals', JSON.stringify(userGoals));
+        }
+
+        // Set user goals
+        function setGoals() {
+            const currentWeight = parseFloat(document.getElementById('current-weight').value);
+            const targetWeight = parseFloat(document.getElementById('target-weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const timeline = parseInt(document.getElementById('timeline').value);
+
+            if (!currentWeight || !targetWeight || !height) {
+                showNotification('Please fill in all required fields', 'warning');
+                return;
+            }
+
+            userGoals = {
+                currentWeight,
+                targetWeight,
+                height,
+                timeline,
+                startDate: new Date().toISOString()
+            };
+
+            saveUserData();
+            updateDisplays();
+
+            // Calculate and show BMI
+            const bmi = calculateBMI(currentWeight, height);
+            showNotification(`Goals set successfully! 🎯 Your BMI is ${bmi}`, 'success');
+        }
+
+        // Log weight entry
+        async function logWeight() {
+            const weight = parseFloat(document.getElementById('log-weight').value);
+            const date = document.getElementById('log-date').value;
+
+            if (!weight || !date) {
+                showNotification('Please enter weight and date', 'warning');
+                return;
+            }
+
+            const entry = {
+                weight,
+                date,
+                timestamp: new Date().toISOString()
+            };
+
+            weightEntries.push(entry);
+            weightEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            // Save to API
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                if (accessToken && currentUser) {
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/obesity/me`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(entry)
+                    });
+
+                    if (response.ok) {
+                        console.log('✅ Weight entry saved to API');
+                    } else {
+                        saveUserData();
+                    }
+                } else {
+                    saveUserData();
+                }
+            } catch (error) {
+                saveUserData();
+            }
+
+            updateDisplays();
+            updateChart();
+
+            // Clear form
+            document.getElementById('log-weight').value = '';
+
+            // Show BMI if height is available
+            if (userGoals.height) {
+                const bmi = calculateBMI(weight, userGoals.height);
+                showNotification(`Weight logged successfully! 📝 Your BMI is ${bmi}`, 'success');
+            } else {
+                showNotification('Weight logged successfully! 📝', 'success');
+            }
+        }
+
+        // Update all displays
+        function updateDisplays() {
+            updateStatsCards();
+            updateProgressCircle();
+            updateWeightLog();
+            updateAchievements();
+        }
+
+        // Update stats cards
+        function updateStatsCards() {
+            const currentWeight = getCurrentWeight();
+            const targetWeight = userGoals.targetWeight || 0;
+
+            document.getElementById('display-current').textContent = currentWeight ? `${currentWeight} kg` : '-- kg';
+
+            // Auto-calculate BMI using registration data or form data
+            const heightFromForm = parseFloat(document.getElementById('height').value);
+            const weightFromForm = parseFloat(document.getElementById('current-weight').value);
+            const logWeightFromForm = parseFloat(document.getElementById('log-weight').value);
+
+            // Use the most recent weight available
+            const weightForBMI = currentWeight || logWeightFromForm || weightFromForm;
+            const heightForBMI = heightFromForm;
+
+            if (weightForBMI && heightForBMI) {
+                const bmi = calculateBMI(weightForBMI, heightForBMI);
+                document.getElementById('display-bmi').textContent = bmi;
+                console.log(`BMI calculated: ${bmi} (Weight: ${weightForBMI}kg, Height: ${heightForBMI}cm)`);
+            } else {
+                document.getElementById('display-bmi').textContent = '--';
+                console.log(`BMI not calculated - Weight: ${weightForBMI}, Height: ${heightForBMI}`);
+            }
+
+            if (currentWeight && targetWeight) {
+                const progress = calculateProgress();
+                document.getElementById('goal-progress-text').textContent = `${progress}%`;
+            }
+
+            // Update weight change
+            const weeklyChange = calculateWeeklyChange();
+            document.getElementById('weight-change').textContent = `${weeklyChange >= 0 ? '+' : ''}${weeklyChange.toFixed(1)} kg`;
+        }
+
+        // Get current weight
+        function getCurrentWeight() {
+            if (weightEntries.length === 0) return userGoals.currentWeight || null;
+            return weightEntries[weightEntries.length - 1].weight;
+        }
+
+        // Calculate progress percentage
+        function calculateProgress() {
+            const currentWeight = getCurrentWeight();
+            const startWeight = userGoals.currentWeight;
+            const targetWeight = userGoals.targetWeight;
+
+            if (!currentWeight || !startWeight || !targetWeight) return 0;
+
+            const totalChange = Math.abs(startWeight - targetWeight);
+            const currentChange = Math.abs(startWeight - currentWeight);
+
+            return Math.min(100, Math.round((currentChange / totalChange) * 100));
+        }
+
+        // Calculate weekly weight change
+        function calculateWeeklyChange() {
+            if (weightEntries.length < 2) return 0;
+
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+            const recentEntries = weightEntries.filter(entry => new Date(entry.date) >= oneWeekAgo);
+            if (recentEntries.length < 2) return 0;
+
+            const oldestRecent = recentEntries[0].weight;
+            const newest = recentEntries[recentEntries.length - 1].weight;
+
+            return newest - oldestRecent;
+        }
+
+        // Update progress circle
+        function updateProgressCircle() {
+            const progress = calculateProgress();
+            const circle = document.getElementById('progress-circle');
+            const percentage = document.getElementById('progress-percentage');
+            const details = document.getElementById('progress-details');
+
+            percentage.textContent = `${progress}%`;
+
+            // Update circle gradient with smooth animation
+            const degrees = (progress / 100) * 360;
+            circle.style.background = `conic-gradient(#a15e32 0deg ${degrees}deg, #d2b48c ${degrees}deg 360deg)`;
+
+            // Update details
+            const currentWeight = getCurrentWeight() || userGoals.currentWeight || 0;
+            const startWeight = userGoals.currentWeight || 0;
+            const targetWeight = userGoals.targetWeight || 0;
+            const remaining = Math.abs(currentWeight - targetWeight);
+
+            details.innerHTML = `
+                <p><strong>Starting:</strong> ${startWeight} kg</p>
+                <p><strong>Current:</strong> ${currentWeight} kg</p>
+                <p><strong>Target:</strong> ${targetWeight} kg</p>
+                <p><strong>Remaining:</strong> ${remaining.toFixed(1)} kg</p>
+            `;
+        }
+
+        // Update weight log display
+        function updateWeightLog() {
+            const container = document.getElementById('weight-entries');
+
+            if (weightEntries.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: #8b6c58;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </div>
+                        <h3 style="color: #4b3621; margin-bottom: 0.5rem;">No entries yet</h3>
+                        <p>Start logging your weight to track your progress!</p>
+                    </div>
+
+                `;
+                return;
+            }
+
+            const recentEntries = weightEntries.slice(-5).reverse();
+            container.innerHTML = recentEntries.map(entry => {
+                const bmi = userGoals.height ? calculateBMI(entry.weight, userGoals.height) : null;
+                const change = calculateEntryChange(entry);
+
+                return `
+                    <div class="weight-entry">
+                        <div style="font-weight: 600; color: #4b3621; margin-bottom: 0.5rem;">${formatDate(entry.date)}</div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem; color: #4b3621; font-size: 0.9rem;">
+                            <div><strong>Weight:</strong> ${entry.weight} kg</div>
+                            ${bmi ? `<div><strong>BMI:</strong> ${bmi}</div>` : ''}
+                            ${change !== null ? `<div><strong>Change:</strong> <span style="color: ${change >= 0 ? '#a15e32' : '#8b6c58'};">${change >= 0 ? '+' : ''}${change.toFixed(1)} kg</span></div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Calculate change for an entry
+        function calculateEntryChange(entry) {
+            const index = weightEntries.findIndex(e => e.timestamp === entry.timestamp);
+            if (index === 0) return null;
+            return entry.weight - weightEntries[index - 1].weight;
+        }
+
+        // Format date
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // BMI Calculator functions
+        function calculateBMI(weight, height) {
+            const heightInMeters = height / 100;
+            const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(1);
+            return bmi;
+        }
+
+
+        // Clear weight log function
+        function clearWeightLog() {
+            if (weightEntries.length === 0) {
+                showNotification('No weight entries to clear', 'info');
+                return;
+            }
+
+            if (confirm('Are you sure you want to clear all weight entries? This action cannot be undone.')) {
+                weightEntries = [];
+                saveUserData();
+                updateDisplays();
+                updateChart();
+                showNotification('Weight log cleared successfully', 'success');
+            }
+        }
+
+        // Quick action functions
+        function calculateBMIAction() {
+            const height = parseFloat(document.getElementById('height').value);
+            const currentWeight = parseFloat(document.getElementById('current-weight').value);
+            const logWeight = parseFloat(document.getElementById('log-weight').value);
+
+            // Use log weight if available, otherwise use current weight from goals
+            const weight = logWeight || currentWeight;
+
+            if (height && weight) {
+                const bmi = calculateBMI(weight, height);
+                document.getElementById('display-bmi').textContent = bmi;
+                showNotification(`Your BMI is ${bmi}`, 'info');
+            } else {
+                showNotification('Please enter height and weight first', 'warning');
+            }
+        }
+
+        function viewHistory() {
+            if (weightEntries.length === 0) {
+                showNotification('No weight history available yet', 'info');
+            } else {
+                showNotification(`You have ${weightEntries.length} weight entries logged`, 'info');
+            }
+        }
+
+
+        // Chart functions
+        let weightChart;
+
+        function initChart() {
+            const ctx = document.getElementById('weightChart').getContext('2d');
+            weightChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Weight (kg)',
+                        data: [],
+                        borderColor: '#a15e32',
+                        backgroundColor: 'rgba(161, 94, 50, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#a15e32',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                color: '#8b6c58'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                color: '#8b6c58'
+                            }
+                        }
+                    }
+                }
+            });
+
+            updateChart();
+        }
+
+        function updateChart() {
+            if (!weightChart) return;
+
+            const labels = weightEntries.map(entry => new Date(entry.date).toLocaleDateString());
+            const data = weightEntries.map(entry => entry.weight);
+
+            weightChart.data.labels = labels;
+            weightChart.data.datasets[0].data = data;
+            weightChart.update();
+        }
+
+        // New Features JavaScript
+        const motivationalQuotes = [
+            "Every step forward is progress, no matter how small.",
+            "Your body can do it. It's your mind you have to convince.",
+            "The only bad workout is the one that didn't happen.",
+            "Progress, not perfection.",
+            "You don't have to be great to get started, but you have to get started to be great.",
+            "The secret of getting ahead is getting started.",
+            "Success is the sum of small efforts repeated day in and day out.",
+            "Your health is an investment, not an expense."
+        ];
+
+        const healthTips = [
+            "Stay hydrated! Drinking water before meals can help with portion control.",
+            "Get 7-9 hours of quality sleep each night for better weight management.",
+            "Include protein in every meal to help you feel full longer.",
+            "Take the stairs instead of the elevator when possible.",
+            "Eat slowly and mindfully to better recognize when you're full.",
+            "Plan your meals ahead of time to avoid unhealthy choices.",
+            "Keep healthy snacks like nuts and fruits within reach.",
+            "Aim for 10,000 steps daily to boost your metabolism."
+        ];
+
+        function getNewQuote() {
+            const randomQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+            document.getElementById('daily-quote').textContent = `"${randomQuote}"`;
+        }
+
+        function getNewHealthTip() {
+            const randomTip = healthTips[Math.floor(Math.random() * healthTips.length)];
+            document.getElementById('health-tip-text').textContent = randomTip;
+        }
+
+        function updateAchievements() {
+            // First Log Achievement
+            const firstLogProgress = document.getElementById('first-log-progress');
+            const firstLogItem = document.getElementById('first-log');
+            if (weightEntries.length > 0) {
+                firstLogProgress.style.width = '100%';
+                firstLogItem.classList.add('completed');
+            } else {
+                firstLogProgress.style.width = '0%';
+                firstLogItem.classList.remove('completed');
+            }
+
+            // Week Streak Achievement
+            const weekStreakProgress = document.getElementById('week-streak-progress');
+            const weekStreakItem = document.getElementById('week-streak');
+            const consecutiveDays = calculateConsecutiveDays();
+            const streakPercentage = Math.min((consecutiveDays / 7) * 100, 100);
+            weekStreakProgress.style.width = `${streakPercentage}%`;
+            if (consecutiveDays >= 7) {
+                weekStreakItem.classList.add('completed');
+            } else {
+                weekStreakItem.classList.remove('completed');
+            }
+
+            // Goal Reached Achievement
+            const goalReachedProgress = document.getElementById('goal-reached-progress');
+            const goalReachedItem = document.getElementById('goal-reached');
+            const currentWeight = getCurrentWeight();
+            const targetWeight = userGoals.targetWeight;
+            if (currentWeight && targetWeight) {
+                const progress = Math.max(0, Math.min(100, ((userGoals.currentWeight - currentWeight) / (userGoals.currentWeight - targetWeight)) * 100));
+                goalReachedProgress.style.width = `${progress}%`;
+                if (currentWeight <= targetWeight) {
+                    goalReachedItem.classList.add('completed');
+                } else {
+                    goalReachedItem.classList.remove('completed');
+                }
+            } else {
+                goalReachedProgress.style.width = '0%';
+                goalReachedItem.classList.remove('completed');
+            }
+        }
+
+        function generateInsights() {
+            const insights = [];
+
+            if (weightEntries.length > 3) {
+
+                // ---------- 1) Weekend Gain Detection ----------
+                const weekendEntries = weightEntries.filter(e => {
+                    const day = new Date(e.date).getDay();
+                    return day === 6 || day === 0; // Sat or Sun
+                });
+
+                const weekdayEntries = weightEntries.filter(e => {
+                    const day = new Date(e.date).getDay();
+                    return day >= 1 && day <= 5;
+                });
+
+                if (weekendEntries.length && weekdayEntries.length) {
+                    const weekendAvg = weekendEntries.reduce((a, b) => a + b.weight, 0) / weekendEntries.length;
+                    const weekdayAvg = weekdayEntries.reduce((a, b) => a + b.weight, 0) / weekdayEntries.length;
+
+                    if (weekendAvg > weekdayAvg + 0.3) {
+                        insights.push("🍕 You tend to gain weight on weekends. Maybe watch snacking or late-night treats on Saturdays.");
+                    }
+                }
+
+                // ---------- 2) Evening Logging Behavior ----------
+                const eveningLogs = weightEntries.filter(e => new Date(e.timestamp).getHours() >= 17);
+                if (eveningLogs.length > Math.floor(weightEntries.length * 0.6)) {
+                    insights.push("🌙 You're more consistent logging in the evenings — keep the routine strong!");
+                }
+
+                // ---------- 3) Plateau Detection ----------
+                const last14 = weightEntries.slice(-14);
+                if (last14.length > 7) {
+                    const first = last14[0].weight;
+                    const last = last14[last14.length - 1].weight;
+
+                    if (Math.abs(first - last) < 0.3) {
+                        insights.push("📉 The scale hasn’t moved much lately. Maybe adjust portions or increase step goals.");
+                    }
+                }
+            }
+
+            if (insights.length === 0) {
+                insights.push("✨ No major patterns yet — keep logging and I’ll learn more.");
+            }
+
+            updateInsightUI(insights);
+        }
+
+        function updateInsightUI(list) {
+            const container = document.getElementById("insight-list");
+            container.innerHTML = list.map(item => `<p>${item}</p>`).join("");
+        }
+
+        function checkSmartReminders() {
+            const now = new Date();
+
+            if (weightEntries.length > 0) {
+                const lastEntryDate = new Date(weightEntries[weightEntries.length - 1].date);
+                const daysSinceLastLog = Math.floor((now - lastEntryDate) / (1000 * 60 * 60 * 24));
+
+                if (daysSinceLastLog >= 3) {
+                    showNotification("☑️ Haven’t seen an update in a few days — small steps add up!", "info");
+                }
+            }
+
+            // Plateau Reminder Check
+            const last14 = weightEntries.slice(-14);
+            if (last14.length > 7) {
+                const first = last14[0].weight;
+                const last = last14[last14.length - 1].weight;
+
+                if (Math.abs(first - last) < 0.3) {
+                    showNotification("📌 Progress seems paused — maybe try increasing activity or adjusting calories.", "info");
+                }
+            }
+        }
+
+        function calculateConsecutiveDays() {
+            if (weightEntries.length === 0) return 0;
+
+            const sortedEntries = [...weightEntries].sort((a, b) => new Date(b.date) - new Date(a.date));
+            let consecutiveDays = 0;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            for (let i = 0; i < sortedEntries.length; i++) {
+                const entryDate = new Date(sortedEntries[i].date);
+                entryDate.setHours(0, 0, 0, 0);
+                const expectedDate = new Date(today);
+                expectedDate.setDate(today.getDate() - i);
+
+                if (entryDate.getTime() === expectedDate.getTime()) {
+                    consecutiveDays++;
+                } else {
+                    break;
+                }
+            }
+
+            return consecutiveDays;
+        }
+
+        function calculateCalorieBudget() {
+            const age = parseInt(document.getElementById('age').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const weight = parseFloat(document.getElementById('current-weight').value);
+            const activity = parseFloat(document.getElementById('activity-level').value);
+
+            if (!age || !height || !weight) {
+                showNotification("Please enter age, height and weight first.", "warning");
+                return;
+            }
+
+            // Harris-Benedict BMR formula (female default; can add gender if needed)
+            const BMR = Math.round(447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age));
+
+            const maintenanceCalories = Math.round(BMR * activity);
+            const weightLossCalories = Math.round(maintenanceCalories - 500);
+            const gainCalories = Math.round(maintenanceCalories + 300);
+
+            // Update UI
+            document.getElementById('bmr-value').textContent = BMR;
+            document.getElementById('loss-value').textContent = weightLossCalories;
+            document.getElementById('maintain-value').textContent = maintenanceCalories;
+            document.getElementById('gain-value').textContent = gainCalories;
+
+            document.getElementById('calorie-results').style.display = 'block';
+
+            showNotification("Calorie plan calculated 🔥", "success");
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+
+            document.body.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.style.transform = 'translateX(0)';
+            }, 100);
+
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.transform = 'translateX(100%)';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add hover effects to buttons
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function () {
+                    this.style.transform = 'translateY(-1px)';
+                });
+                button.addEventListener('mouseleave', function () {
+                    this.style.transform = 'translateY(0)';
+                });
+            });
+        });
+
+        let challengeData = JSON.parse(localStorage.getItem("miniChallenges")) || {
+            streak3: false,
+            noSugar: false,
+            water2L: false,
+            steps5000: false,
+            lastReset: null,
+            rareBadgeUnlocked: false,
+            completedWeeks: 0
+        };
+
+        function toggleChallenge(key) {
+            challengeData[key] = !challengeData[key];
+            localStorage.setItem("miniChallenges", JSON.stringify(challengeData));
+            updateChallenges();
+
+            if (challengeData[key]) {
+                showBadge();
+                launchConfetti();
+            }
+        }
+
+        function updateChallenges() {
+            document.querySelectorAll(".challenge-item").forEach(item => {
+                const key = item.getAttribute("data-key");
+                const statusEl = item.querySelector(".status");
+
+                if (challengeData[key]) {
+                    item.classList.add("completed");
+                    statusEl.textContent = "✅";
+                } else {
+                    item.classList.remove("completed");
+                    statusEl.textContent = "❌";
+                }
+            });
+        }
+
+        function checkWeeklyReset() {
+            const today = new Date();
+            const lastReset = challengeData.lastReset ? new Date(challengeData.lastReset) : null;
+
+            // If no reset yet → set today and exit
+            if (!lastReset) {
+                challengeData.lastReset = today.toISOString();
+                localStorage.setItem("miniChallenges", JSON.stringify(challengeData));
+                return;
+            }
+
+            const daysPassed = Math.floor((today - lastReset) / (1000 * 60 * 60 * 24));
+
+            // Weekly reset if 7 days passed
+            if (daysPassed >= 7) {
+                // Check if all challenges were completed before reset
+                const completedAll = Object.keys(challengeData)
+                    .filter(k => typeof challengeData[k] === "boolean")
+                    .every(k => challengeData[k] === true);
+
+                if (completedAll) {
+                    challengeData.completedWeeks += 1;
+                    unlockRareBadge();
+                }
+
+                // Reset all challenge statuses
+                Object.keys(challengeData).forEach(key => {
+                    if (typeof challengeData[key] === "boolean") {
+                        challengeData[key] = false;
+                    }
+                });
+
+                challengeData.lastReset = today.toISOString();
+                localStorage.setItem("miniChallenges", JSON.stringify(challengeData));
+            }
+        }
+
+        function unlockRareBadge() {
+            if (!challengeData.rareBadgeUnlocked) {
+                challengeData.rareBadgeUnlocked = true;
+                localStorage.setItem("miniChallenges", JSON.stringify(challengeData));
+
+                showRareBadge();
+                launchConfetti(true);
+            }
+        }
+
+        function showRareBadge() {
+            const container = document.getElementById("mini-challenges");
+
+            const badgeDiv = document.createElement("div");
+            badgeDiv.className = "rare-badge";
+            badgeDiv.innerHTML = `
+        🥇 <strong>Consistency Champion!</strong><br>
+        You completed all challenges for the week 🎉
+    `;
+
+            container.appendChild(badgeDiv);
+
+            setTimeout(() => badgeDiv.remove(), 5000);
+        }
+
+        function showBadge() {
+            const badge = document.getElementById("challenge-badge");
+            badge.style.display = "block";
+            setTimeout(() => badge.style.display = "none", 3000);
+        }
+
+        function launchConfetti(rare = false) {
+            const duration = rare ? 3000 : 1500;
+            const end = Date.now() + duration;
+
+            const frame = () => {
+                confetti({
+                    particleCount: rare ? 15 : 5,
+                    spread: rare ? 180 : 100,
+                    startVelocity: rare ? 50 : 30,
+                    origin: { x: Math.random(), y: Math.random() - 0.4 }
+                });
+
+                if (Date.now() < end) requestAnimationFrame(frame);
+            };
+            frame();
+        }
+
+
+        document.addEventListener("DOMContentLoaded", updateChallenges);
+    </script>
+
+    <script src="scripts/navigation.js"></script>
+
+    <script>
+        // Direct profile dropdown fix for Weight Management page
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileCircle = document.getElementById('user-profile');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            if (profileCircle && profileDropdown) {
+                // Add click handler
+                profileCircle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Toggle dropdown
+                    if (profileDropdown.style.display === 'block') {
+                        profileDropdown.style.display = 'none';
+                    } else {
+                        profileDropdown.style.display = 'block';
+                        profileDropdown.style.position = 'absolute';
+                        profileDropdown.style.right = '0';
+                        profileDropdown.style.top = '100%';
+                        profileDropdown.style.backgroundColor = '#fff';
+                        profileDropdown.style.zIndex = '9999';
+                        profileDropdown.style.minWidth = '150px';
+                        profileDropdown.style.border = '1px solid #ddd';
+                        profileDropdown.style.borderRadius = '10px';
+                        profileDropdown.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                        profileDropdown.style.padding = '10px 0';
+                    }
+                });
+
+                // Hide dropdown when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                        profileDropdown.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti"></script>
+
+</body>
+
+</html>

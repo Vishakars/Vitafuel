@@ -1,0 +1,100 @@
+
+
+/* 💫 Logo Text (e.g., Header Logo) */
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #8c5e2a;
+    font-style: italic;
+    text-shadow: 0 0 4px #c89b66, 0 0 8px #b3834c;
+    transition: text-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.logo-text:hover {
+    text-shadow: 0 0 6px #d6aa78, 0 0 10px #b3834c;
+}
+
+/* header */
+.header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    color: #a15e32;
+    font-style: italic;
+    text-shadow: 0 0 20px rgba(161, 94, 50, 0.5);
+    animation: glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 20px rgba(161, 94, 50, 0.5);
+    }
+
+    to {
+        text-shadow: 0 0 30px rgba(161, 94, 50, 0.8), 0 0 40px rgba(161, 94, 50, 0.4);
+    }
+}
+
+.header p {
+    font-size: 1.1rem;
+    color: #8b6c58;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+/* floating-icon */
+.floating-icon {
+    position: fixed;
+    top: 10%;
+    right: 10%;
+    font-size: 3rem;
+    opacity: 0.4;
+    animation: float 6s ease-in-out infinite;
+    z-index: -1;
+    color: #a15e32;
+}
+
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+.profile-circle {
+    width: 40px;
+    height: 40px;
+    background-color: #8b4513;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+    /* Add these properties for image support */
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* footer */
+.footer {
+  margin-top: auto;
+  text-align: center;
+  padding: 1rem;
+  background-color: #f5e8d3;
+  font-size: 0.9rem;
+  color: #5a4533;
+  box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.08);
+}

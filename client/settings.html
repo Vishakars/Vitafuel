@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VitaFuel | Settings</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/commonstyles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <style>
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.1) inset !important;
+            -webkit-text-fill-color: #333 !important;
+            caret-color: #333 !important;
+            background-color: rgba(255, 255, 255, 0.1) !important;
+            border: 1px solid #d1d5db !important;
+        }
+
+        .settings-section input:not(:placeholder-shown),
+        .settings-section select:not(:placeholder-shown) {
+            background-color: #fffaf3;
+            color: #333;
+        }
+
+        .dark-mode input:-webkit-autofill,
+        .dark-mode input:-webkit-autofill:hover,
+        .dark-mode input:-webkit-autofill:focus,
+        .dark-mode input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0px 1000px var(--card-bg) inset !important;
+            -webkit-text-fill-color: var(--text-color) !important;
+            caret-color: var(--text-color) !important;
+            background-color: var(--card-bg) !important;
+            border-color: #4a3224 !important;
+        }
+
+        .dark-mode .settings-section input:not(:placeholder-shown),
+        .dark-mode .settings-section select:not(:placeholder-shown) {
+            background: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .password-wrapperr {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            font-size: 1.1rem;
+            user-select: none;
+            padding-bottom: 0 !important;
+        }
+
+        .password-wrapperr input {
+            padding-right: 3rem;
+        }
+
+        :root {
+            --bg-color: #fdf7ed;
+            --text-color: #333;
+            --card-bg: #fffdf7;
+            --primary: #8c5e2a;
+            --secondary: #a66f3f;
+            --nav-bg: #f5e6c9;
+            --footer-bg: #f5e6c9;
+        }
+
+        .settings-section input:-webkit-autofill,
+        .settings-section input:-webkit-autofill:hover,
+        .settings-section input:-webkit-autofill:focus,
+        .settings-section input:-webkit-autofill:active,
+        .settings-section select:-webkit-autofill,
+        .settings-section select:-webkit-autofill:hover,
+        .settings-section select:-webkit-autofill:focus,
+        .settings-section select:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0px 1000px var(--card-bg) inset !important;
+            -webkit-text-fill-color: var(--text-color) !important;
+            caret-color: var(--text-color) !important;
+            background-color: var(--card-bg) !important;
+            border: 1px solid var(--border-color, #d1d5db) !important;
+        }
+
+        .settings-section input:not(:placeholder-shown),
+        .settings-section select:not(:placeholder-shown) {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .password-wrapperr {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #888;
+            font-size: 1.1rem;
+            user-select: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .password-wrapperr input {
+            padding-right: 3rem;
+        }
+
+        .settings-section input:focus,
+        .settings-section select:focus,
+        .settings-section textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(140, 94, 42, 0.3);
+            background-color: var(--card-bg);
+        }
+
+        .settings-section .flex.items-center h2 {
+            margin-top: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile"></div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <section class="settings-section">
+        <h2>Settings</h2>
+        <form id="settings-form">
+            <div class="bg-[#fefdfb] rounded-2xl p-6 shadow-sm border border-[#b88b63] mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-blue-100 rounded-xl">
+                        <i data-lucide="user" class="w-5 h-5 text-blue-600"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900">Profile Information</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label class="block font-medium text-[17px] text-gray-700 mb-2">Full Name</label>
+                        <input id="full-name" name="full-name" type="text" required
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-colors">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-[17px] font-medium text-gray-700 mb-2">Email</label>
+                        <input id="user-email" name="email" type="email" required
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-colors">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-[17px] font-medium text-gray-700 mb-2">Occupation / Daily
+                            Routine</label>
+                        <select id="occupation" name="occupation"
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-colors">
+                            <option value="">Select occupation</option>
+                            <option value="student">Student</option>
+                            <option value="professional">Working Professional</option>
+                            <option value="homemaker">Homemaker</option>
+                            <option value="retired">Retired</option>
+                            <option value="freelancer">Freelancer</option>
+                            <option value="job-seeking">Job Seeking</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-[17px] font-medium text-gray-700 mb-2">Fitness Level</label>
+                        <select id="fitness-level" name="fitness-level"
+                            class="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-colors">
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-[#fefdfb] rounded-2xl p-6 shadow-sm border border-[#b88b63] mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-blue-100 rounded-xl">
+                        <i data-lucide="target" class="w-5 h-5 text-blue-600"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900">Health Goals</h2>
+                </div>
+                <div class="setting-group">
+                    <label for="primaryGoalInput">Primary Health Goal:</label>
+                    <input type="text" id="primaryGoalInput" readonly
+                        class="w-full px-4 py-3 rounded-xl border border-gray-200" />
+                </div>
+            </div>
+
+            <div class="bg-[#fefdfb] rounded-2xl p-6 shadow-sm border border-[#b88b63] mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-blue-100 rounded-xl">
+                        <i data-lucide="bell" class="w-5 h-5 text-blue-600"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900">Notifications</h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl ">
+                        <div>
+                            <h4 class="font-medium text-gray-900 ">Daily Reminders</h4>
+                            <p class="text-sm text-gray-600">Get reminded to log your daily activities</p>
+                        </div>
+                        <button type="button" class="toggle-switch enabled" onclick="toggleSwitch(this)">
+                            <span class="toggle-switch-handle"></span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <div>
+                            <h4 class="font-medium text-gray-900">Workout Alerts</h4>
+                            <p class="text-sm text-gray-600">Receive notifications for scheduled workouts</p>
+                        </div>
+                        <button type="button" class="toggle-switch enabled" onclick="toggleSwitch(this)">
+                            <span class="toggle-switch-handle"></span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <div>
+                            <h4 class="font-medium text-gray-900">Medication Reminders</h4>
+                            <p class="text-sm text-gray-600">Never miss your medication schedule</p>
+                        </div>
+                        <button type="button" class="toggle-switch disabled" onclick="toggleSwitch(this)">
+                            <span class="toggle-switch-handle"></span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <div>
+                            <h4 class="font-medium text-gray-900">Sleep Schedule</h4>
+                            <p class="text-sm text-gray-600">Bedtime and wake-up reminders</p>
+                        </div>
+                        <button type="button" class="toggle-switch enabled" onclick="toggleSwitch(this)">
+                            <span class="toggle-switch-handle"></span>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl">
+                        <div>
+                            <h4 class="font-medium text-gray-900">Health Insights</h4>
+                            <p class="text-sm text-gray-600">Weekly health insights and tips</p>
+                        </div>
+                        <button type="button" class="toggle-switch enabled" onclick="toggleSwitch(this)">
+                            <span class="toggle-switch-handle"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-[#fefdfb] rounded-2xl p-6 shadow-sm border border-[#b88b63] mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-blue-100 rounded-xl">
+                        <i data-lucide="shield" class="w-5 h-5 text-blue-600"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900">Privacy & Security</h2>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl privacy-item"
+                        onclick="handlePrivacyAction('export')">
+                        <div>
+                            <h4 class="font-medium text-gray-900">Data Export</h4>
+                            <p class="text-sm text-gray-600">Download your health data</p>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl privacy-item"
+                        onclick="handlePrivacyAction('privacy')">
+                        <div>
+                            <h4 class="font-medium text-gray-900">Privacy Settings</h4>
+                            <p class="text-sm text-gray-600">Control what data is shared</p>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                    </div>
+                    <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl privacy-item"
+                        onclick="handlePrivacyAction('delete')">
+                        <div>
+                            <h4 class="font-medium text-gray-900">Delete Account</h4>
+                            <p class="text-sm text-gray-600">Permanently remove your account</p>
+                        </div>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-[#fefdfb] rounded-2xl p-6 shadow-sm border border-[#b88b63] mb-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-blue-100 rounded-xl">
+                        <i data-lucide="lock" class="w-5 h-5 text-blue-600"></i>
+                    </div>
+                    <h2 class="text-xl font-semibold text-gray-900">Change Password</h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="setting-group">
+                        <label for="current-password">Current Password:</label>
+                        <div class="password-wrapperr">
+                            <input name="current-password" type="password" id="current-password"
+                                placeholder="Enter current password" />
+                            <span class="toggle-password"
+                                onclick="toggleVisibility('current-password', this)">👁️</span>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label for="new-password">New Password:</label>
+                        <div class="password-wrapperr">
+                            <input name="new-password" type="password" id="new-password"
+                                placeholder="Enter new password" />
+                            <span class="toggle-password" onclick="toggleVisibility('new-password', this)">👁️</span>
+                        </div>
+                    </div>
+                    <div class="setting-group">
+                        <label for="confirm-password">Confirm New Password:</label>
+                        <div class="password-wrapperr">
+                            <input name="confirm-password" type="password" id="confirm-password"
+                                placeholder="Confirm new password" />
+                            <span class="toggle-password"
+                                onclick="toggleVisibility('confirm-password', this)">👁️</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="button-container">
+                <button type="submit">Save Settings</button>
+            </div>
+        </form>
+    </section>
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+    <script>
+        // Initialize icons
+        lucide.createIcons();
+
+        // Utility function to get user-specific keys for localStorage
+        function getUserKey(key) {
+            const currentUser = localStorage.getItem('currentUser');
+            if (!currentUser) {
+                return key;
+            }
+            return `${currentUser}_${key}`;
+        }
+
+        // Check for logged-in user
+        const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // This function fetches all saved settings from the backend and populates the form fields
+        async function fetchAndPopulateSettings() {
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/profile/me`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch profile data from backend.');
+                }
+                const data = await response.json();
+                console.log("✅ Profile data fetched:", data);
+
+                const profile = data.profile;
+
+                // Populate Profile Information
+                const fullNameInput = document.getElementById('full-name');
+                const userEmailInput = document.getElementById('user-email');
+
+                // Build full name from first and last name
+                const firstName = profile.demographics?.firstName || '';
+                const lastName = profile.demographics?.lastName || '';
+                const fullName = `${firstName} ${lastName}`.trim();
+
+                fullNameInput.value = fullName;
+                userEmailInput.value = data.email || currentUser || '';
+
+                // Populate occupation from lifestyle data
+                const occupation = profile.lifestyle?.workSchedule || '';
+                document.getElementById('occupation').value = occupation;
+
+                // Populate fitness level from goals
+                const fitnessLevel = profile.goals?.fitnessLevel || 'beginner';
+                document.getElementById('fitness-level').value = fitnessLevel;
+
+                // Populate primary goals
+                if (profile && profile.goals && profile.goals.primary && profile.goals.primary.length > 0) {
+                    const primaryGoalString = profile.goals.primary.join(', ');
+                    document.getElementById('primaryGoalInput').value = primaryGoalString;
+                } else {
+                    document.getElementById('primaryGoalInput').value = 'General health and wellness';
+                }
+
+                // Restore avatar initials
+                const profileCircle = document.getElementById("user-profile");
+                const name = fullName || "User";
+                const firstInitial = name.charAt(0).toUpperCase();
+                profileCircle.textContent = firstInitial;
+                profileCircle.title = name.split(" ")[0];
+
+                // Populate health domains
+                await populateHealthDomains(profile.healthDomains);
+
+                // Show success message
+                console.log("✅ Settings populated successfully with user data");
+
+            } catch (error) {
+                console.error("❌ Error fetching settings data:", error);
+                // Fallback to localStorage data if available
+                populateFromLocalStorage();
+            }
+        }
+
+        // Function to populate health domains in settings
+        async function populateHealthDomains(healthDomains) {
+            const container = document.getElementById('selectedHealthDomains');
+            if (!container) return;
+
+            const domainMap = {
+                'diabetes': { name: 'Diabetes', icon: '🩺' },
+                'menstruation': { name: 'Menstruation', icon: '🌸' },
+                'blood-pressure': { name: 'Blood Pressure', icon: '❤️' },
+                'mental-health': { name: 'Mental Health', icon: '🧠' },
+                'anemia': { name: 'Anemia', icon: '🩸' },
+                'thyroid': { name: 'Thyroid', icon: '🦋' },
+                'sinusitis': { name: 'Sinusitis', icon: '👃' },
+                'skin-health': { name: 'Skin Health', icon: '✨' },
+                'weight-management': { name: 'Weight Management', icon: '⚖️' },
+                'sleep': { name: 'Sleep', icon: '😴' }
+            };
+
+            if (!healthDomains || healthDomains.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center text-gray-500 italic">No health domains selected</div>';
+                return;
+            }
+
+            // Handle both string array and object array formats
+            const domainNames = healthDomains.map(domain => {
+                if (typeof domain === 'string') {
+                    return domain;
+                } else if (domain && domain.name) {
+                    return domain.name;
+                }
+                return domain;
+            });
+
+            container.innerHTML = domainNames.map(domainName => {
+                const domainInfo = domainMap[domainName] || { name: domainName, icon: '🏥' };
+                return `
+                <div class="flex items-center gap-2 p-3 bg-gray-50 rounded-lg border">
+                    <span class="text-lg">${domainInfo.icon}</span>
+                    <span class="text-sm font-medium text-gray-700">${domainInfo.name}</span>
+                </div>
+            `;
+            }).join('');
+        }
+
+        // Fallback function to populate from localStorage
+        function populateFromLocalStorage() {
+            try {
+                const userEmail = localStorage.getItem('userEmail') || currentUser;
+                const fullName = localStorage.getItem("fullName") || '';
+                const occupation = localStorage.getItem(`${userEmail}_occupation`) || '';
+                const fitnessLevel = localStorage.getItem(`${userEmail}_fitnessLevel`) || 'beginner';
+                const primaryGoal = localStorage.getItem(`${userEmail}_primaryGoal`) || 'General health and wellness';
+
+                document.getElementById('full-name').value = fullName;
+                document.getElementById('user-email').value = userEmail;
+                document.getElementById('occupation').value = occupation;
+                document.getElementById('fitness-level').value = fitnessLevel;
+                document.getElementById('primaryGoalInput').value = primaryGoal;
+
+                // Update avatar
+                const profileCircle = document.getElementById("user-profile");
+                const firstInitial = fullName.charAt(0).toUpperCase() || 'U';
+                profileCircle.textContent = firstInitial;
+                profileCircle.title = fullName.split(" ")[0] || 'User';
+
+                console.log("✅ Settings populated from localStorage fallback");
+            } catch (error) {
+                console.error("❌ Error populating from localStorage:", error);
+            }
+        }
+
+        // Listen for health domain updates from dashboard
+        window.addEventListener('healthDomainsUpdated', function (event) {
+            const updatedDomains = event.detail.domains;
+            populateHealthDomains(updatedDomains);
+        });
+
+        // Initial data load when the page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchAndPopulateSettings();
+
+            // Restore dark mode (still relies on localStorage)
+            const isDarkMode = localStorage.getItem(getUserKey("darkMode")) === "enabled";
+            if (isDarkMode) {
+                document.documentElement.classList.add("dark-mode");
+                document.body.classList.add("dark-mode");
+            }
+
+            const darkBtn = document.querySelector('.toggle-switch[onclick*="toggleDarkMode"]');
+            if (darkBtn) {
+                if (isDarkMode) {
+                    darkBtn.classList.add('enabled');
+                    darkBtn.classList.remove('disabled');
+                } else {
+                    darkBtn.classList.add('disabled');
+                    darkBtn.classList.remove('enabled');
+                }
+            }
+        });
+
+        // Handle form submission to save data back to the backend
+        document.getElementById("settings-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const accessToken = localStorage.getItem("accessToken");
+
+            // --- Gather all form data ---
+            const fullName = document.getElementById("full-name").value.trim();
+            const [firstName, ...lastNameParts] = fullName.split(" ");
+            const lastName = lastNameParts.join(" ");
+            const occupation = document.getElementById("occupation").value;
+            const fitnessLevel = document.getElementById("fitness-level").value;
+            const primaryGoal = document.getElementById("primaryGoalInput").value
+                .split(",")
+                .map((item) => item.trim());
+
+            // --- Build correct payload (email removed) ---
+            const payload = {
+                demographics: {
+                    firstName: firstName || "",
+                    lastName: lastName || ""
+                },
+                goals: {
+                    primary: primaryGoal,
+                    fitnessLevel: fitnessLevel
+                },
+                lifestyle: {
+                    workSchedule: occupation
+                }
+            };
+
+            try {
+                // --- Send to backend WITH token ---
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const res = await fetch(`${apiBaseUrl}/profile/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                // --- Handle backend errors ---
+                if (!res.ok) {
+                    let errorText = "";
+                    try {
+                        const errorData = await res.json();
+                        errorText = errorData.detail || errorData.message || JSON.stringify(errorData);
+                    } catch {
+                        errorText = "Unknown server error";
+                    }
+                    throw new Error(errorText || "Failed to save settings.");
+                }
+
+                // ✅ Save full name locally in case backend reload fails
+                localStorage.setItem("fullName", fullName);
+
+                // --- Password change logic stays the same ---
+                const currentPassword = document.getElementById("current-password").value;
+                const newPassword = document.getElementById("new-password").value;
+                const confirmPassword = document.getElementById("confirm-password").value;
+                const storedPassword = localStorage.getItem(getUserKey("password"));
+
+                if (currentPassword || newPassword || confirmPassword) {
+                    if (!currentPassword || !newPassword || !confirmPassword) {
+                        alert("Please fill all password fields.");
+                        return;
+                    }
+                    if (currentPassword !== storedPassword) {
+                        alert("Current password is incorrect.");
+                        return;
+                    }
+                    if (newPassword !== confirmPassword) {
+                        alert("New passwords do not match.");
+                        return;
+                    }
+                    if (newPassword.length < 8) {
+                        alert("Password must be at least 8 characters.");
+                        return;
+                    }
+                    localStorage.setItem(getUserKey("password"), newPassword);
+                    alert("Settings and password updated successfully!");
+                } else {
+                    alert("Settings saved successfully!");
+                }
+
+            } catch (error) {
+                console.error("❌ Error saving settings:", error);
+                alert("Error: " + error.message);
+            }
+        });
+
+        // Your original helper functions
+        function toggleVisibility(id, icon) {
+            const field = document.getElementById(id);
+            field.type = field.type === "password" ? "text" : "password";
+            icon.textContent = field.type === "text" ? "🙈" : "👁️";
+        }
+
+        function toggleSwitch(button) {
+            button.classList.toggle('enabled');
+            button.classList.toggle('disabled');
+            // Add logic to save state to localStorage or backend if needed
+        }
+
+        function toggleDarkMode(button) {
+            const isDark = document.documentElement.classList.toggle('dark-mode');
+            document.body.classList.toggle('dark-mode');
+            localStorage.setItem(getUserKey("darkMode"), isDark ? "enabled" : "disabled");
+            button.classList.toggle('enabled');
+            button.classList.toggle('disabled');
+        }
+
+        function handlePrivacyAction(action) {
+            switch (action) {
+                case 'export':
+                    alert('Data export functionality would be implemented here.');
+                    break;
+                case 'privacy':
+                    alert('Privacy settings page would open here.');
+                    break;
+                case 'delete':
+                    if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+                        alert('Account deletion would be processed here.');
+                    }
+                    break;
+            }
+        }
+
+        // Units button functionality (restored from your original code)
+        function selectUnits(unit, button) {
+            const buttons = document.querySelectorAll('.units-button');
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('inactive');
+            });
+            button.classList.add('active');
+            button.classList.remove('inactive');
+            localStorage.setItem(getUserKey("units"), unit.toLowerCase());
+        }
+    </script>
+
+    <script>
+        // Direct profile dropdown fix for Settings page
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileCircle = document.getElementById('user-profile');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            if (profileCircle && profileDropdown) {
+                // Add click handler for dropdown
+                profileCircle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Toggle dropdown
+                    if (profileDropdown.style.display === 'block') {
+                        profileDropdown.style.display = 'none';
+                    } else {
+                        profileDropdown.style.display = 'block';
+                        profileDropdown.style.position = 'absolute';
+                        profileDropdown.style.right = '0';
+                        profileDropdown.style.top = '100%';
+                        profileDropdown.style.backgroundColor = '#fff';
+                        profileDropdown.style.zIndex = '9999';
+                        profileDropdown.style.minWidth = '150px';
+                        profileDropdown.style.border = '1px solid #ddd';
+                        profileDropdown.style.borderRadius = '10px';
+                        profileDropdown.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                        profileDropdown.style.padding = '10px 0';
+                    }
+                });
+
+                // Hide dropdown when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                        profileDropdown.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="scripts/navigation.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/register1.css">
+  <link rel="stylesheet" href="css/welcome.css">
+  <title>Register Details | VitaFuel</title>
+</head>
+
+<body>
+
+  <!-- Dynamic Background Elements -->
+  <div class="bg-elements">
+    <div class="morph-shape morph-1"></div>
+    <div class="morph-shape morph-2"></div>
+    <div class="morph-shape morph-3"></div>
+
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+
+    <div class="ripple ripple-1"></div>
+    <div class="ripple ripple-2"></div>
+
+    <div class="particle-trail" id="particleTrail"></div>
+  </div>
+
+  <!-- Step 1: Demographics Page -->
+  <div id="demographicsPage" class="auth-box page active">
+    <div class="step-indicator">Step 1 of 6</div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 16%;"></div>
+    </div>
+
+    <div class="logo">
+      <h2>Tell Us About Yourself</h2>
+      <p>This helps us personalize your health journey</p>
+    </div>
+
+    <form id="demographicsForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" required placeholder="John">
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" required placeholder="Doe">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="dateOfBirth">Date of Birth</label>
+          <input type="date" id="dateOfBirth" required>
+        </div>
+        <div class="form-group">
+          <label for="gender">Gender</label>
+          <select id="gender" required>
+            <option value="">Select gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="non-binary">Non-binary</option>
+            <option value="prefer-not-to-say">Prefer not to say</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="height">Height (cm)</label>
+          <input type="number" id="height" placeholder="170" min="100" max="250">
+        </div>
+        <div class="form-group">
+          <label for="weight">Weight (kg)</label>
+          <input type="number" id="weight" placeholder="70" min="30" max="300">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="+91 9876543210" pattern="^\+?\d{10,15}$" required>
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input type="text" id="location" placeholder="City, Country" required>
+      </div>
+
+      <button type="button" class="btn" id="demographicsNext">Continue</button>
+    </form>
+  </div>
+
+  <!-- Step 2: Goals Page -->
+  <div id="goalsPage" class="auth-box page">
+    <div class="step-indicator">Step 2 of 6</div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 33%;"></div>
+    </div>
+
+    <div class="logo">
+      <h2>Your Health Goals</h2>
+      <p>What do you want to achieve?</p>
+    </div>
+
+    <form id="goalsForm">
+      <div class="form-group">
+        <label>Primary Health Goals (select all that apply)</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="weightLoss" name="primaryGoals" value="weight-loss">
+            <label for="weightLoss">Weight Loss</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="betterSleep" name="primaryGoals" value="better-sleep">
+            <label for="betterSleep">Better Sleep</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="healthySkin" name="primaryGoals" value="healthy-skin">
+            <label for="healthySkin">Healthy Skin</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="hormonalBalance" name="primaryGoals" value="hormonal-balance">
+            <label for="hormonalBalance">Hormonal Balance</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="manageConditions" name="primaryGoals" value="manage-chronic-conditions">
+            <label for="manageConditions">Manage Chronic Conditions</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="gutHealth" name="primaryGoals" value="improve-gut-health">
+            <label for="gutHealth">Improve Gut Health</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="mentalWellness" name="primaryGoals" value="mental-wellness">
+            <label for="mentalWellness">Mental Wellness</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="fitness" name="primaryGoals" value="fitness">
+            <label for="fitness">Fitness</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="targetWeight">Target Weight (kg) - Optional</label>
+        <input type="number" id="targetWeight" placeholder="65" min="30" max="300">
+      </div>
+
+      <div class="form-group">
+        <label for="activityLevel">Current Activity Level</label>
+        <select id="activityLevel" required>
+          <option value="">Select activity level</option>
+          <option value="sedentary">Sedentary (little to no exercise)</option>
+          <option value="lightly-active">Lightly Active (1-3 days/week)</option>
+          <option value="moderately-active">Moderately Active (3-5 days/week)</option>
+          <option value="very-active">Very Active (6-7 days/week)</option>
+          <option value="extremely-active">Extremely Active (2x/day or intense)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="fitnessLevel">Fitness Experience Level</label>
+        <select id="fitnessLevel" required>
+          <option value="">Select fitness level</option>
+          <option value="beginner">Beginner</option>
+          <option value="intermediate">Intermediate</option>
+          <option value="advanced">Advanced</option>
+        </select>
+      </div>
+
+      <div class="navigation-buttons">
+        <button type="button" class="btn btn-secondary" id="goalsBack">Back</button>
+        <button type="button" class="btn" id="goalsNext">Continue</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Step 3: Health Domains Page -->
+  <div id="domainsPage" class="auth-box page">
+    <div class="step-indicator">Step 3 of 6</div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 50%;"></div>
+    </div>
+
+    <div class="logo">
+      <h2>Health Focus Areas</h2>
+      <p>Choose what you'd like to track</p>
+    </div>
+
+    <form id="domainsForm">
+      <div class="form-group">
+        <label>Health domains you want to track</label>
+        <div class="health-domains">
+          <div class="domain-card" data-domain="diabetes">
+            <span class="domain-icon">🩺</span>
+            <div>Diabetes</div>
+          </div>
+          <div class="domain-card" data-domain="menstruation">
+            <span class="domain-icon">🩸</span>
+            <div>Menstruation</div>
+          </div>
+          <div class="domain-card" data-domain="blood-pressure">
+            <span class="domain-icon">🫀</span>
+            <div>Blood Pressure</div>
+          </div>
+          <div class="domain-card" data-domain="mental-health">
+            <span class="domain-icon">🧠</span>
+            <div>Mental Health</div>
+          </div>
+          <div class="domain-card" data-domain="anemia">
+            <span class="domain-icon">🪫</span>
+            <div>Anemia</div>
+          </div>
+          <div class="domain-card" data-domain="sleep">
+            <span class="domain-icon">😴</span>
+            <div>Sleep & Insomnia</div>
+          </div>
+          <div class="domain-card" data-domain="thyroid">
+            <span class="domain-icon">🧪</span>
+            <div>Thyroid</div>
+          </div>
+          <div class="domain-card" data-domain="sinusitis">
+            <span class="domain-icon">🤧</span>
+            <div>Sinusitis</div>
+          </div>
+          <div class="domain-card" data-domain="skin-health">
+            <span class="domain-icon">🧴</span>
+            <div>Skin Health</div>
+          </div>
+          <div class="domain-card" data-domain="weight-management">
+            <span class="domain-icon">⚖️</span>
+            <div>Weight Management</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Preferred Physical Activities</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="running" name="activities" value="running">
+            <label for="running">Running</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="cycling" name="activities" value="cycling">
+            <label for="cycling">Cycling</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="swimming" name="activities" value="swimming">
+            <label for="swimming">Swimming</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="yoga" name="activities" value="yoga">
+            <label for="yoga">Yoga</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="strength" name="activities" value="strength-training">
+            <label for="strength">Strength Training</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="aerobics" name="activities" value="aerobics">
+            <label for="aerobics">Aerobics</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="dance" name="activities" value="dance">
+            <label for="dance">Dance</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="pilates" name="activities" value="pilates">
+            <label for="pilates">Pilates</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="hiking" name="activities" value="hiking">
+            <label for="hiking">Hiking</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="sports" name="activities" value="sports">
+            <label for="sports">Playing Sports</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="homeWorkout" name="activities" value="home-workout">
+            <label for="homeWorkout">Home Workout</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="meditation" name="activities" value="meditation">
+            <label for="meditation">Meditation</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="weeklyGoal">Weekly Exercise Goal (days per week)</label>
+        <input type="range" id="weeklyGoal" min="1" max="7" value="3" class="slider">
+        <div class="slider-labels">
+          <span>1 day</span>
+          <span id="weeklyGoalValue">3 days</span>
+          <span>7 days</span>
+        </div>
+      </div>
+
+      <div class="navigation-buttons">
+        <button type="button" class="btn btn-secondary" id="domainsBack">Back</button>
+        <button type="button" class="btn" id="domainsNext">Continue</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Step 4: Medical Page -->
+  <div id="medicalPage" class="auth-box page">
+    <div class="step-indicator">Step 4 of 6</div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 66%;"></div>
+    </div>
+
+    <div class="logo">
+      <h2>Medical Information</h2>
+      <p>Help us keep you safe and provide better recommendations</p>
+    </div>
+
+    <form id="medicalForm">
+      <div class="form-group">
+        <label>Do you have any allergies?</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="food" name="allergies" value="food">
+            <label for="food">Food Allergies</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="medication" name="allergies" value="medication">
+            <label for="medication">Medication</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="environmental" name="allergies" value="environmental">
+            <label for="environmental">Environmental</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="seasonal" name="allergies" value="seasonal">
+            <label for="seasonal">Seasonal</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="insectSting" name="allergies" value="insect-stings">
+            <label for="insectSting">Insect Stings</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="latex" name="allergies" value="latex">
+            <label for="latex">Latex</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="pet" name="allergies" value="pet-dander">
+            <label for="pet">Pet Dander</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="mold" name="allergies" value="mold">
+            <label for="mold">Mold</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-item">
+          <input type="checkbox" id="otherAllergy" name="allergies" value="other">
+          <label for="otherAllergy">Other</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="allergyDetails">Please specify your allergies</label>
+        <textarea id="allergyDetails" placeholder="E.g., peanuts, shellfish, penicillin, pollen..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="medications">Current Medications</label>
+        <textarea id="medications" placeholder="List any medications you're currently taking..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="emergencyContact">Emergency Contact Name</label>
+          <input type="text" id="emergencyContact" placeholder="Full name">
+        </div>
+        <div class="form-group">
+          <label for="emergencyPhone">Emergency Contact Phone</label>
+          <input type="tel" id="emergencyPhone" placeholder="+1234567890">
+        </div>
+      </div>
+
+      <div class="navigation-buttons">
+        <button type="button" class="btn btn-secondary" id="medicalBack">Back</button>
+        <button type="button" class="btn" id="medicalNext">Continue</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Step 5: Lifestyle Page -->
+  <div id="lifestylePage" class="auth-box page">
+    <div class="step-indicator">Step 5 of 6</div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 83%;"></div>
+    </div>
+
+    <div class="logo">
+      <h2>Lifestyle & Preferences</h2>
+      <p>Tell us about your daily routine</p>
+    </div>
+
+    <form id="lifestyleForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="bedtime">Typical Bedtime</label>
+          <input type="time" id="bedtime" value="22:00">
+        </div>
+        <div class="form-group">
+          <label for="wakeup">Wake Up Time</label>
+          <input type="time" id="wakeup" value="07:00">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="dietaryPreference">Dietary Preferences</label>
+        <select id="dietaryPreference">
+          <option value="none">No specific diet</option>
+          <option value="vegetarian">Vegetarian</option>
+          <option value="vegan">Vegan</option>
+          <option value="keto">Ketogenic</option>
+          <option value="non-vegetarian">Non-Vegetarian</option>
+          <option value="low-carb">Low Carb</option>
+          <option value="intermittent-fasting">Intermittent Fasting</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="foodRestrictions">Food Restrictions/Cultural Preferences</label>
+        <textarea id="foodRestrictions" placeholder="e.g., Halal, Kosher, no beef, lactose intolerant..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="workSchedule">Work Schedule</label>
+        <select id="workSchedule">
+          <option value="regular">Regular 9-5</option>
+          <option value="night-shift">Night Shift</option>
+          <option value="rotating">Rotating Shifts</option>
+          <option value="freelance">Freelance/Flexible</option>
+          <option value="physical">Physical Labor</option>
+          <option value="desk">Desk Job</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Lifestyle Habits</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="smoker" name="habits" value="smoker">
+            <label for="smoker">I smoke</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="alcohol" name="habits" value="alcohol">
+            <label for="alcohol">I drink alcohol</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="caffeine" name="habits" value="caffeine">
+            <label for="caffeine">High caffeine intake</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="junkFood" name="habits" value="junk-food">
+            <label for="junkFood">Frequent junk food</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="sleepDeprived" name="habits" value="sleep-deprived">
+            <label for="sleepDeprived">Less than 6 hrs sleep</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="lowactivity" name="habits" value="low-activity">
+            <label for="lowactivity">Low Activity Level</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="stress" name="habits" value="high-stress">
+            <label for="stress">High stress levels</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="hydration" name="habits" value="low-water-intake">
+            <label for="hydration">Low water intake</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="screenTime" name="habits" value="high-screen-time">
+            <label for="screenTime">High screen time</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="skipMeals" name="habits" value="skip-meals">
+            <label for="skipMeals">I skip meals often</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="checkbox-item">
+          <input type="checkbox" id="otherLifestyle" name="habits" value="other">
+          <label for="otherLifestyle">Other</label>
+        </div>
+        <input type="text" id="otherLifestyleInput" placeholder="Specify other habit" style="margin-top: 10px;">
+      </div>
+
+      <div class="form-group">
+        <label for="stressLevel">Current Stress Level</label>
+        <input type="range" id="stressLevel" min="1" max="10" value="5" class="slider">
+        <div class="slider-labels">
+          <span>Low (1)</span>
+          <span id="stressLevelValue">5</span>
+          <span>High (10)</span>
+        </div>
+      </div>
+
+      <div class="navigation-buttons">
+        <button type="button" class="btn btn-secondary" id="lifestyleBack">Back</button>
+        <button type="button" class="btn" id="lifestyleNext">Continue</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Step 6: Preferences Page -->
+  <div id="preferencesPage" class="auth-box page">
+    <div class="step-indicator">Step 6 of 6</div>
+    <div class="progress-bar">
+      <div class="progress-fill" style="width: 100%;"></div>
+    </div>
+
+    <div class="logo">
+      <h2>Final Touches</h2>
+      <p>Just a few more preferences to complete your profile</p>
+    </div>
+
+    <form id="preferencesForm">
+      <div class="form-group">
+        <label for="experienceLevel">Health App Experience</label>
+        <select id="experienceLevel">
+          <option value="first-time">First-time user</option>
+          <option value="some-experience">Some experience</option>
+          <option value="experienced">Very experienced</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>What motivates you most?</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="radio" name="motivation" id="healthConcerns" value="health-concerns">
+            <label for="healthConcerns">Health Concerns</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="radio" name="motivation" id="appearance" value="appearance">
+            <label for="appearance">Appearance</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="radio" name="motivation" id="performance" value="performance">
+            <label for="performance">Performance</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="radio" name="motivation" id="energy" value="energy">
+            <label for="energy">Energy Levels</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="radio" name="motivation" id="longevity" value="longevity">
+            <label for="longevity">Longevity</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="radio" name="motivation" id="social" value="social">
+            <label for="social">Social/Family</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Social Features</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="friendChallenges" value="friend-challenges">
+            <label for="friendChallenges">Friend Challenges</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="community" value="community">
+            <label for="community">Community Groups</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="shareProgress" value="share-progress">
+            <label for="shareProgress">Share Progress</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="leaderboards" value="leaderboards">
+            <label for="leaderboards">Leaderboards</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="dataPrivacy">Data Privacy Preference</label>
+        <select id="dataPrivacy" required>
+          <option value="">Select privacy level</option>
+          <option value="private">Keep all data private</option>
+          <option value="friends-only">Share with friends only</option>
+          <option value="community">Share with community</option>
+          <option value="public">Public sharing allowed</option>
+        </select>
+      </div>
+
+      <div class="form-group" id="womensHealthSection" style="display: none;">
+        <label>Special Health Considerations (Women's Health)</label>
+        <div class="checkbox-group">
+          <div class="checkbox-item">
+            <input type="checkbox" id="menstrualTracking" value="menstrual-tracking">
+            <label for="menstrualTracking">Menstrual Cycle Tracking</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="pregnancyPlanning" value="pregnancy-planning">
+            <label for="pregnancyPlanning">Pregnancy Planning</label>
+          </div>
+          <div class="checkbox-item">
+            <input type="checkbox" id="menopause" value="menopause">
+            <label for="menopause">Menopause Support</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="additionalNotes">Additional Notes or Specific Health Needs</label>
+        <textarea id="additionalNotes"
+          placeholder="Anything else you'd like us to know about your health journey..."></textarea>
+      </div>
+
+      <div class="navigation-buttons">
+        <button type="button" class="btn btn-secondary" id="preferencesBack">Back</button>
+        <button type="submit" class="btn" id="completeSetup">Complete Setup</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Welcome Page -->
+  <div id="welcomePage" class="auth-box page">
+    <div class="welcome-screen">
+      <div class="celebration-animation">
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+        <div class="confetti"></div>
+      </div>
+
+      <div class="logo">
+        <div class="emoji-celebration">🎉</div>
+        <h2 class="welcome-title">Welcome to VitaFuel!</h2>
+        <p class="welcome-subtitle">Your personalized health journey starts now.</p>
+
+        <div id="profileSummaryWrapper" class="profile-summary-card">
+          <h3 class="summary-title">
+            <span class="summary-icon">✨</span>
+            Your Profile Summary
+            <span class="summary-icon">✨</span>
+          </h3>
+          <div id="profileSummary" class="profile-details"></div>
+
+          <div class="achievement-badges">
+            <div class="badge">
+              <span class="badge-icon">🎯</span>
+              <span class="badge-text">Goals Set</span>
+            </div>
+            <div class="badge">
+              <span class="badge-icon">💪</span>
+              <span class="badge-text">Ready to Start</span>
+            </div>
+            <div class="badge">
+              <span class="badge-icon">🌟</span>
+              <span class="badge-text">Profile Complete</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-journey" id="startBtn">
+        <span>Start Your Journey</span>
+        <span class="btn-arrow">→</span>
+      </button>
+
+      <div class="journey-preview">
+        <p>What's next:</p>
+        <div class="next-steps">
+          <div class="step-item">📊 Personalized Dashboard</div>
+          <div class="step-item">🍎 Custom Meal Plans</div>
+          <div class="step-item">💫 Daily Health Insights</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Global State ---
+    let userProfile = {
+      email: '',
+      demographics: {},
+      goals: {},
+      healthDomains: [],
+      activities: [],
+      weeklyGoal: '',
+      medical: {},
+      lifestyle: {},
+      preferences: {}
+    };
+    let selectedDomains = [];
+
+    // --- Core Functions ---
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+    }
+
+    function showError(inputId, message) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      input.classList.add("error");
+      input.style.animation = "none";
+      setTimeout(() => { input.style.animation = ""; }, 10);
+      let errorMsg = input.parentNode.querySelector(".error-message");
+      if (!errorMsg) {
+        errorMsg = document.createElement("span");
+        errorMsg.className = "error-message";
+        input.parentNode.appendChild(errorMsg);
+      }
+      errorMsg.textContent = message;
+    }
+
+    function clearError(inputId) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      input.classList.remove("error");
+      const errorMsg = input.parentNode.querySelector(".error-message");
+      if (errorMsg) errorMsg.remove();
+    }
+
+    function clearRadioGroup(groupName) {
+      const radios = document.querySelectorAll(`input[name="${groupName}"]`);
+      const groupContainer = radios[0]?.closest(".form-group");
+      if (groupContainer) {
+        const err = groupContainer.querySelector(".error-message");
+        if (err) err.remove();
+      }
+    }
+
+    // --- Step Validation Functions ---
+    function validateDemographics() {
+      let valid = true;
+      const fields = ["firstName", "lastName", "dateOfBirth", "gender", "phone", "location"];
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) {
+          showError(id, `${el.previousElementSibling.textContent} is required`);
+          valid = false;
+        } else {
+          clearError(id);
+        }
+      });
+      if (!valid) return false;
+      userProfile.demographics = {
+        firstName: document.getElementById('firstName').value.trim(),
+        lastName: document.getElementById('lastName').value.trim(),
+        dob: document.getElementById('dateOfBirth').value,
+        gender: document.getElementById('gender').value,
+        height: document.getElementById('height').value || '',
+        weight: document.getElementById('weight').value || '',
+        location: document.getElementById('location').value.trim(),
+        phone: document.getElementById('phone').value.trim()
+      };
+      return true;
+    }
+
+    function validateGoals() {
+      userProfile.goals = {
+        primary: Array.from(document.querySelectorAll('input[name="primaryGoals"]:checked')).map(cb => cb.value),
+        targetWeight: document.getElementById('targetWeight').value || '',
+        activityLevel: document.getElementById('activityLevel').value,
+        fitnessLevel: document.getElementById('fitnessLevel').value
+      };
+      return true;
+    }
+
+    function validateDomains() {
+      if (selectedDomains.length === 0) {
+        alert("⚠️ Please select at least one health domain to focus on.");
+        return false;
+      }
+      userProfile.healthDomains = selectedDomains;
+      userProfile.activities = Array.from(document.querySelectorAll('input[name="activities"]:checked')).map(cb => cb.value);
+      userProfile.weeklyGoal = document.getElementById('weeklyGoal').value || '';
+      return true;
+    }
+
+    function validateMedical() {
+      userProfile.medical = {
+        allergies: Array.from(document.querySelectorAll('input[name="allergies"]:checked')).map(cb => cb.value),
+        allergyDetails: document.getElementById('allergyDetails').value || '',
+        medications: document.getElementById('medications').value || '',
+        emergencyContact: document.getElementById('emergencyContact').value.trim(),
+        emergencyPhone: document.getElementById('emergencyPhone').value.trim()
+      };
+      return true;
+    }
+
+    function validateLifestyle() {
+      userProfile.lifestyle = {
+        bedtime: document.getElementById('bedtime').value,
+        wakeup: document.getElementById('wakeup').value,
+        dietaryPreference: document.getElementById('dietaryPreference').value,
+        workSchedule: document.getElementById('workSchedule').value,
+        foodRestrictions: document.getElementById('foodRestrictions').value || '',
+        habits: Array.from(document.querySelectorAll('input[name="habits"]:checked')).map(cb => cb.value),
+        stressLevel: document.getElementById('stressLevel').value || '',
+        otherLifestyleInput: document.getElementById('otherLifestyleInput').value || ''
+      };
+      return true;
+    }
+
+    function validatePreferences() {
+      const socialFeatures = [];
+      const womensHealth = [];
+      document.querySelectorAll('#preferencesPage input[type="checkbox"]:checked').forEach(cb => {
+        if (['friendChallenges', 'community', 'shareProgress', 'leaderboards'].includes(cb.id)) {
+          socialFeatures.push(cb.value);
+        } else if (['menstrualTracking', 'pregnancyPlanning', 'menopause'].includes(cb.id)) {
+          womensHealth.push(cb.value);
+        }
+      });
+      userProfile.preferences = {
+        experienceLevel: document.getElementById('experienceLevel').value,
+        motivation: document.querySelector('input[name="motivation"]:checked')?.value || '',
+        dataPrivacy: document.getElementById('dataPrivacy').value,
+        socialFeatures,
+        womensHealth,
+        additionalNotes: document.getElementById('additionalNotes').value || ''
+      };
+      return true;
+    }
+
+    // --- PROFILE SUMMARY DISPLAY ---
+    function displayProfileSummary(data) {
+      const summary = document.getElementById('profileSummary');
+      const demographics = data.demographics;
+      const goals = data.goals;
+
+      summary.innerHTML = `
+        <div class="summary-row">
+            <span class="summary-label">👤 Name:</span>
+            <span class="summary-value">${demographics.firstName} ${demographics.lastName}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">🎂 Date of Birth:</span>
+            <span class="summary-value">${demographics.dob}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">⚧ Gender:</span>
+            <span class="summary-value">${demographics.gender}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">🎯 Primary Goals:</span>
+            <span class="summary-value">${goals?.primary?.join(", ") || "None"}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">🏥 Health Areas:</span>
+            <span class="summary-value">${data.healthDomains.join(", ")}</span>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">💪 Activity Level:</span>
+            <span class="summary-value">${goals?.activityLevel?.replace('-', ' ') || "Not specified"}</span>
+        </div>
+    `;
+    }
+
+    // --- FINAL SUBMIT HANDLER ---
+    async function handleFinalSubmit(e) {
+      e.preventDefault();
+      if (!validatePreferences()) return;
+
+      // Structure the data to match the backend ProfileCreationPayload model
+      const fullPayload = {
+        email: userProfile.email,
+        demographics: userProfile.demographics,
+        goals: userProfile.goals,
+        healthDomains: userProfile.healthDomains,
+        activities: userProfile.activities,
+        weeklyGoal: userProfile.weeklyGoal,
+        medical: userProfile.medical,
+        lifestyle: userProfile.lifestyle,
+        preferences: userProfile.preferences
+      };
+
+      console.log("🚀 SENDING FULL PROFILE TO BACKEND:", JSON.stringify(fullPayload, null, 2));
+
+      try {
+        const accessToken = localStorage.getItem('accessToken');
+        const headers = { 'Content-Type': 'application/json' };
+
+        if (accessToken) {
+          headers['Authorization'] = `Bearer ${accessToken}`;
+        }
+
+        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+        const response = await fetch(`${apiBaseUrl}/profile/`, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(fullPayload)
+        });
+
+        const result = await response.json();
+        if (!response.ok) {
+          throw new Error(result.detail || "An unknown error occurred.");
+        }
+
+        console.log("✅ Profile details successfully saved.");
+
+        // Display summary and show the final welcome page
+        displayProfileSummary(fullPayload);
+        showPage('welcomePage');
+
+        // Add celebration animation
+        setTimeout(() => {
+          document.querySelector('.emoji-celebration').style.animation = 'bounce 0.6s ease';
+        }, 300);
+
+      } catch (err) {
+        console.error("❌ Server Error:", err);
+        alert("A server error occurred: " + err.message);
+      }
+    }
+
+    // --- Page Initialization ---
+    window.addEventListener('load', () => {
+      const savedEmail = localStorage.getItem("registrationEmail");
+      const userEmail = localStorage.getItem("userEmail");
+
+      // Use saved registration email or current user email
+      const email = savedEmail || userEmail;
+
+      if (!email) {
+        alert("No registration in progress. Redirecting you to the start.");
+        window.location.href = "register.html";
+        return;
+      }
+
+      userProfile.email = email;
+      showPage('demographicsPage');
+
+      // Setup all event listeners
+      document.getElementById('demographicsNext').addEventListener('click', () => validateDemographics() && showPage('goalsPage'));
+      document.getElementById('goalsNext').addEventListener('click', () => validateGoals() && showPage('domainsPage'));
+      document.getElementById('domainsNext').addEventListener('click', () => validateDomains() && showPage('medicalPage'));
+      document.getElementById('medicalNext').addEventListener('click', () => validateMedical() && showPage('lifestylePage'));
+      document.getElementById('lifestyleNext').addEventListener('click', () => validateLifestyle() && showPage('preferencesPage'));
+
+      document.getElementById('goalsBack').addEventListener('click', () => showPage('demographicsPage'));
+      document.getElementById('domainsBack').addEventListener('click', () => showPage('goalsPage'));
+      document.getElementById('medicalBack').addEventListener('click', () => showPage('domainsPage'));
+      document.getElementById('lifestyleBack').addEventListener('click', () => showPage('medicalPage'));
+      document.getElementById('preferencesBack').addEventListener('click', () => showPage('lifestylePage'));
+
+      document.getElementById('preferencesForm').addEventListener('submit', handleFinalSubmit);
+      document.getElementById('startBtn').addEventListener('click', () => {
+        localStorage.removeItem("registrationEmail");
+        alert('🎉 Welcome to VitaFuel! Your health journey begins now! 🎉');
+        window.location.href = "login.html";
+      });
+
+      // Health domain card selection
+      document.querySelectorAll('.domain-card').forEach(card => {
+        card.addEventListener('click', function () {
+          const domain = this.dataset.domain;
+          this.classList.toggle('selected');
+          if (this.classList.contains('selected')) {
+            selectedDomains.push(domain);
+          } else {
+            selectedDomains = selectedDomains.filter(d => d !== domain);
+          }
+        });
+      });
+
+      // Show women's health section if female is selected
+      document.getElementById('gender').addEventListener('change', function () {
+        document.getElementById('womensHealthSection').style.display = (this.value === 'female') ? 'block' : 'none';
+      });
+
+      // Weekly goal slider update
+      const weeklyGoalSlider = document.getElementById('weeklyGoal');
+      const weeklyGoalValue = document.getElementById('weeklyGoalValue');
+      if (weeklyGoalSlider && weeklyGoalValue) {
+        weeklyGoalSlider.addEventListener('input', function () {
+          weeklyGoalValue.textContent = `${this.value} days`;
+        });
+      }
+
+      // Stress level slider update
+      const stressLevelSlider = document.getElementById('stressLevel');
+      const stressLevelValue = document.getElementById('stressLevelValue');
+      if (stressLevelSlider && stressLevelValue) {
+        stressLevelSlider.addEventListener('input', function () {
+          stressLevelValue.textContent = this.value;
+        });
+      }
+    });
+  </script>
+
+  <script src="scripts/register1.js"></script>
+</body>
+
+</html>

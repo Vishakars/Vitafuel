@@ -1,0 +1,2252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CycleWise | Menstrual Health Tracker</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/menstruation.css" />
+  <link rel="stylesheet" href="css/commonstyles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <script src="js/user-auth.js"></script>
+  <script src="js/health-domain-common.js"></script>
+  <script src="js/mongodb-integration.js"></script>
+</head>
+
+<body>
+  <div class="floating-icon"><i class="fa-solid fa-spa"></i></div>
+  <header class="navbar">
+    <div class="hero-img1">
+      <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="health-insights.html">Wellness Hub</a>
+      <a href="recommendations.html">Recommendations</a>
+      <a href="chatbot.html">Chatbot</a>
+      <a href="shopping-list.html">Shopping List</a>
+      <div class="profile-container">
+        <div class="profile-circle" id="user-profile">U</div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="profile.html">My Profile</a>
+          <a href="settings.html">Settings</a>
+          <a href="about.html">About</a>
+          <a href="logout.html">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="header">
+      <h1><i class="fa-solid fa-spa"></i> CycleWise</h1>
+      <p>Your comprehensive menstrual health companion - track, predict, and understand your cycle</p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-info">
+            <h3>Current Cycle Day</h3>
+            <div class="stat-value" id="current-day">Start Tracking</div>
+            <div class="stat-goal">Begin your journey</div>
+          </div>
+          <div class="stat-icon"><i class="fa-solid fa-calendar-days"></i></div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="cycle-progress" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-info">
+            <h3>Average Cycle</h3>
+            <div class="stat-value" id="avg-cycle">28 days</div>
+            <div class="stat-goal">Track 3+ cycles for accuracy</div>
+          </div>
+          <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="cycle-accuracy" style="width: 93%"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-info">
+            <h3>Tracking Streak</h3>
+            <div class="stat-value" id="streak-count">0 cycles</div>
+            <div class="stat-goal">Build consistency</div>
+          </div>
+          <div class="stat-icon"><i class="fa-solid fa-fire"></i></div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="streak-progress" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-header">
+          <div class="stat-info">
+            <h3>Next Period</h3>
+            <div class="stat-value" id="next-period">Add data first</div>
+            <div class="stat-goal">Prediction based on history</div>
+          </div>
+          <div class="stat-icon"><i class="fa-solid fa-circle"></i></div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="prediction-confidence" style="width: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="main-grid">
+      <!-- Calendar Section -->
+      <div class="calendar-section">
+        <div class="calendar-header">
+          <button class="calendar-nav" onclick="previousMonth()"><i class="fa-solid fa-chevron-left"></i></button>
+          <div class="month-year" id="monthYear"></div>
+          <button class="calendar-nav" onclick="nextMonth()"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+
+        <div class="notification" id="notification"></div>
+
+        <div class="phase-indicator" id="phase-indicator">
+          <h4 id="current-phase">Track your first period to see cycle phase</h4>
+          <p id="phase-description">Add period data to get personalized insights</p>
+        </div>
+
+        <table class="calendar">
+          <thead>
+            <tr>
+              <th>Sun</th>
+              <th>Mon</th>
+              <th>Tue</th>
+              <th>Wed</th>
+              <th>Thu</th>
+              <th>Fri</th>
+              <th>Sat</th>
+            </tr>
+          </thead>
+          <tbody id="calendarBody"></tbody>
+        </table>
+
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-color period"></div>Period Days
+          </div>
+          <div class="legend-item">
+            <div class="legend-color predicted"></div>Predicted Period
+          </div>
+          <div class="legend-item">
+            <div class="legend-color ovulation"></div>Ovulation Day
+          </div>
+          <div class="legend-item">
+            <div class="legend-color fertile"></div>Fertile Window
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="wellness-card">
+          <h3><i class="fa-solid fa-chart-column"></i> Cycle Overview</h3>
+          <div class="cycle-stat"><span class="label">Last Period:</span><span class="value" id="last-period">Not
+              tracked yet</span></div>
+          <div class="cycle-stat"><span class="label">Cycle Length:</span><span class="value" id="cycle-length">28
+              days</span></div>
+          <div class="cycle-stat"><span class="label">Period Length:</span><span class="value" id="period-length">5
+              days</span></div>
+          <div class="cycle-stat"><span class="label">Next Ovulation:</span><span class="value"
+              id="next-ovulation">Track to predict</span></div>
+          <div class="cycle-stat"><span class="label">Cycles Tracked:</span><span class="value"
+              id="cycles-tracked">0</span></div>
+        </div>
+
+        <div class="wellness-card">
+          <h3><i class="fa-solid fa-droplet"></i> Add Period Data</h3>
+          <div class="form-group">
+            <label for="periodDate" class="form-label">Period Start Date:</label>
+            <input type="date" id="periodDate" class="form-input">
+          </div>
+          <div class="form-group">
+            <label for="periodLength" class="form-label">Period Length:</label>
+            <div class="slider-container">
+              <input type="range" id="periodLength" class="form-input" min="1" max="10" value="5">
+              <div class="slider-value" id="period-length-value">5 days</div>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="addPeriod()"><i class="fa-solid fa-plus"></i> Add Period</button>
+        </div>
+
+        <div class="wellness-card">
+          <h3><i class="fa-solid fa-bolt"></i> Quick Actions</h3>
+          <button class="btn btn-secondary" onclick="markTodayAsPeriod()" style="margin-bottom: 10px;">
+            <i class="fa-solid fa-droplet"></i> Period Started Today
+          </button>
+          <button class="btn btn-secondary" onclick="exportData()" style="margin-bottom: 10px;">
+            <i class="fa-solid fa-upload"></i> Export Data
+          </button>
+          <button class="btn btn-danger" onclick="clearMenstruation()">
+            <i class="fa-solid fa-trash"></i> Clear All Data
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Symptom Tracker -->
+    <div class="wellness-card symptom-tracker">
+      <h2><i class="fa-solid fa-bullseye"></i> Daily Symptom Tracker</h2>
+      <p>Track symptoms to better understand your cycle patterns</p>
+
+      <div class="form-group">
+        <label class="form-label">Select Date:</label>
+        <input type="date" id="symptom-date" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Flow Intensity:</label>
+        <div class="slider-container">
+          <input type="range" id="flow-slider" class="form-input" min="0" max="5" value="0">
+          <div class="slider-value" id="flow-value">None</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">
+          <input type="checkbox" id="is-menstruating" style="margin-right: 6px;">
+          Mark as Period Day
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Symptoms:</label>
+        <div class="symptom-grid">
+          <div class="symptom-item" onclick="toggleSymptom('cramps')">
+            <div class="symptom-checkbox" id="symptom-cramps"></div>
+            <span><i class="fa-solid fa-face-grimace"></i> Cramps</span>
+          </div>
+
+          <div class="symptom-item" onclick="toggleSymptom('headache')">
+            <div class="symptom-checkbox" id="symptom-headache"></div><span><i class="fa-solid fa-head-side-virus"></i>
+              Headache</span>
+          </div>
+          <div class="symptom-item" onclick="toggleSymptom('bloating')">
+            <div class="symptom-checkbox" id="symptom-bloating"></div><span><i class="fa-solid fa-wind"></i>
+              Bloating</span>
+          </div>
+          <div class="symptom-item" onclick="toggleSymptom('mood-swings')">
+            <div class="symptom-checkbox" id="symptom-mood-swings"></div><span><i class="fa-solid fa-masks-theater"></i>
+              Mood Swings</span>
+          </div>
+          <div class="symptom-item" onclick="toggleSymptom('fatigue')">
+            <div class="symptom-checkbox" id="symptom-fatigue"></div><span><i class="fa-solid fa-bed"></i>
+              Fatigue</span>
+          </div>
+          <div class="symptom-item" onclick="toggleSymptom('tender-breasts')">
+            <div class="symptom-checkbox" id="symptom-tender-breasts"></div><span><i
+                class="fa-solid fa-hand-holding-heart"></i> Tender Breasts</span>
+          </div>
+          <div class="symptom-item" onclick="toggleSymptom('acne')">
+            <div class="symptom-checkbox" id="symptom-acne"></div><span><i class="fa-solid fa-disease"></i> Acne</span>
+          </div>
+          <div class="symptom-item" onclick="toggleSymptom('cravings')">
+            <div class="symptom-checkbox" id="symptom-cravings"></div><span><i class="fa-solid fa-cookie-bite"></i>
+              Cravings</span>
+          </div>
+          <div class="symptom-item" onclick="toggleSymptom('nausea')">
+            <div class="symptom-checkbox" id="symptom-nausea"></div><span><i class="fa-solid fa-face-dizzy"></i>
+              Nausea</span>
+          </div>
+          <div class="symptom-item" onclick="toggleSymptom('hot-flashes')">
+            <div class="symptom-checkbox" id="symptom-hot-flashes"></div><span><i
+                class="fa-solid fa-temperature-high"></i> Hot Flashes</span>
+          </div>
+          <div class="symptom-item" onclick="toggleSymptom('lack-of-focus')">
+            <div class="symptom-checkbox" id="symptom-lack-of-focus"></div><span><i class="fa-solid fa-brain"></i> Lack
+              of Focus</span>
+          </div>
+          <div class="symptom-item" onclick="toggleSymptom('lower-immunity')">
+            <div class="symptom-checkbox" id="symptom-lower-immunity"></div><span><i
+                class="fa-solid fa-head-side-cough"></i> Low Immunity</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Additional Notes:</label>
+        <textarea class="form-input" id="symptom-notes" placeholder="Any other symptoms or observations?"
+          rows="3"></textarea>
+      </div>
+
+      <button class="btn btn-primary" onclick="saveSymptoms()"><i class="fa-solid fa-floppy-disk"></i> Save
+        Symptoms</button>
+      <button class="btn btn-secondary" onclick="clearFormForNewEntry()"><i class="fa-solid fa-eraser"></i> Clear
+        Form</button>
+    </div>
+
+    <!-- Symptom Logs -->
+    <div class="wellness-card" id="symptom-log-section" style="margin-top: 20px;">
+      <h3><i class="fa-solid fa-list"></i> Symptom Logs</h3>
+
+      <div class="log-filters">
+        <label>
+          <b>Filter by Date:</b>
+          <input type="date" id="filter-date">
+        </label>
+
+        <label>
+          <b>Symptom:</b>
+          <select id="filter-symptom">
+            <option value="">All</option>
+            <option value="cramps">Cramps</option>
+            <option value="headache">Headache</option>
+            <option value="bloating">Bloating</option>
+            <option value="mood-swings">Mood Swings</option>
+            <option value="fatigue">Fatigue</option>
+            <option value="tender-breasts">Tender Breasts</option>
+            <option value="acne">Acne</option>
+            <option value="cravings">Cravings</option>
+            <option value="nausea">Nausea</option>
+            <option value="hot-flashes">Hot Flashes</option>
+            <option value="lack-of-focus">Lack of Focus</option>
+            <option value="lower-immunity">Low Immunity</option>
+          </select>
+        </label>
+
+        <label>
+          <b>Day Type:</b>
+          <select id="filter-daytype">
+            <option value="">All</option>
+            <option value="menstruating">Period Days</option>
+            <option value="normal">Non-Period Days</option>
+          </select>
+        </label>
+      </div>
+
+      <!-- Scroll Wrapper -->
+      <div class="symptom-log-wrapper">
+        <div id="symptom-log-list"></div>
+      </div>
+    </div>
+
+
+    <!-- AI Personalized Insights -->
+    <div class="insights-card" id="ai-insights-section" style="margin-top:20px;">
+      <h2><i class="fa-solid fa-robot"></i> Personalized AI Insights</h2>
+      <div id="ai-insights-list">
+        <p>Analyzing your cycle data... track more days to unlock insights 🤍</p>
+      </div>
+    </div>
+
+    <div class="insights-card" id="personal-alerts" style="margin-top:20px;">
+      <h2><i class="fa-solid fa-bell"></i> Personalized Alerts</h2>
+      <div id="alert-content">
+        <p>Analyzing your recent patterns...</p>
+      </div>
+    </div>
+
+    <div class="insights-card" id="emotional-support-card" style="margin-top:20px;">
+      <h2><i class="fa-solid fa-heart"></i> Emotional Support Mode</h2>
+      <div id="emotional-support-content">
+        <p>Your well-being matters. I'm here with you 🤍</p>
+      </div>
+    </div>
+
+
+    <div class="insights-card" id="next7days-outlook" style="margin-top:20px;">
+      <h2><i class="fa-solid fa-calendar-week"></i> Next 7 Days Outlook</h2>
+      <div id="outlook-content">
+        <p>Analyzing your cycle…</p>
+      </div>
+    </div>
+
+    <!-- Insights -->
+    <div class="insights-card">
+      <h2><i class="fa-solid fa-lightbulb"></i> Menstrual Health Insights</h2>
+      <div class="tip-card"><i class="fa-solid fa-moon"></i> Track your sleep patterns - hormonal changes can affect
+        sleep quality throughout your cycle.</div>
+      <div class="tip-card"><i class="fa-solid fa-utensils"></i> Eat iron-rich foods during menstruation to replenish
+        nutrients and boost energy levels.</div>
+      <div class="tip-card"><i class="fa-solid fa-person-praying"></i> Practice gentle yoga or stretching during PMS to
+        reduce cramps and tension.</div>
+      <div class="tip-card"><i class="fa-solid fa-droplet"></i> Stay hydrated - increased water intake can help reduce
+        bloating and headaches.</div>
+      <div class="tip-card"><i class="fa-solid fa-person-running"></i> Light exercise during menstruation can help
+        reduce pain and improve mood.</div>
+      <div class="tip-card"><i class="fa-solid fa-mobile-screen"></i> Use cycle tracking to identify patterns and
+        optimize your wellness routine.</div>
+      <div class="tip-card"><i class="fa-solid fa-fire"></i> Apply heat therapy for cramps - heating pads or warm baths
+        can provide relief.</div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+  </footer>
+
+  <script>
+    // Initialize menstruation tracker with MongoDB integration
+    const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+    const menstruationManager = new HealthDomainManager('menstruation', currentUser);
+
+    let currentDate = new Date();
+    let currentMonth = currentDate.getMonth();
+    let currentYear = currentDate.getFullYear();
+    console.log('Current date:', currentDate);
+    console.log('Current month:', currentMonth, 'Current year:', currentYear);
+    let symptomData = [];
+    let cycleLength = 28;
+    let selectedSymptoms = {};
+    const email = currentUser;
+
+    // Flow intensity labels
+    const flowLabels = ["None", "Spotting", "Light", "Medium", "Heavy", "Very Heavy"];
+
+    /* ----------------- Initialize ----------------- */
+
+    let allCycleData = {};
+    let periodData = []; // Array to track period cycles for predictions
+    async function init() {
+      try {
+        console.log('🚀 INIT FUNCTION CALLED');
+        const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail') || 'vishakars146@gmail.com';
+
+        if (!userEmail) {
+          console.error('Missing user email');
+          return;
+        }
+
+        console.log('Loading menstruation data for:', userEmail);
+
+        // Check localStorage for any existing data
+        const localData = localStorage.getItem(`${userEmail}_menstruationData`);
+        console.log('LocalStorage data:', localData);
+
+        // Use menstruation endpoint to get data (same as saving endpoint)
+        console.log('Loading menstruation data from menstruation endpoint...');
+        const accessToken = localStorage.getItem('accessToken');
+        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+        const response = await fetch(`${apiBaseUrl}/menstruation/${userEmail}`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        });
+
+        if (!response.ok) {
+          console.log('Failed to load data, response not ok:', response.status);
+          allCycleData = {};
+          periodData = [];
+        } else {
+          const dataList = await response.json();
+          console.log('✅ Loaded data from healthDomains API:', dataList);
+          // Convert list to dictionary format expected by frontend
+          allCycleData = {};
+          periodData = [];
+
+          if (Array.isArray(dataList)) {
+            dataList.forEach(entry => {
+              if (entry.date) {
+                allCycleData[entry.date] = {
+                  isMenstruating: entry.isMenstruating || false,
+                  symptoms: entry.symptoms || [],
+                  flowIntensity: entry.flowIntensity || 0,
+                  notes: entry.notes || ""
+                };
+
+                // Track period data for predictions
+                if (entry.isMenstruating) {
+                  periodData.push({
+                    date: entry.date,
+                    isMenstruating: true,
+                    symptoms: entry.symptoms || [],
+                    flowIntensity: entry.flowIntensity || 0,
+                    notes: entry.notes || ""
+                  });
+                }
+
+                console.log('✅ Added entry for date:', entry.date, 'isMenstruating:', entry.isMenstruating);
+              }
+            });
+          }
+          console.log('✅ Converted allCycleData:', allCycleData);
+          console.log('✅ Period data for predictions:', periodData);
+          console.log('✅ Total entries in allCycleData:', Object.keys(allCycleData).length);
+          console.log('✅ Total entries in periodData:', periodData.length);
+        }
+
+        console.log('📅 About to generate calendar for month:', currentMonth, 'year:', currentYear);
+        generateCalendar(currentMonth, currentYear);
+        console.log('📊 About to update cycle info');
+        updateCycleInfo();
+        console.log('🔄 About to update phase indicator');
+        updatePhaseIndicator();
+        console.log('🎚️ About to initialize sliders');
+        initializeSliders();
+        console.log('📅 About to set default symptom date');
+        setDefaultSymptomDate();
+        console.log('🔄 About to restore symptom UI');
+        restoreSymptomUIForDate();
+        initializeIntensitySliders();
+
+
+        // Add event listener for date changes
+        const symptomDateInput = document.getElementById("symptom-date");
+        if (symptomDateInput) {
+          symptomDateInput.addEventListener("change", function () {
+            restoreSymptomUIForDate();
+          });
+        }
+
+        generateAIInsights();
+        // Note: Auto-save removed to prevent conflicts with manual save
+      } catch (error) {
+        console.error("Initialization Error:", error);
+      }
+    }
+
+    /* ----------------- Sliders ----------------- */
+    function initializeSliders() {
+      const periodSlider = document.getElementById("periodLength");
+      const periodValue = document.getElementById("period-length-value");
+      periodSlider.addEventListener("input", function () {
+        periodValue.textContent = `${this.value} days`;
+        updateSliderBackground(this);
+      });
+
+      const flowSlider = document.getElementById("flow-slider");
+      const flowValue = document.getElementById("flow-value");
+      flowSlider.addEventListener("input", function () {
+        flowValue.textContent = flowLabels[this.value];
+        updateSliderBackground(this);
+
+        // Note: Auto-save removed to prevent conflicts with manual save
+      });
+
+      updateSliderBackground(periodSlider);
+      updateSliderBackground(flowSlider);
+    }
+
+    function initializeIntensitySliders() {
+      document.querySelectorAll(".intensity-slider").forEach(slider => {
+        slider.addEventListener("input", () => {
+          const sym = slider.dataset.symptom;
+          document.getElementById(`value-${sym}`).textContent = slider.value;
+        });
+      });
+    }
+
+    function updateSliderBackground(slider) {
+      const value = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+      slider.style.background = `linear-gradient(to right, #a15e32 0%, #a15e32 ${value}%, #f0e6da ${value}%, #f0e6da 100%)`;
+    }
+
+    function setDefaultSymptomDate() {
+      const today = new Date();
+      document.getElementById("symptom-date").valueAsDate = today;
+    }
+
+    /* ----------------- Calendar ----------------- */
+    function generateCalendar(month, year) {
+      console.log('🗓️ Generating calendar for:', month, year);
+
+      const monthNames = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+      ];
+
+      const monthYearElement = document.getElementById("monthYear");
+      monthYearElement.textContent = `${monthNames[month]} ${year}`;
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const daysInPrevMonth = new Date(year, month, 0).getDate();
+
+      let html = "";
+      let date = 1;
+      let nextMonthDate = 1;
+
+      for (let i = 0; i < 6; i++) {
+        html += "<tr>";
+        for (let j = 0; j < 7; j++) {
+
+          /** ✅ PREVIOUS MONTH CELLS **/
+          if (i === 0 && j < firstDay) {
+            const prevDate = daysInPrevMonth - firstDay + j + 1;
+
+            const prevMonth = month === 0 ? 11 : month - 1;
+            const prevYear = month === 0 ? year - 1 : year;
+
+            const prevFullDate = formatDateLocal(new Date(prevYear, prevMonth, prevDate));
+
+            html += `
+    <td class="other-month"
+        data-date="${prevFullDate}"
+        onclick="selectDate(${prevYear}, ${prevMonth}, ${prevDate})">
+        ${prevDate}
+    </td>`;
+          }
+
+          /** ✅ NEXT MONTH CELLS **/
+          else if (date > daysInMonth) {
+
+            const nextMonth = month === 11 ? 0 : month + 1;
+            const nextYear = month === 11 ? year + 1 : year;
+
+            const nextFullDate = formatDateLocal(new Date(nextYear, nextMonth, nextMonthDate));
+
+            html += `
+    <td class="other-month"
+        data-date="${nextFullDate}"
+        onclick="selectDate(${nextYear}, ${nextMonth}, ${nextMonthDate})">
+        ${nextMonthDate}
+    </td>`;
+
+            nextMonthDate++;
+          }
+
+          /** ✅ CURRENT MONTH CELLS **/
+          else {
+            const cellDateFormatted = formatDateLocal(new Date(year, month, date));
+            const cellClass = getCellClass(year, month, date);
+
+            html += `
+          <td class="${cellClass}"
+              data-date="${cellDateFormatted}"
+              onclick="selectDate(${year}, ${month}, ${date})">
+              ${date}
+          </td>`;
+            date++;
+          }
+        }
+
+        html += "</tr>";
+        if (date > daysInMonth && nextMonthDate > 7) break;
+      }
+
+      const calendarBody = document.getElementById("calendarBody");
+      calendarBody.innerHTML = html;
+    }
+
+    function formatDateLocal(date) {
+      return [
+        date.getFullYear(),
+        String(date.getMonth() + 1).padStart(2, "0"),
+        String(date.getDate()).padStart(2, "0")
+      ].join("-");
+    }
+
+    function getCellClass(year, month, date) {
+      const today = new Date();
+      const cellDate = new Date(year, month, date);
+      const formattedDate = formatDateLocal(cellDate);
+      let classes = [];
+      if (cellDate.toDateString() === today.toDateString()) classes.push("today");
+      if (isPeriodDay(cellDate)) {
+        classes.push("period-day");
+        console.log('🎨 Adding period-day class for:', formattedDate);
+      }
+      else if (isPredictedPeriod(cellDate)) classes.push("predicted-period");
+      else if (isOvulationDay(cellDate)) classes.push("ovulation");
+      else if (isFertileWindow(cellDate)) classes.push("fertile");
+      return classes.join(" ");
+    }
+
+    function getCellTooltip(year, month, date) {
+      const cellDate = new Date(year, month, date);
+      if (isPeriodDay(cellDate)) return "Period Day";
+      if (isPredictedPeriod(cellDate)) return "Predicted Period";
+      if (isOvulationDay(cellDate)) return "Expected Ovulation";
+      if (isFertileWindow(cellDate)) return "Fertile Window";
+      return "Click to select date";
+    }
+
+    function selectDate(year, month, date) {
+      let actualMonth = month;
+      let actualYear = year;
+
+      if (month === -1) { actualMonth = 11; actualYear = year - 1; }
+      else if (month === 12) { actualMonth = 0; actualYear = year + 1; }
+
+      const selectedDate = new Date(actualYear, actualMonth, date);
+      const formattedDate = formatDateLocal(selectedDate);
+
+      document.getElementById("periodDate").value = formattedDate;
+      document.getElementById("symptom-date").value = formattedDate;
+
+      restoreSymptomUIForDate();
+
+      // ✅ ADD THIS HIGHLIGHT LOGIC RIGHT HERE
+
+      // Remove previous selected
+      document.querySelectorAll("td").forEach(td => td.classList.remove("selected"));
+
+      // Add selected class to the clicked date
+      const selector = `td[onclick="selectDate(${actualYear}, ${actualMonth}, ${date})"]`;
+      const selectedCell = document.querySelector(selector);
+
+      if (selectedCell) {
+        selectedCell.classList.add("selected");
+      }
+    }
+
+    /* ----------------- DB Functions ----------------- */
+    // Save new period
+    async function addPeriod() {
+      const userEmail = localStorage.getItem('userEmail');
+      const accessToken = localStorage.getItem('accessToken');
+
+      if (!userEmail || !accessToken) {
+        showNotification("Please login first!", "error");
+        return;
+      }
+
+      const dateInput = document.getElementById("periodDate");
+      const lengthInput = document.getElementById("periodLength");
+
+      if (!dateInput.value) {
+        showNotification("Please select a period start date", "error");
+        return;
+      }
+
+      const startDate = dateInput.value;
+      const periodLength = parseInt(lengthInput.value) || 5;
+
+      console.log("=== ADD PERIOD START ===");
+
+      try {
+        for (let i = 0; i < periodLength; i++) {
+          const dateObj = new Date(startDate);
+          dateObj.setDate(dateObj.getDate() + i);
+          const dateStr = formatDateLocal(dateObj);
+
+          const payload = {
+            date: dateStr,
+            isMenstruating: true,
+            symptoms: [],
+            flowIntensity: 3,
+            notes: `Period day ${i + 1}`,
+            timestamp: new Date().toISOString()
+          };
+
+          console.log("Saving period day:", payload);
+
+          const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+          const res = await fetch(
+            `${apiBaseUrl}/menstruation/${userEmail}`,
+            {
+              method: "POST",       // ✅ FIXED
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${accessToken}`  // ✅ FIXED
+              },
+              body: JSON.stringify(payload)
+            }
+          );
+
+          if (!res.ok) {
+            console.log(await res.text());
+            throw new Error("Failed to save period day");
+          }
+
+          allCycleData[dateStr] = payload;
+          periodData.push(payload);
+        }
+
+        showNotification("Period saved successfully!", "success");
+        generateCalendar(currentMonth, currentYear);
+        updateCycleInfo();
+        generate7DayOutlook();
+        generatePersonalizedAlerts();
+
+      } catch (err) {
+        console.error(err);
+        showNotification("Failed to save period data.", "error");
+      }
+    }
+
+    // Load periods
+    async function loadPeriodData() {
+      // Try to load from MongoDB first
+      const mongoData = await mongoDB.loadMenstruationData();
+      if (mongoData && mongoData.length > 0) {
+        periodData = mongoData;
+        menstruationManager.data = mongoData;
+        console.log('✅ Menstruation data loaded from MongoDB');
+      } else {
+        // Fallback to localStorage
+        periodData = menstruationManager.data;
+        console.log('✅ Menstruation data loaded from localStorage');
+      }
+
+      // ✅ Update UI
+      const lastPeriod = periodData[periodData.length - 1];
+      if (lastPeriod) {
+        document.getElementById("last-period").textContent =
+          new Date(lastPeriod.startDate).toLocaleDateString();
+        document.getElementById("period-length").textContent =
+          `${lastPeriod.length} days`;
+        document.getElementById("cycle-length").textContent =
+          `${lastPeriod.cycleLength || cycleLength} days`;
+        document.getElementById("cycles-tracked").textContent =
+          periodData.length;
+      }
+
+      // Refresh visuals
+      updateCycleInfo();
+      updatePhaseIndicator();
+      restoreSymptomUIForDate();
+      generateAIInsights();
+    }
+
+    // Load symptoms
+    async function loadSymptoms() {
+      console.log('=== LOAD SYMPTOMS DEBUG ===');
+      // Try to load from MongoDB first
+      const mongoData = await mongoDB.loadMenstruationData();
+      console.log('Raw MongoDB data:', mongoData);
+      console.log('MongoDB data length:', mongoData ? mongoData.length : 0);
+
+      if (mongoData && mongoData.length > 0) {
+        // Filter for symptom entries (those with symptoms array)
+        symptomData = mongoData.filter(entry => entry.symptoms && Array.isArray(entry.symptoms));
+        console.log('Filtered symptom data:', symptomData);
+        console.log('✅ Symptom data loaded from MongoDB, count:', symptomData.length);
+      } else {
+        // Fallback to localStorage
+        symptomData = menstruationManager.data.filter(entry => entry.symptoms && Array.isArray(entry.symptoms));
+        console.log('✅ Symptom data loaded from localStorage, count:', symptomData.length);
+      }
+
+      // ✅ Show latest symptom notes if available
+      if (symptomData.length > 0) {
+        const latest = symptomData[symptomData.length - 1];
+        console.log("📥 Latest symptoms:", latest);
+
+        // Optional: show a quick preview under tracker
+        const notesBox = document.getElementById("symptom-notes");
+        if (notesBox) notesBox.value = latest.notes || "";
+      }
+
+      restoreSymptomUIForDate(); // re-apply saved UI after data load
+      generateAIInsights();
+      generateEmotionalSupport();
+    }
+
+    // Save symptoms
+    async function saveSymptoms() {
+      const date = document.getElementById("symptom-date").value;
+      const isMenstruating = document.getElementById("is-menstruating").checked;
+      const flowIntensity = parseInt(document.getElementById("flow-slider").value, 10);
+      const notes = document.getElementById("symptom-notes").value;
+
+      if (!date) {
+        showNotification("Please select a date!", "error");
+        return;
+      }
+
+      // ✅ Collect symptoms properly
+      const symptoms = [];
+      Object.keys(selectedSymptoms).forEach(symptom => {
+        if (selectedSymptoms[symptom] === true) {
+          // we KNOW you don't currently use intensity sliders, so default = 1
+          symptoms.push({
+            name: symptom,
+            intensity: 1
+          });
+        }
+      });
+
+      const entry = {
+        date,
+        isMenstruating,
+        symptoms,
+        flowIntensity,
+        notes,
+        timestamp: new Date().toISOString()
+      };
+
+      const userEmail = localStorage.getItem("userEmail") || localStorage.getItem("recentEmail");
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (!userEmail || !accessToken) {
+        showNotification("Please login again!", "error");
+        return;
+      }
+
+      try {
+        // ✅ Save to server
+        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+        const res = await fetch(
+          `${apiBaseUrl}/menstruation/${userEmail}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${accessToken}`
+            },
+            body: JSON.stringify(entry)
+          }
+        );
+
+        if (!res.ok) throw new Error("Failed to save");
+
+        // ✅ Update local state cache
+        allCycleData[date] = entry;
+
+        // ✅ If menstruating, update periodData
+        const pIndex = periodData.findIndex(p => p.date === date);
+        if (isMenstruating) {
+          if (pIndex >= 0) {
+            periodData[pIndex] = entry;
+          } else {
+            periodData.push(entry);
+          }
+        } else {
+          if (pIndex >= 0) periodData.splice(pIndex, 1);
+        }
+
+        // ✅ UI refresh
+        generateCalendar(currentMonth, currentYear);
+        updateCycleInfo();
+        updatePhaseIndicator();
+        restoreSymptomUIForDate();
+        generateAIInsights();
+        generate7DayOutlook();
+        updateSymptomLogs();
+        generatePersonalizedAlerts();
+        generateEmotionalSupport();
+
+        showNotification("✅ Symptoms saved successfully!", "success");
+
+      } catch (err) {
+        console.error(err);
+        showNotification("❌ Error saving symptoms", "error");
+      }
+    }
+
+    function updateSymptomLogs() {
+      const logContainer = document.getElementById("symptom-log-list");
+      if (!logContainer) return;
+
+      const filterDate = document.getElementById("filter-date").value;
+      const filterSymptom = document.getElementById("filter-symptom").value;
+      const filterDaytype = document.getElementById("filter-daytype").value;
+
+      logContainer.innerHTML = ""; // Clear old logs
+
+      const sortedDates = Object.keys(allCycleData).sort().reverse(); // Latest first
+
+      let filteredDates = sortedDates;
+
+      // ✅ Date filter
+      if (filterDate) {
+        filteredDates = filteredDates.filter(d => d === filterDate);
+      }
+
+      // ✅ Symptom filter
+      if (filterSymptom) {
+        filteredDates = filteredDates.filter(d => {
+          const entry = allCycleData[d];
+          return entry.symptoms.some(s => s.name === filterSymptom);
+        });
+      }
+
+      // ✅ Day type filter
+      if (filterDaytype === "menstruating") {
+        filteredDates = filteredDates.filter(d => allCycleData[d].isMenstruating);
+      }
+      if (filterDaytype === "normal") {
+        filteredDates = filteredDates.filter(d => !allCycleData[d].isMenstruating);
+      }
+
+      if (filteredDates.length === 0) {
+        logContainer.innerHTML = "<p style='padding:10px;'>No matching logs found.</p>";
+        return;
+      }
+
+      filteredDates.forEach(date => {
+        const entry = allCycleData[date];
+
+        const symptoms = entry.symptoms?.map(s => s.name).join(", ") || "None";
+
+        const div = document.createElement("div");
+        div.className = "log-entry";
+        div.style.padding = "10px";
+        div.style.borderBottom = "1px solid #eee";
+
+        div.innerHTML = `
+      <strong>${date}</strong>
+      <br>
+      <span><b>Flow:</b> ${flowLabels[entry.flowIntensity] || "None"}</span>
+      <br>
+      <span><b>Symptoms:</b> ${symptoms}</span>
+      <br>
+      <span><b>Notes:</b> ${entry.notes || "No notes"}</span>
+    `;
+
+        logContainer.appendChild(div);
+      });
+
+      // ✅ Scroll smooth to top
+      const wrapper = document.querySelector(".symptom-log-wrapper");
+      if (wrapper) {
+        wrapper.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      }
+      generateEmotionalSupport();
+      generatePersonalizedAlerts();
+    }
+    document.getElementById("filter-date").addEventListener("change", updateSymptomLogs);
+    document.getElementById("filter-symptom").addEventListener("change", updateSymptomLogs);
+    document.getElementById("filter-daytype").addEventListener("change", updateSymptomLogs);
+
+
+    function clearSymptomForm() {
+      // Clear all selected symptoms
+      Object.keys(selectedSymptoms).forEach(symptom => {
+        selectedSymptoms[symptom] = false;
+        const checkbox = document.getElementById(`symptom-${symptom}`);
+        if (checkbox) {
+          checkbox.classList.remove("checked");
+          checkbox.innerHTML = "";
+        }
+      });
+
+      // Clear flow slider
+      const slider = document.getElementById("flow-slider");
+      if (slider) {
+        slider.value = 0;
+        const flowValue = document.getElementById("flow-value");
+        if (flowValue) flowValue.textContent = "None";
+      }
+
+      // Clear notes
+      const notesBox = document.getElementById("symptom-notes");
+      if (notesBox) notesBox.value = "";
+
+      // Uncheck period checkbox
+      const periodCheckbox = document.getElementById("is-menstruating");
+      if (periodCheckbox) {
+        periodCheckbox.checked = false;
+      }
+    }
+
+    // Function to clear form for new entry
+    function clearFormForNewEntry() {
+      clearSymptomForm();
+      showNotification("Form cleared for new entry", "success");
+    }
+
+    // Test function to manually generate calendar
+    function testCalendarGeneration() {
+      console.log('🧪 Testing calendar generation...');
+      const today = new Date();
+      const month = today.getMonth();
+      const year = today.getFullYear();
+      console.log('Testing with month:', month, 'year:', year);
+      generateCalendar(month, year);
+    }
+
+    async function testMongoConnection() {
+      console.log('🔍 Testing MongoDB connection...');
+      console.log('Current user:', currentUser);
+      console.log('Access token available:', !!localStorage.getItem('accessToken'));
+
+      try {
+        // Test with a simple entry
+        const testEntry = {
+          date: new Date().toISOString().split('T')[0],
+          isMenstruating: false,
+          symptoms: [{ name: 'test', intensity: 1 }],
+          flowIntensity: 0,
+          notes: 'Test entry',
+          timestamp: new Date().toISOString()
+        };
+
+        console.log('Test entry:', testEntry);
+        const result = await mongoDB.saveMenstruationEntry(testEntry);
+        console.log('Test result:', result);
+
+        if (result) {
+          menstruationManager.showNotification("✅ MongoDB connection working!", "success");
+        } else {
+          menstruationManager.showNotification("❌ MongoDB connection failed!", "error");
+        }
+      } catch (error) {
+        console.error('Test error:', error);
+        menstruationManager.showNotification("❌ MongoDB test failed: " + error.message, "error");
+      }
+    }
+    async function saveCurrentDayData() {
+      // ✅ Extract date from selected cell
+      const date = selectedDateEl.dataset.date;
+
+      // ✅ Get user info + token
+      const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+      const accessToken = localStorage.getItem('accessToken');
+
+      if (!userEmail || !accessToken) {
+        console.error("⚠️ Missing email or access token");
+        showNotification("Login expired! Please login again.", "error");
+        return;
+      }
+
+      // ✅ Determine menstruation status from checkbox
+      const checkbox = document.getElementById('is-menstruating');
+      let isMenstruating = checkbox ? checkbox.checked : (allCycleData[date]?.isMenstruating || false);
+
+      // ✅ Collect symptoms with intensity
+      const symptoms = [];
+      Object.keys(selectedSymptoms).forEach(symptom => {
+        if (selectedSymptoms[symptom]) {
+          const slider = document.getElementById(`intensity-${symptom}`);
+          symptoms.push({
+            name: symptom,
+            intensity: slider ? parseInt(slider.value, 10) : 0
+          });
+        }
+      });
+
+      // ✅ Flow intensity
+      const flowSlider = document.getElementById("flow-slider");
+      const flowIntensity = flowSlider ? parseInt(flowSlider.value, 10) : 0;
+
+      // ✅ Notes
+      const notes = document.getElementById("symptom-notes")?.value || "";
+
+      // ✅ Build payload
+      const payload = {
+        date,
+        isMenstruating,
+        symptoms,
+        flowIntensity,
+        notes,
+        timestamp: new Date().toISOString()
+      };
+
+      try {
+        console.log("💾 Saving symptoms to server...", payload);
+
+        // ✅ FIX — Include Authorization header properly
+        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+        const response = await fetch(
+          `${apiBaseUrl}/menstruation/${userEmail}`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${accessToken}`   // ✅ FIXED HERE
+            },
+            body: JSON.stringify(payload)
+          }
+        );
+
+        if (!response.ok) throw new Error("Server rejected save");
+
+        // ✅ Update local cache
+        allCycleData[date] = { isMenstruating, symptoms, flowIntensity, notes };
+
+        // ✅ Update periodData
+        const index = periodData.findIndex(p => p.date === date);
+
+        if (isMenstruating) {
+          if (index >= 0) {
+            periodData[index] = { date, isMenstruating, symptoms, flowIntensity, notes };
+          } else {
+            periodData.push({ date, isMenstruating, symptoms, flowIntensity, notes });
+          }
+        } else {
+          // Removing if no longer period day
+          if (index >= 0) {
+            periodData.splice(index, 1);
+          }
+        }
+
+        // ✅ Refresh UI
+        generateCalendar(currentMonth, currentYear);
+        updateCycleInfo();
+        updatePhaseIndicator();
+        restoreSymptomUIForDate();
+        generateAIInsights();
+
+        showNotification("✅ Data saved successfully!", "success");
+
+      } catch (error) {
+        console.error("❌ Save Error:", error);
+        showNotification("❌ Failed to save data.", "error");
+      }
+    }
+
+    function toggleSymptom(symptom) {
+      // Flip boolean state
+      selectedSymptoms[symptom] = !selectedSymptoms[symptom];
+
+      // Update UI
+      const checkbox = document.getElementById(`symptom-${symptom}`);
+      if (checkbox) {
+        if (selectedSymptoms[symptom]) {
+          checkbox.classList.add("checked");
+          checkbox.innerHTML = "✓";
+        } else {
+          checkbox.classList.remove("checked");
+          checkbox.innerHTML = "";
+        }
+      }
+    }
+
+    const symptomKeys = [
+      "cramps", "headache", "bloating", "mood-swings",
+      "fatigue", "tender-breasts", "acne", "cravings",
+      "nausea", "hot-flashes", "lack-of-focus", "lower-immunity"
+    ];
+
+    // ✅ ensure all symptoms exist in the object
+    symptomKeys.forEach(symptom => {
+      if (selectedSymptoms[symptom] === undefined) {
+        selectedSymptoms[symptom] = false;
+      }
+    });
+
+    /* ----------------- Cycle Info & Phase ----------------- */
+    function isPeriodDay(date) {
+      const thisDay = formatDateLocal(date);
+      console.log('🔍 Checking if period day for:', thisDay, 'allCycleData:', allCycleData);
+      // Check if this date has menstruation data marked as true
+      if (allCycleData[thisDay] && allCycleData[thisDay].isMenstruating) {
+        console.log('✅ Period day found:', thisDay, allCycleData[thisDay]);
+        return true;
+      }
+      console.log('❌ Not a period day:', thisDay);
+      return false;
+    }
+
+    function isPredictedPeriod(date) {
+      // ✅ NEW FIX — avoid fake predictions
+      if (periodData.length < 2) return false;
+
+      // No predictions if no data
+      if (Object.keys(allCycleData).length === 0) {
+        console.log('No data for predictions, returning false');
+        return false;
+      }
+
+      // Get the most recent period start date from allCycleData
+      const sortedDates = Object.keys(allCycleData).sort();
+      let lastPeriodStart = null;
+
+      // Find the most recent period start date
+      for (let i = sortedDates.length - 1; i >= 0; i--) {
+        const dateStr = sortedDates[i];
+        if (allCycleData[dateStr].isMenstruating) {
+          // Check if this is the start of a new period (previous day is not menstruating)
+          const prevDate = new Date(dateStr);
+          prevDate.setDate(prevDate.getDate() - 1);
+          const prevDateStr = formatDateLocal(prevDate);
+
+          if (!allCycleData[prevDateStr] || !allCycleData[prevDateStr].isMenstruating) {
+            lastPeriodStart = dateStr;
+            break;
+          }
+        }
+      }
+
+      if (!lastPeriodStart) return false;
+
+      const lastPeriodStartDate = new Date(lastPeriodStart);
+      const currentDate = new Date(date);
+
+      // Use default 28-day cycle for prediction
+      const cycleLength = 28;
+
+      // Predict next period (28 days after last period start)
+      const predictedNextPeriod = new Date(lastPeriodStartDate);
+      predictedNextPeriod.setDate(lastPeriodStartDate.getDate() + cycleLength);
+
+      // Check if current date is within 3 days of predicted period
+      const daysDiff = Math.abs((currentDate - predictedNextPeriod) / (1000 * 60 * 60 * 24));
+
+      return daysDiff <= 3 && !isPeriodDay(date);
+    }
+
+    function isOvulationDay(date) {
+      // ✅ NEW FIX — prevent early ovulation predictions
+      if (periodData.length < 2) return false;
+
+      // No predictions if no data
+      if (Object.keys(allCycleData).length === 0) return false;
+
+      // Get the most recent period start date from allCycleData
+      const sortedDates = Object.keys(allCycleData).sort();
+      let lastPeriodStart = null;
+
+      // Find the most recent period start date
+      for (let i = sortedDates.length - 1; i >= 0; i--) {
+        const dateStr = sortedDates[i];
+        if (allCycleData[dateStr].isMenstruating) {
+          // Check if this is the start of a new period (previous day is not menstruating)
+          const prevDate = new Date(dateStr);
+          prevDate.setDate(prevDate.getDate() - 1);
+          const prevDateStr = formatDateLocal(prevDate);
+
+          if (!allCycleData[prevDateStr] || !allCycleData[prevDateStr].isMenstruating) {
+            lastPeriodStart = dateStr;
+            break;
+          }
+        }
+      }
+
+      if (!lastPeriodStart) return false;
+
+      const lastPeriodStartDate = new Date(lastPeriodStart);
+      const currentDate = new Date(date);
+
+      // Ovulation typically occurs 14 days after period start
+      const predictedOvulation = new Date(lastPeriodStartDate);
+      predictedOvulation.setDate(lastPeriodStartDate.getDate() + 14);
+
+      // Check if current date matches predicted ovulation (within 1 day)
+      const daysDiff = Math.abs((currentDate - predictedOvulation) / (1000 * 60 * 60 * 24));
+
+      return daysDiff <= 1;
+    }
+
+    function isFertileWindow(date) {
+      // ✅ NEW FIX — ensure we have enough cycles
+      if (periodData.length < 2) return false;
+
+      // No predictions if no data
+      if (Object.keys(allCycleData).length === 0) return false;
+
+      // Get the most recent period start date from allCycleData
+      const sortedDates = Object.keys(allCycleData).sort();
+      let lastPeriodStart = null;
+
+      // Find the most recent period start date
+      for (let i = sortedDates.length - 1; i >= 0; i--) {
+        const dateStr = sortedDates[i];
+        if (allCycleData[dateStr].isMenstruating) {
+          // Check if this is the start of a new period (previous day is not menstruating)
+          const prevDate = new Date(dateStr);
+          prevDate.setDate(prevDate.getDate() - 1);
+          const prevDateStr = formatDateLocal(prevDate);
+
+          if (!allCycleData[prevDateStr] || !allCycleData[prevDateStr].isMenstruating) {
+            lastPeriodStart = dateStr;
+            break;
+          }
+        }
+      }
+
+      if (!lastPeriodStart) return false;
+
+      const lastPeriodStartDate = new Date(lastPeriodStart);
+      const currentDate = new Date(date);
+
+      // Ovulation typically occurs 14 days after period start
+      const predictedOvulation = new Date(lastPeriodStartDate);
+      predictedOvulation.setDate(lastPeriodStartDate.getDate() + 14);
+
+      // Fertile window is 5 days before ovulation to 1 day after
+      const fertileStart = new Date(predictedOvulation);
+      fertileStart.setDate(predictedOvulation.getDate() - 5);
+
+      const fertileEnd = new Date(predictedOvulation);
+      fertileEnd.setDate(predictedOvulation.getDate() + 1);
+
+      return currentDate >= fertileStart && currentDate <= fertileEnd && !isOvulationDay(date) && !isPeriodDay(date);
+    }
+
+    function generateAIInsights() {
+      const insights = [];
+
+      const sortedDates = Object.keys(allCycleData).sort();
+      if (sortedDates.length < 10) {
+        insights.push("Track a few more days to unlock personalized insights ✨");
+        displayInsights(insights);
+        return;
+      }
+
+      /* 1️⃣ Calculate Average Cycle Length */
+      const periodStartDates = [];
+
+      for (let i = 0; i < sortedDates.length; i++) {
+        const date = sortedDates[i];
+        if (allCycleData[date].isMenstruating) {
+          const prevDate = new Date(date);
+          prevDate.setDate(prevDate.getDate() - 1);
+          const prevStr = formatDateLocal(prevDate);
+
+          if (!allCycleData[prevStr] || !allCycleData[prevStr].isMenstruating) {
+            periodStartDates.push(date);
+          }
+        }
+      }
+
+      if (periodStartDates.length >= 2) {
+        let total = 0;
+        let count = 0;
+        for (let i = 1; i < periodStartDates.length; i++) {
+          const d1 = new Date(periodStartDates[i - 1]);
+          const d2 = new Date(periodStartDates[i]);
+          const diff = Math.round((d2 - d1) / (1000 * 60 * 60 * 24));
+          if (diff > 10 && diff < 60) {
+            total += diff;
+            count++;
+          }
+        }
+
+        if (count > 0) {
+          const avg = Math.round(total / count);
+          insights.push(
+            ` <i class="fa-solid fa-circle-check" style="color:#28a745;"></i> Your average cycle length appears to stabilize around <strong>${avg} days</strong>.`
+          );
+        }
+
+      }
+
+      /* 2️⃣ Detect Symptom Patterns */
+      const symptomFrequency = {};   // count of each symptom per cycle day
+      const symptomBeforePeriod = {}; // symptoms 1-6 days before period
+
+      for (const date of sortedDates) {
+        const entry = allCycleData[date];
+        if (!entry.symptoms) continue;
+
+        entry.symptoms.forEach(s => {
+          symptomFrequency[s.name] = (symptomFrequency[s.name] || 0) + 1;
+
+          const dayBefore = getDaysBeforePeriod(date);
+          if (dayBefore >= 1 && dayBefore <= 6) {
+            symptomBeforePeriod[s.name] = (symptomBeforePeriod[s.name] || 0) + 1;
+          }
+        });
+      }
+
+      // Check for migraines/headaches before period
+      if (symptomBeforePeriod["headache"] > 3) {
+        insights.push(
+          `<i class="fa-solid fa-lightbulb" style="color:#f4c542;"></i> You often experience headaches 2–3 days before your period. Try hydration + magnesium-rich foods.`
+        );
+      }
+
+      if (symptomFrequency["cramps"] > 10) {
+        insights.push(
+          `<i class="fa-solid fa-flower" style="color:#ff69b4;"></i> Cramps seem to be your most frequent symptom — warm compress or stretching may help.`
+        );
+      }
+
+      /* 3️⃣ Ovulation shift detection */
+      if (periodStartDates.length >= 3) {
+        const ovulationDates = periodStartDates.map(d => {
+          const dt = new Date(d);
+          dt.setDate(dt.getDate() + 14);
+          return dt;
+        });
+
+        let shifts = [];
+        for (let i = 1; i < ovulationDates.length; i++) {
+          const expected = new Date(periodStartDates[i - 1]);
+          expected.setDate(expected.getDate() + 28);
+
+          const actual = ovulationDates[i];
+          const shift = Math.abs((actual - expected) / (1000 * 60 * 60 * 24));
+          shifts.push(shift);
+        }
+
+        const maxShift = Math.max(...shifts);
+        if (maxShift > 2) {
+          insights.push(
+            `<i class="fa-solid fa-seedling" style="color:#7ac142;"></i> Your ovulation timing varies by around ±${Math.round(maxShift)} days.`
+          );
+        }
+      }
+
+      /* FINAL → If no deep insights found */
+      if (insights.length === 0) {
+        insights.push("✨ You're building consistent cycle data — keep tracking for more patterns!");
+      }
+
+      displayInsights(insights);
+    }
+
+    function generateEmotionalSupport() {
+      const container = document.getElementById("emotional-support-content");
+      if (!container) return;
+
+      container.innerHTML = ""; // reset
+
+      const sortedDates = Object.keys(allCycleData).sort().reverse();
+      if (sortedDates.length === 0) {
+        container.innerHTML = "<p>Log your symptoms to receive warm messages 🌷</p>";
+        return;
+      }
+
+      const today = sortedDates[0];
+      const todayEntry = allCycleData[today];
+
+      let messages = [];
+
+      /* ✅ Comfort Messages based on symptoms */
+
+      // Cramps
+      if (todayEntry?.symptoms?.some(s => s.name === "cramps")) {
+        messages.push("You logged cramps today. Be gentle with yourself — your body is working hard ❤️");
+      }
+
+      // Headache
+      if (todayEntry?.symptoms?.some(s => s.name === "headache")) {
+        messages.push("Headaches can be really draining. Take a slow breath… you’re doing your best 💛");
+      }
+
+      // Bloating
+      if (todayEntry?.symptoms?.some(s => s.name === "bloating")) {
+        messages.push("Feeling bloated isn’t easy. Wear something comfy and go easy on yourself today 🤍");
+      }
+
+      // Mood swings
+      if (todayEntry?.symptoms?.some(s => s.name === "mood-swings")) {
+        messages.push("Your emotions matter — whatever you're feeling right now is okay. One moment at a time ❤️");
+      }
+
+      // Fatigue
+      if (todayEntry?.symptoms?.some(s => s.name === "fatigue")) {
+        messages.push("Fatigue can be overwhelming. Rest when you can — your body knows what it needs 🌙");
+      }
+
+      // Low immunity
+      if (todayEntry?.symptoms?.some(s => s.name === "lower-immunity")) {
+        messages.push("Your body feels vulnerable today. Be kind to yourself and stay warm 💕");
+      }
+
+      // None of the above symptoms
+      if (messages.length === 0) {
+        messages.push("You’re doing great. Keep taking small steps for yourself 🤍");
+      }
+
+      /* ✅ Render messages */
+      messages.forEach(msg => {
+        const box = document.createElement("div");
+        box.className = "emotional-support-box";
+        box.innerHTML = `<i class="fa-solid fa-heart"></i> ${msg}`;
+        container.appendChild(box);
+      });
+    }
+
+    function generatePersonalizedAlerts() {
+      const container = document.getElementById("alert-content");
+      if (!container) return;
+
+      container.innerHTML = ""; // reset alerts
+
+      const sortedDates = Object.keys(allCycleData).sort().reverse();
+
+      if (sortedDates.length === 0) {
+        container.innerHTML = "<p>Log more symptoms to receive personalized alerts 🌿</p>";
+        return;
+      }
+
+      let alerts = [];
+
+      /* ✅ 1. Pain Med Reminder — if cramps logged recently */
+      let recentCramps = 0;
+      for (let i = 0; i < Math.min(7, sortedDates.length); i++) {
+        const entry = allCycleData[sortedDates[i]];
+        if (entry?.symptoms?.some(s => s.name === "cramps")) {
+          recentCramps++;
+        }
+      }
+      if (recentCramps >= 2) {
+        alerts.push("You’ve logged cramps multiple times this week — did you take your pain relief medication?");
+      }
+
+      /* ✅ 2. Headache Frequency — possible screen strain alert */
+      let headacheCount = 0;
+      sortedDates.forEach(date => {
+        if (allCycleData[date]?.symptoms?.some(s => s.name === "headache")) {
+          headacheCount++;
+        }
+      });
+      if (headacheCount >= 5) {
+        alerts.push("Frequent headaches detected — try reducing screen time and increase water intake.");
+      }
+
+      /* ✅ 3. PMS Related Mood Swings — emotional wellness alert */
+      let moodSwingCount = 0;
+      sortedDates.forEach(date => {
+        if (allCycleData[date]?.symptoms?.some(s => s.name === "mood-swings")) {
+          moodSwingCount++;
+        }
+      });
+      if (moodSwingCount >= 3) {
+        alerts.push("Mood swings have been frequent — consider short breaks, breathing exercises, or journaling.");
+      }
+
+      /* ✅ 4. Low Immunity Signals */
+      let immunityCount = 0;
+      sortedDates.forEach(date => {
+        if (allCycleData[date]?.symptoms?.some(s => s.name === "lower-immunity")) {
+          immunityCount++;
+        }
+      });
+      if (immunityCount >= 2) {
+        alerts.push("Your logs show weakened immunity — consider vitamin C, sleep, and warm fluids.");
+      }
+
+      /* ✅ 5. Fatigue Warning */
+      let fatigueCount = 0;
+      sortedDates.forEach(date => {
+        if (allCycleData[date]?.symptoms?.some(s => s.name === "fatigue")) {
+          fatigueCount++;
+        }
+      });
+      if (fatigueCount >= 4) {
+        alerts.push("Fatigue detected multiple days — remember to prioritize rest and maintain iron-rich foods.");
+      }
+
+      /* ✅ If no alerts found */
+      if (alerts.length === 0) {
+        container.innerHTML = "<p>Everything looks stable — keep logging daily for better insights 💛</p>";
+        return;
+      }
+
+      /* ✅ Render alerts */
+      alerts.forEach(msg => {
+        const box = document.createElement("div");
+        box.className = "alert-box";
+        box.innerHTML = `<i class="fa-solid fa-bell"></i> ${msg}`;
+        container.appendChild(box);
+      });
+    }
+
+    function generate7DayOutlook() {
+      const container = document.getElementById("outlook-content");
+      if (!container) return;
+
+      container.innerHTML = ""; // reset
+
+      const today = new Date();
+      const todayStr = formatDateLocal(today);
+
+      // find last confirmed period start date
+      const sortedDates = Object.keys(allCycleData).sort();
+      let lastPeriodStart = null;
+
+      for (let i = sortedDates.length - 1; i >= 0; i--) {
+        const dt = sortedDates[i];
+        if (allCycleData[dt].isMenstruating) {
+          const prev = new Date(dt);
+          prev.setDate(prev.getDate() - 1);
+          const prevStr = formatDateLocal(prev);
+
+          if (!allCycleData[prevStr] || !allCycleData[prevStr].isMenstruating) {
+            lastPeriodStart = dt;
+            break;
+          }
+        }
+      }
+
+      // If no cycle data -> generic message
+      if (!lastPeriodStart) {
+        container.innerHTML = `<p>Track your cycle to see the upcoming 7-day outlook 🌸</p>`;
+        return;
+      }
+
+      const startDate = new Date(lastPeriodStart);
+      const cycleLength = 28;
+
+      // predicted key dates
+      const ovulationDate = new Date(startDate);
+      ovulationDate.setDate(startDate.getDate() + 14);
+
+      const fertileStart = new Date(ovulationDate);
+      fertileStart.setDate(ovulationDate.getDate() - 5);
+
+      const fertileEnd = new Date(ovulationDate);
+      fertileEnd.setDate(ovulationDate.getDate() + 1);
+
+      const nextPeriodDate = new Date(startDate);
+      nextPeriodDate.setDate(startDate.getDate() + cycleLength);
+
+      // Evaluate next 7 days
+      for (let offset = 0; offset < 7; offset++) {
+        let d = new Date(today);
+        d.setDate(today.getDate() + offset);
+        const dStr = formatDateLocal(d);
+
+        let msg = "";
+        let icon = "";
+
+        if (isPeriodDay(d)) {
+          msg = "You may still be menstruating. Focus on rest, hydration, and warmth.";
+          icon = "fa-droplet";
+        }
+        else if (d >= fertileStart && d <= fertileEnd) {
+          msg = "You are entering fertile window. You may feel energetic and upbeat.";
+          icon = "fa-seedling";
+        }
+        else if (Math.abs((d - ovulationDate) / (1000 * 60 * 60 * 24)) <= 1) {
+          msg = "Ovulation phase. Libido may increase; slight bloating or cramps possible.";
+          icon = "fa-heart";
+        }
+        else if (Math.abs((d - nextPeriodDate) / (1000 * 60 * 60 * 24)) <= 3) {
+          msg = "PMS phase approaching. Stay hydrated and reduce caffeine.";
+          icon = "fa-mug-hot";
+        }
+        else {
+          msg = "Regular cycle day. Maintain balanced diet and good sleep.";
+          icon = "fa-circle";
+        }
+
+        const dayLabel = offset === 0 ? "Today" :
+          offset === 1 ? "Tomorrow" :
+            `In ${offset} days`;
+
+        const card = document.createElement("div");
+        card.className = "tip-card";
+        card.innerHTML = `
+      <i class="fa-solid ${icon}"></i>
+      <b>${dayLabel}:</b> ${msg}
+    `;
+        container.appendChild(card);
+      }
+    }
+
+    function getDaysBeforePeriod(dateStr) {
+      const date = new Date(dateStr);
+
+      for (const period of periodData) {
+        const pDate = new Date(period.date);
+        const diff = (pDate - date) / (1000 * 60 * 60 * 24);
+
+        if (diff >= 1 && diff <= 6) {
+          return diff;
+        }
+      }
+
+      return -1;
+    }
+
+    function displayInsights(list) {
+      const container = document.getElementById("ai-insights-list");
+      if (!container) return;
+
+      container.innerHTML = "";
+
+      list.forEach(text => {
+        const div = document.createElement("div");
+        div.className = "tip-card";
+        div.innerHTML = `<i class="fa-solid fa-sparkles"></i> ${text}`;
+        container.appendChild(div);
+      });
+    }
+
+    function updateCycleInfo() {
+      const today = new Date();
+      const todayStr = formatDateLocal(today);
+
+      // Count total days with menstruation data
+      const totalDays = Object.keys(allCycleData).length;
+
+      if (totalDays === 0) {
+        document.getElementById("current-day").textContent = "Start Tracking";
+        document.getElementById("last-period").textContent = "Not tracked yet";
+        document.getElementById("cycle-length").textContent = "28 days";
+        document.getElementById("period-length").textContent = "5 days";
+        document.getElementById("cycles-tracked").textContent = "0";
+        return;
+      }
+
+      // Check if today has data
+      if (allCycleData[todayStr]) {
+        document.getElementById("current-day").textContent = `Today: ${allCycleData[todayStr].isMenstruating ? 'Period Day' : 'Regular Day'}`;
+      } else {
+        document.getElementById("current-day").textContent = `Tracked ${totalDays} days`;
+      }
+
+      // Update cycle information
+      document.getElementById("cycles-tracked").textContent = totalDays;
+
+      // Find the most recent period and calculate its length
+      let lastPeriodStartDate = null;
+      let periodDays = 0;
+      const sortedDates = Object.keys(allCycleData).sort();
+
+      // Find the most recent period start date (first day of the most recent period)
+      for (let i = sortedDates.length - 1; i >= 0; i--) {
+        const date = sortedDates[i];
+        if (allCycleData[date].isMenstruating) {
+          // Check if this is the start of a period (previous day is not menstruating)
+          const prevDate = new Date(date);
+          prevDate.setDate(prevDate.getDate() - 1);
+          const prevDateStr = formatDateLocal(prevDate);
+
+          if (!allCycleData[prevDateStr] || !allCycleData[prevDateStr].isMenstruating) {
+            lastPeriodStartDate = date;
+            break;
+          }
+        }
+      }
+
+      // Count consecutive period days from the most recent period
+      if (lastPeriodStartDate) {
+        const lastPeriodDateObj = new Date(lastPeriodStartDate);
+        let currentDate = new Date(lastPeriodDateObj);
+
+        // Count forward from the last period start date
+        while (true) {
+          const dateStr = formatDateLocal(currentDate);
+          if (allCycleData[dateStr] && allCycleData[dateStr].isMenstruating) {
+            periodDays++;
+            currentDate.setDate(currentDate.getDate() + 1);
+          } else {
+            break;
+          }
+        }
+      }
+
+      if (lastPeriodStartDate) {
+        // Format date as DD/MM/YYYY
+        const dateObj = new Date(lastPeriodStartDate);
+        const formattedDate = `${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getMonth() + 1).padStart(2, '0')}/${dateObj.getFullYear()}`;
+        document.getElementById("last-period").textContent = formattedDate;
+        document.getElementById("period-length").textContent = `${periodDays} days`;
+      } else {
+        document.getElementById("last-period").textContent = "Not tracked yet";
+        document.getElementById("period-length").textContent = "5 days";
+      }
+
+      // Calculate actual cycle length from data
+      let actualCycleLength = 28; // Default
+
+      // Get all period start dates (first day of each period)
+      const periodStartDates = [];
+
+      for (let i = 0; i < sortedDates.length; i++) {
+        const date = sortedDates[i];
+        if (allCycleData[date].isMenstruating) {
+          // Check if this is the start of a new period (previous day is not menstruating)
+          const prevDate = new Date(date);
+          prevDate.setDate(prevDate.getDate() - 1);
+          const prevDateStr = formatDateLocal(prevDate);
+
+          if (!allCycleData[prevDateStr] || !allCycleData[prevDateStr].isMenstruating) {
+            periodStartDates.push(date);
+          }
+        }
+      }
+
+      // Calculate cycle lengths between consecutive period starts
+      if (periodStartDates.length > 1) {
+        let totalCycleLength = 0;
+        let cycleCount = 0;
+
+        for (let i = 1; i < periodStartDates.length; i++) {
+          const prevDate = new Date(periodStartDates[i - 1]);
+          const currDate = new Date(periodStartDates[i]);
+          const cycleLength = Math.round((currDate - prevDate) / (1000 * 60 * 60 * 24));
+          if (cycleLength > 0 && cycleLength < 50) { // Reasonable cycle length
+            totalCycleLength += cycleLength;
+            cycleCount++;
+          }
+        }
+
+        if (cycleCount > 0) {
+          actualCycleLength = Math.round(totalCycleLength / cycleCount);
+        }
+      }
+
+      document.getElementById("cycle-length").textContent = `${actualCycleLength} days`;
+    }
+
+    function updatePhaseIndicator() {
+      const today = new Date();
+      const todayStr = formatDateLocal(today);
+
+      // Count total days with menstruation data
+      const totalDays = Object.keys(allCycleData).length;
+
+      if (totalDays === 0) {
+        document.getElementById("current-phase").textContent = "Track your first period to see cycle phase";
+        return;
+      }
+
+      // Check if today has data
+      if (allCycleData[todayStr]) {
+        const phase = allCycleData[todayStr].isMenstruating ? "🩸 Menstrual Phase" : "🌱 Regular Phase";
+        document.getElementById("current-phase").textContent = phase;
+      } else {
+        document.getElementById("current-phase").textContent = "📊 Tracking Phase";
+      }
+    }
+
+    /* ----------------- Notifications ----------------- */
+    function showNotification(message, type) {
+      const notification = document.getElementById("notification");
+      notification.textContent = message;
+      notification.className = `notification show ${type}`;
+      setTimeout(() => { notification.classList.remove("show"); }, 4000);
+    }
+
+    /* ----------------- Init ----------------- */
+    // Check if it's a new day and auto-reset menstruation data
+    function checkMenstruationDailyReset() {
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      const lastDate = localStorage.getItem('menstruation_lastDate');
+
+      if (lastDate && lastDate !== today) {
+        console.log('🌸 New day detected! Auto-resetting menstruation data...');
+        console.log('Last date:', lastDate, 'Today:', today);
+
+        // Clear menstruation data
+        const currentUser = localStorage.getItem('userEmail');
+        if (currentUser) {
+          localStorage.removeItem(`${currentUser}_menstruationData`);
+          localStorage.removeItem(`${currentUser}_cycleData`);
+          localStorage.removeItem(`${currentUser}_periodLogs`);
+        }
+
+        // Update last date
+        localStorage.setItem('menstruation_lastDate', today);
+
+        // Show notification
+        if (typeof showNotification === 'function') {
+          showNotification('🌅 Good morning! Menstruation data has been reset for a fresh start!', 'success');
+        } else {
+          console.log('🌅 Good morning! Menstruation data has been reset for a fresh start!');
+        }
+      } else if (!lastDate) {
+        // First time - set today as last date
+        localStorage.setItem('menstruation_lastDate', today);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Check for daily reset
+      checkMenstruationDailyReset();
+
+      // 🔐 CRITICAL: User Authentication Check
+      if (!window.userAuth || !window.userAuth.isUserAuthenticated()) {
+        console.error('User not authenticated - redirecting to login');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      // Ensure data isolation
+      window.userAuth.ensureDataIsolation();
+
+      if (!email) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      await init();
+      await loadPeriodData();
+      await loadSymptoms();
+      updateSymptomLogs();
+      generateAIInsights();
+      generate7DayOutlook();
+      generatePersonalizedAlerts();
+      generateEmotionalSupport();
+
+    });
+
+    function previousMonth() {
+      currentMonth--;
+      if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+      generateCalendar(currentMonth, currentYear);
+      restoreSymptomUIForDate();
+    }
+
+    function nextMonth() {
+      currentMonth++;
+      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+      generateCalendar(currentMonth, currentYear);
+      restoreSymptomUIForDate();
+    }
+
+    function markTodayAsPeriod() {
+      const today = new Date();
+      const formatted = formatDateLocal(today);
+      document.getElementById("periodDate").value = formatted;
+      addPeriod();
+    }
+
+    function exportData() {
+      if (periodData.length === 0 && symptomData.length === 0) {
+        showNotification("No data to export yet!", "error");
+        return;
+      }
+      const exportData = {
+        periods: periodData,
+        symptoms: symptomData,
+        averageCycle: cycleLength,
+        exportDate: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `cycle-data-${new Date().toISOString().split("T")[0]}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+      showNotification("Data exported successfully! 📤", "success");
+    }
+
+    async function testMongoDB() {
+      const userEmail = localStorage.getItem('userEmail');
+      const accessToken = localStorage.getItem('accessToken');
+
+      if (!userEmail || !accessToken) {
+        showNotification("Please log in first!", "error");
+        return;
+      }
+
+      try {
+        console.log('🔍 Testing MongoDB connection...');
+        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+        const response = await fetch(`${apiBaseUrl}/menstruation/${userEmail}`, {
+          headers: {
+            'Authorization': `Bearer ${accessToken}`
+          }
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('✅ MongoDB connection successful:', data);
+          showNotification(`MongoDB connection successful! Found ${data.length} entries.`, "success");
+        } else {
+          console.error('❌ MongoDB connection failed:', response.status);
+          showNotification(`MongoDB connection failed: ${response.status}`, "error");
+        }
+      } catch (error) {
+        console.error('❌ MongoDB test error:', error);
+        showNotification(`MongoDB test error: ${error.message}`, "error");
+      }
+    }
+
+    async function clearMenstruation() {
+      const userEmail = localStorage.getItem("userEmail");
+      const accessToken = localStorage.getItem("accessToken");
+
+      if (!userEmail || !accessToken) {
+        showNotification("Please login first!", "error");
+        return;
+      }
+
+      if (!confirm("Are you sure you want to clear ALL menstruation data?")) return;
+
+      try {
+        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+        const res = await fetch(
+          `${apiBaseUrl}/menstruation/${userEmail}`,
+          {
+            method: "DELETE",
+            headers: {
+              "Authorization": `Bearer ${accessToken}`
+            }
+          }
+        );
+
+        if (!res.ok) {
+          showNotification("Failed to clear data from server.", "error");
+          return;
+        }
+
+        // ✅ Reset client state
+        allCycleData = {};
+        periodData = [];
+        symptomData = [];
+        selectedSymptoms = {};
+
+        generateCalendar(currentMonth, currentYear);
+        updateCycleInfo();
+        updatePhaseIndicator();
+        clearSymptomForm();
+        updateSymptomLogs();
+        generate7DayOutlook();
+        generatePersonalizedAlerts();
+
+        showNotification("✅ All menstruation data cleared!", "success");
+
+      } catch (err) {
+        console.error(err);
+        showNotification("Error clearing data!", "error");
+      }
+    }
+
+    // ADD THIS CORRECTED FUNCTION
+
+    // Fixed restoreSymptomUIForDate function
+    function restoreSymptomUIForDate() {
+      const dateInput = document.getElementById("symptom-date");
+      if (!dateInput || !dateInput.value) return;
+
+      // ✅ Reset symptom state BEFORE loading
+      Object.keys(selectedSymptoms).forEach(sym => {
+        selectedSymptoms[sym] = false;
+        const box = document.getElementById(`symptom-${sym}`);
+        if (box) {
+          box.classList.remove("checked");
+          box.innerHTML = "";
+        }
+      });
+
+      const date = dateInput.value;
+
+      // ✅ Step 1: DB-based restore
+      const saved = allCycleData[date];
+
+      if (saved) {
+        console.log("✅ Restoring saved data from DB for:", date);
+
+        // Restore each symptom checkbox
+        Object.keys(selectedSymptoms).forEach(symptom => {
+          const isChecked = Array.isArray(saved.symptoms) &&
+            saved.symptoms.some(s => s.name === symptom);
+
+          selectedSymptoms[symptom] = isChecked;
+
+          const checkbox = document.getElementById(`symptom-${symptom}`);
+          if (checkbox) {
+            if (isChecked) {
+              checkbox.classList.add("checked");
+              checkbox.innerHTML = "✓";
+            } else {
+              checkbox.classList.remove("checked");
+              checkbox.innerHTML = "";
+            }
+          }
+        });
+
+        // Restore day type
+        const menstruationCheckbox = document.getElementById("is-menstruating");
+        if (menstruationCheckbox) {
+          menstruationCheckbox.checked = saved.isMenstruating || false;
+        }
+
+        // Restore notes
+        const notesBox = document.getElementById("symptom-notes");
+        if (notesBox) notesBox.value = saved.notes || "";
+
+        // Restore flow intensity
+        const flowSlider = document.getElementById("flow-slider");
+        if (flowSlider) {
+          flowSlider.value = saved.flowIntensity || 0;
+          document.getElementById("flow-value").textContent = flowLabels[saved.flowIntensity] || "None";
+        }
+
+        return; // ✅ end DB restore
+      }
+
+      // ✅ Step 2: Fallback to localStorage snapshot
+      console.log("⚠️ No DB entry found. Using localStorage snapshot.");
+      const savedLS = JSON.parse(localStorage.getItem(`symUI:${date}`) || "{}");
+
+      Object.keys(selectedSymptoms).forEach(symptom => {
+        const exists = savedLS.selectedSymptoms && savedLS.selectedSymptoms[symptom];
+        selectedSymptoms[symptom] = exists || false;
+
+        const checkbox = document.getElementById(`symptom-${symptom}`);
+        if (checkbox) {
+          if (exists) {
+            checkbox.classList.add("checked");
+            checkbox.innerHTML = "✓";
+          } else {
+            checkbox.classList.remove("checked");
+            checkbox.innerHTML = "";
+          }
+        }
+      });
+
+      const notesBox = document.getElementById("symptom-notes");
+      if (notesBox) notesBox.value = savedLS.notes || "";
+
+      const menstruationCheckbox = document.getElementById("is-menstruating");
+      if (menstruationCheckbox) menstruationCheckbox.checked = savedLS.isMenstruating || false;
+
+      const flowSlider = document.getElementById("flow-slider");
+      if (flowSlider) {
+        flowSlider.value = savedLS.flow || 0;
+        document.getElementById("flow-value").textContent = flowLabels[flowSlider.value];
+      }
+    }
+
+    window.addPeriod = addPeriod;
+    window.saveSymptoms = saveSymptoms;
+    window.toggleSymptom = toggleSymptom;
+    window.previousMonth = previousMonth;
+    window.nextMonth = nextMonth;
+    window.markTodayAsPeriod = markTodayAsPeriod;
+    window.exportData = exportData;
+    window.clearData = clearData;
+    window.testMongoConnection = testMongoConnection;
+    window.init = init;
+    window.generateCalendar = generateCalendar;
+    window.testCalendarGeneration = testCalendarGeneration;
+
+    // Handle logout
+    const logoutLink = profileDropdown.querySelector('a[href="logout.html"]');
+    if (logoutLink) {
+      logoutLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('userEmail');
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+      });
+    }
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const profileCircle = document.getElementById('user-profile');
+      const profileDropdown = document.getElementById('profileDropdown');
+
+      if (profileCircle && profileDropdown) {
+        // Set the user initial
+        const userEmail = localStorage.getItem('userEmail') || '';
+        if (userEmail) {
+          profileCircle.textContent = userEmail.charAt(0).toUpperCase();
+        }
+
+        profileCircle.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (profileDropdown.style.display === 'block') {
+            profileDropdown.style.display = 'none';
+          } else {
+            profileDropdown.style.display = 'block';
+            profileDropdown.style.position = 'absolute';
+            profileDropdown.style.right = '0';
+            profileDropdown.style.top = '100%';
+            profileDropdown.style.backgroundColor = '#fff';
+            profileDropdown.style.zIndex = '9999';
+            profileDropdown.style.minWidth = '150px';
+            profileDropdown.style.border = '1px solid #ddd';
+            profileDropdown.style.borderRadius = '10px';
+            profileDropdown.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+            profileDropdown.style.padding = '10px 0';
+          }
+        });
+
+        document.addEventListener('click', function (e) {
+          if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+            profileDropdown.style.display = 'none';
+          }
+        });
+      }
+    });
+
+  </script>
+</body>
+
+</html>

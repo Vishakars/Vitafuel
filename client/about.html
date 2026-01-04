@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About VitaFuel - Your AI-Powered Health Companion</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/commonstyles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #6F4E37;
+            background: #fffaf5;
+            min-height: 100vh;
+        }
+
+        /* Logo Image Styles */
+        .hero-img1 {
+            flex: 1;
+            text-align: left;
+        }
+
+        .hero-img1 img {
+            max-width: 8%;
+            height: auto;
+        }
+
+        .container1 {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero1 {
+            text-align: center;
+            padding: 60px 0;
+            background: rgba(193, 154, 107, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 50px;
+            border: 1px solid rgba(193, 154, 107, 0.3);
+
+        }
+
+        .hero1 h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #4B2E1E, #C19A6B, #F5DEB3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .hero1 p {
+            font-size: 1.3rem;
+            color: #6F4E37;
+            max-width: 500px;
+            margin: 0 auto;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background: #fffaf5;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(160, 82, 45, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            animation: fadeInUp 1s ease-out;
+            text-align: justify;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            font-size: 2rem;
+            color: #A0522D;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            color: #CFA25F;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card p {
+            color: #6F4E37;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .features-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid #D2B48C;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            font-size: 1.1rem;
+            text-align: justify;
+        }
+
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+
+        .features-list .icon {
+            font-size: 1.6rem;
+            min-width: 2.2rem;
+            line-height: 1;
+            padding-top: 0.2rem;
+        }
+
+        .icon {
+            font-size: 2rem;
+            min-width: 30px;
+        }
+
+        .mission-section {
+            background: #fffaf5;
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            margin-bottom: 50px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .mission-section h2 {
+            font-size: 2.5rem;
+            color: #A0522D;
+            margin-bottom: 30px;
+        }
+
+        .mission-section p {
+            font-size: 1.2rem;
+            color: #6F4E37;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .cta-section {
+            background: linear-gradient(45deg, #A0522D, #DDB67D);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            color: white;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            margin-top: 20px;
+        }
+
+        .cta-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero1 h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero1 p {
+                font-size: 1.1rem;
+            }
+
+            .card {
+                padding: 30px 20px;
+            }
+
+            .mission-section {
+                padding: 30px 20px;
+            }
+
+            .cta-section {
+                padding: 30px 20px;
+            }
+        }
+
+        .fa-rocket {
+            animation: floatRocket 2s ease-in-out infinite;
+            color: #a15e32;
+        }
+
+        @keyframes floatRocket {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">U</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container1">
+        <div class="hero1">
+            <h1>VitaFuel</h1>
+            <p>Your AI-Powered Health & Wellness Companion</p>
+        </div>
+
+        <div class="mission-section">
+            <h2><i class="fa-solid fa-rocket"></i> Our Mission</h2>
+            <p>
+                We're on a mission to make personalized health and wellness accessible, smart, and beautifully simple
+                for everyone.
+                In today's fast-paced world, managing multiple health concerns often means juggling several apps and
+                platforms.
+                <strong>VitaFuel</strong> brings everything together in one place — a personalized, AI-powered wellness
+                companion
+                that empowers you to take control of your health.
+            </p>
+        </div>
+
+        <div class="content-grid">
+            <div class="card">
+                <h2><i class="fa-solid fa-lightbulb"></i> What We Offer</h2>
+                <p>
+                    <strong>VitaFuel</strong> brings everything together in one place, so you can focus on
+                    <em>feeling better</em>, not figuring out which app to open.
+                </p>
+
+                <ul class="features-list">
+                    <li>
+                        <span class="icon"><i class="fa-solid fa-chart-line"></i></span>
+                        <div>
+                            <strong>Track it all in one place:</strong> Blood pressure, sugar levels, menstrual cycles,
+                            sleep, mental health —
+                            all integrated into one clean, user-friendly dashboard.
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon"><i class="fa-solid fa-robot"></i></span>
+                        <div>
+                            <strong>AI-Powered Personalization:</strong> Get custom diet suggestions, tailored workout
+                            routines,
+                            and mental wellness tips based on your unique health profile.
+                        </div>
+                    </li>
+                    <li>
+                        <span class="icon"><i class="fa-solid fa-comments"></i></span>
+                        <div>
+                            <strong>Virtual Assistant Support:</strong> Need motivation or quick advice?
+                            Just chat with our AI assistant for instant health tips or a boost of encouragement.
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2><i class="fa-solid fa-gear"></i> Powered by AI</h2>
+                <p>
+                    Our intelligent engine offers tailored diet suggestions, custom exercise routines, and mental
+                    wellness tips —
+                    all personalized to your unique health profile. You can even chat with our virtual assistant
+                    for quick health advice or a dose of motivation.
+                </p>
+
+                <h3><i class="fa-solid fa-brain"></i> Smart Features:</h3>
+                <ul class="features-list">
+                    <li>
+                        <span class="icon"><i class="fa-solid fa-bowl-food"></i></span>
+                        <div>Personalized nutrition recommendations</div>
+                    </li>
+                    <li>
+                        <span class="icon"><i class="fa-solid fa-person-running"></i></span>
+                        <div>Custom workout routines</div>
+                    </li>
+                    <li>
+                        <span class="icon"><i class="fa-solid fa-spa"></i></span>
+                        <div>Mental wellness guidance</div>
+                    </li>
+                    <li>
+                        <span class="icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                        <div>24/7 AI motivation support</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2><i class="fa-solid fa-seedling"></i> Building Healthier Habits</h2>
+            <p>
+                With a focus on accessibility and engagement, <strong>VitaFuel</strong> transforms complex health
+                tracking
+                into a smooth, empowering experience. We're not just building an app — we're building healthier habits,
+                together.
+            </p>
+            <a href="dashboard.html" class="cta-button">
+                <i class="fa-solid fa-arrow-right"></i> Start Your Health Journey Today
+            </a>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+    <script>
+        // Add smooth scrolling and animation triggers
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.card');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationDelay = '0s';
+                        entry.target.style.animationPlayState = 'running';
+                    }
+                });
+            });
+
+            cards.forEach(card => {
+                observer.observe(card);
+            });
+
+            // Add click animation to CTA button
+            const ctaButton = document.querySelector('.cta-button');
+            if (ctaButton) {
+                ctaButton.addEventListener('click', function (e) {
+                    e.preventDefault(); // temporarily prevent it
+                    this.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateY(-3px)';
+                        // 🔁 Now redirect manually
+                        window.location.href = 'dashboard.html';
+                    }, 200); // short delay for the animation
+                });
+            }
+
+        });
+    </script>
+    <script>
+        const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+
+        // 🚪 Redirect to login if not logged in
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+
+        // 🛠 Helper for per-user key generation
+        function getUserKey(key) {
+            return `${currentUser}_${key}`;
+        }
+
+        // 👤 Load and display user initial
+        const fullName = localStorage.getItem(getUserKey("name")) || currentUser?.split('@')[0] || "User";
+        const firstName = fullName.trim().split(" ")[0];
+        const firstInitial = firstName[0].toUpperCase();
+
+        const profileCircle = document.getElementById("user-profile");
+        const profileDropdown = document.getElementById("profileDropdown");
+
+        if (profileCircle) {
+            profileCircle.textContent = firstInitial;
+            profileCircle.title = firstName;
+        }
+
+        // Add click handler for profile dropdown
+        if (profileDropdown) {
+            profileCircle.addEventListener("click", () => {
+                profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
+            });
+
+            // Hide dropdown when clicking outside
+            window.addEventListener("click", function (e) {
+                if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.style.display = "none";
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

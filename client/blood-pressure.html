@@ -1,0 +1,1684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | Blood Pressure Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/blood-pressure.css">
+    <link rel="stylesheet" href="css/commonstyles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/health-domain-common.js"></script>
+    <script src="js/mongodb-integration.js"></script>
+</head>
+
+<body>
+    <div class="floating-icon"><i class="fa-solid fa-heart"></i></div>
+
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">V</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-heart-pulse"></i> Blood Pressure Tracker</h1>
+            <p>Keep track of your blood pressure readings for better heart health</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Latest Reading</h3>
+                        <div class="stat-value" id="latest-bp">No data yet</div>
+                        <div class="stat-goal">Record your first reading</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="latest-progress"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Weekly Average</h3>
+                        <div class="stat-value" id="avg-bp">No data yet</div>
+                        <div class="stat-goal">Build your tracking habit</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="avg-progress"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Pulse Rate</h3>
+                        <div class="stat-value" id="pulse-rate">No data yet</div>
+                        <div class="stat-goal">Monitor heart rhythm</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-heartbeat"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="pulse-progress"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Total Readings</h3>
+                        <div class="stat-value" id="total-readings">0</div>
+                        <div class="stat-goal">Start your health journey!</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-check-circle"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="total-progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <button class="btn btn-danger" onclick="clearAllData()">
+                <i class="fa-solid fa-trash"></i> Clear All Data
+            </button>
+        </div>
+
+        <div class="bp-recorder">
+            <h2><i class="fa-solid fa-stethoscope"></i> Record Blood Pressure</h2>
+            <div class="bp-display" id="bp-display">--/--</div>
+
+            <div class="bp-inputs">
+                <div class="bp-input-group">
+                    <label class="form-label">Systolic (Top Number)</label>
+                    <input type="number" class="form-input" id="systolic" placeholder="120" min="70" max="250">
+                </div>
+                <div class="bp-input-group">
+                    <label class="form-label">Diastolic (Bottom Number)</label>
+                    <input type="number" class="form-input" id="diastolic" placeholder="80" min="40" max="150">
+                </div>
+                <div class="bp-input-group">
+                    <label class="form-label">Pulse Rate (BPM)</label>
+                    <input type="number" class="form-input" id="pulse" placeholder="72" min="40" max="200">
+                </div>
+                <div class="bp-input-group">
+                    <label class="form-label">Time of Reading</label>
+                    <input type="time" class="form-input" id="reading-time">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Notes (Optional)</label>
+                <textarea class="form-input" id="bp-notes"
+                    placeholder="Any symptoms, medications, or activities before reading..." rows="3"></textarea>
+            </div>
+
+            <div class="activity-tags">
+                <p class="tag-label">Tags (Optional):</p>
+                <div class="tag-buttons">
+                    <button class="tag-btn" data-tag="before-med">
+                        <i class="fa-solid fa-check"></i> Before Med
+                    </button>
+
+                    <button class="tag-btn" data-tag="after-med">
+                        <i class="fa-solid fa-pills"></i> After Med
+                    </button>
+
+                    <button class="tag-btn" data-tag="after-exercise">
+                        <i class="fa-solid fa-person-running"></i> After Exercise
+                    </button>
+
+                    <button class="tag-btn" data-tag="stress">
+                        <i class="fa-solid fa-brain"></i> Stress
+                    </button>
+
+                </div>
+            </div>
+
+            <div id="bp-status-display"></div>
+
+            <button class="btn btn-primary" onclick="recordBP()">
+                <i class="fa-solid fa-floppy-disk"></i> Record Reading
+            </button>
+        </div>
+
+        <div class="reminder-section">
+            <h2><i class="fa-solid fa-bell"></i> Reading Reminders</h2>
+            <div class="reminder-settings">
+                <div class="form-group">
+                    <label class="form-label">Enable Daily Reminders</label>
+                    <select class="form-input" id="reminder-enabled">
+                        <option value="false">Disabled</option>
+                        <option value="true">Enabled</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Reminder Time</label>
+                    <input type="time" class="form-input" id="reminder-time" value="08:00">
+                </div>
+            </div>
+            <button class="btn btn-secondary" onclick="setReminder()">
+                <i class="fa-solid fa-bell"></i> Set Reminder
+            </button>
+        </div>
+
+        <div class="chart-container">
+            <h2><i class="fa-solid fa-chart-bar"></i> Blood Pressure Trend</h2>
+            <div class="chart-wrapper">
+                <canvas id="bpChart"></canvas>
+            </div>
+        </div>
+
+        <div class="insights-section">
+            <h2><i class="fa-solid fa-lightbulb"></i> Health Insights & Recommendations</h2>
+            <div class="insights-grid" id="bp-insights"></div>
+        </div>
+
+        <div class="bp-stage-reference">
+            <h2><i class="fa-solid fa-square-poll-vertical"></i> BP Category Guide</h2>
+            <p>Compare your latest reading to standard categories (based on AHA/ACC Guidelines).</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>BP Category</th>
+                        <th>Systolic (Top) mmHg</th>
+                        <th>Diastolic (Bottom) mmHg</th>
+                    </tr>
+                </thead>
+                <tbody id="bp-category-table">
+                    <tr id="category-normal" data-sys="<120" data-dia="<80">
+                        <td><i class="fa-solid fa-check-circle"></i> <strong>Normal</strong></td>
+                        <td>Less than 120</td>
+                        <td>Less than 80</td>
+                    </tr>
+                    <tr id="category-elevated" data-sys="120-129" data-dia="<80">
+                        <td><i class="fa-solid fa-triangle-exclamation"></i> <strong>Elevated</strong></td>
+                        <td>120 – 129</td>
+                        <td>Less than 80</td>
+                    </tr>
+                    <tr id="category-hbp1" data-sys="130-139" data-dia="80-89">
+                        <td><i class="fa-solid fa-bell"></i> <strong>High Blood Pressure (Stage 1)</strong></td>
+                        <td>130 – 139</td>
+                        <td>OR 80 – 89</td>
+                    </tr>
+                    <tr id="category-hbp2" data-sys=">=140" data-dia=">=90">
+                        <td><i class="fa-solid fa-circle-exclamation"></i> <strong>High Blood Pressure (Stage
+                                2)</strong></td>
+                        <td>140 or higher</td>
+                        <td>OR 90 or higher</td>
+                    </tr>
+                    <tr id="category-crisis" data-sys=">=180" data-dia=">=120">
+                        <td><i class="fa-solid fa-fire-extinguisher"></i> <strong>Hypertensive Crisis</strong></td>
+                        <td>180 or higher</td>
+                        <td>AND/OR Higher or 120</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="doctor-summary" id="doctor-summary">
+            <h2><i class="fa-solid fa-user-doctor"></i> Doctor Summary</h2>
+            <div id="doctor-summary-content"></div>
+        </div>
+
+        <div id="doctor-warning-section"></div>
+
+        <div class="goals-section">
+            <h2><i class="fa-solid fa-bullseye"></i> Blood Pressure Goals & Targets</h2>
+            <div class="goals-grid">
+                <div class="goal-card">
+                    <h3><i class="fa-solid fa-calendar-days"></i> Target Ranges</h3>
+                    <div class="goal-item">
+                        <label>Target Systolic (mmHg)</label>
+                        <input type="number" id="target-systolic" min="90" max="140" value="120">
+                    </div>
+                    <div class="goal-item">
+                        <label>Target Diastolic (mmHg)</label>
+                        <input type="number" id="target-diastolic" min="60" max="90" value="80">
+                    </div>
+                    <div class="goal-item">
+                        <label>Target Pulse (bpm)</label>
+                        <input type="number" id="target-pulse" min="50" max="100" value="70">
+                    </div>
+                    <button class="btn btn-primary" onclick="updateBPGoals()">
+                        <i class="fa-solid fa-pen-to-square"></i> Update Goals
+                    </button>
+                </div>
+
+                <div class="goal-card">
+                    <h3><i class="fa-solid fa-chart-pie"></i> Progress Tracking</h3>
+                    <div class="progress-item"><span>This Week's Average:</span><span
+                            id="weekly-bp-average">--/--</span></div>
+                    <div class="progress-item"><span>Goal Achievement:</span><span id="goal-achievement">0%</span></div>
+                    <div class="progress-item"><span>Risk Level:</span><span id="risk-level">Low</span></div>
+                    <div class="progress-item"><span>Trend:</span><span id="bp-trend">Stable</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bp-log">
+            <h2><i class="fa-solid fa-book-medical"></i> Blood Pressure Log</h2>
+            <div class="log-controls">
+                <select id="time-filter" onchange="filterReadings()">
+                    <option value="all">All Time</option>
+                    <option value="7">Last 7 days</option>
+                    <option value="30">Last 30 days</option>
+                    <option value="90">Last 3 months</option>
+                </select>
+                <button class="btn btn-secondary" onclick="exportBPData()">
+                    <i class="fa-solid fa-upload"></i> Export Data
+                </button>
+            </div>
+            <div id="log-entries">
+                <div class="empty-log">
+                    <i class="fa-solid fa-notes-medical"></i> No readings recorded yet. Start tracking your blood
+                    pressure by recording your first reading above!
+                </div>
+            </div>
+        </div>
+
+        <div class="export-section">
+            <h2><i class="fa-solid fa-file-export"></i> Export Your Data</h2>
+            <p>Download your blood pressure readings for your healthcare provider</p>
+            <button class="btn btn-secondary" onclick="exportToCSV()">
+                <i class="fa-solid fa-file-csv"></i> Export as CSV
+            </button>
+            <button class="btn btn-secondary" onclick="exportToPDF()">
+                <i class="fa-solid fa-file-pdf"></i> Export as PDF Report
+            </button>
+        </div>
+
+        <div class="bp-tips">
+            <h2><i class="fa-solid fa-heart-circle-check"></i> Blood Pressure Management Tips</h2>
+            <div class="tip-card">
+                <i class="fa-solid fa-clock"></i> Take readings at the same time each day for consistency.
+            </div>
+            <div class="tip-card">
+                <i class="fa-solid fa-chair"></i> Sit quietly for 5 minutes before taking a reading.
+            </div>
+            <div class="tip-card">
+                <i class="fa-solid fa-ban"></i> Avoid caffeine, smoking, and exercise 30 minutes before measurement.
+            </div>
+            <div class="tip-card">
+                <i class="fa-solid fa-arrows-to-circle"></i> Use the correct cuff size and position your arm at heart
+                level.
+            </div>
+            <div class="tip-card">
+                <i class="fa-solid fa-apple-whole"></i> Maintain a low-sodium diet and regular exercise routine.
+            </div>
+            <div class="tip-card">
+                <i class="fa-solid fa-list-check"></i> Take multiple readings and record the average.
+            </div>
+            <div class="tip-card">
+                <i class="fa-solid fa-user-doctor"></i> Share your readings with your healthcare provider regularly.
+            </div>
+            <div class="tip-card">
+                <i class="fa-solid fa-chart-line"></i> Track patterns and note what activities affect your readings.
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+
+    <script>
+        // Initialize blood pressure tracker with MongoDB integration
+        const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+        const bpManager = new HealthDomainManager('blood-pressure', currentUser);
+
+        // Blood pressure tracking functionality with enhanced features
+        let bpReadings = bpManager.data;
+        let bpGoals = JSON.parse(localStorage.getItem(`${currentUser}_bpGoals`) || '{}');
+        let bpChart;
+        let demoMode = false;
+
+        const systolicInput = document.getElementById('systolic');
+        const diastolicInput = document.getElementById('diastolic');
+        const pulseInput = document.getElementById('pulse');
+        const bpDisplay = document.getElementById('bp-display');
+        const statusDisplay = document.getElementById('bp-status-display');
+        let selectedTags = [];   // ✅ NEW
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll(".tag-btn").forEach(btn => {
+                btn.addEventListener("click", () => {
+                    const tag = btn.getAttribute("data-tag");
+
+                    if (selectedTags.includes(tag)) {
+                        selectedTags = selectedTags.filter(t => t !== tag);
+                        btn.classList.remove("active");
+                    } else {
+                        selectedTags.push(tag);
+                        btn.classList.add("active");
+                    }
+                });
+            });
+        });
+
+
+        function getNormalizedDateObj(r) {
+            // Case 1: ISO timestamp (API)
+            if (r.timestamp) {
+                const d = new Date(r.timestamp);
+                if (!isNaN(d)) return d;
+            }
+
+            // Case 2: Local format DD/MM/YYYY + HH:mm
+            if (r.date && r.time) {
+                const parts = r.date.split('/');
+                if (parts.length === 3) {
+                    // DD/MM/YYYY → YYYY-MM-DD
+                    const normalized = `${parts[2]}-${parts[1]}-${parts[0]}T${r.time}:00`;
+                    const d = new Date(normalized);
+                    if (!isNaN(d)) return d;
+                }
+            }
+
+            // Case 3: Only date (DD/MM/YYYY)
+            if (r.date) {
+                const parts = r.date.split('/');
+                if (parts.length === 3) {
+                    const normalized = `${parts[2]}-${parts[1]}-${parts[0]}T00:00:00`;
+                    const d = new Date(normalized);
+                    if (!isNaN(d)) return d;
+                }
+            }
+
+            return new Date(0);   // fallback
+        }
+
+        // Initialize the app
+
+        document.addEventListener('DOMContentLoaded', async function () {
+
+            await loadData();
+            updateStats();
+            updateLog();
+            initChart();
+            generateHealthInsights();
+            updateProgressTracking();
+            setCurrentTime();
+            generateDoctorSummary();
+        });
+
+        // Update display when inputs change
+        [systolicInput, diastolicInput].forEach(input => {
+            input.addEventListener('input', updateBPDisplay);
+        });
+
+        function updateBPDisplay() {
+            const systolic = systolicInput.value || '--';
+            const diastolic = diastolicInput.value || '--';
+            bpDisplay.textContent = `${systolic}/${diastolic}`;
+
+            if (systolic !== '--' && diastolic !== '--') {
+                updateBPStatus(parseInt(systolic), parseInt(diastolic));
+            } else {
+                statusDisplay.innerHTML = '';
+            }
+        }
+
+        function updateBPStatus(systolic, diastolic) {
+            let status, className;
+
+            if (systolic < 120 && diastolic < 80) {
+                status = 'Normal Blood Pressure';
+                className = 'status-normal';
+            } else if (systolic < 130 && diastolic < 80) {
+                status = 'Elevated Blood Pressure';
+                className = 'status-elevated';
+            } else if (systolic < 140 || diastolic < 90) {
+                status = 'High Blood Pressure Stage 1';
+                className = 'status-high';
+            } else {
+                status = 'High Blood Pressure Stage 2';
+                className = 'status-high';
+            }
+
+            statusDisplay.innerHTML = `<div class="bp-status ${className}">${status}</div>`;
+        }
+
+        async function recordBP() {
+            const systolic = parseInt(systolicInput.value);
+            const diastolic = parseInt(diastolicInput.value);
+            const pulse = parseInt(pulseInput.value) || null;
+            const notes = document.getElementById('bp-notes').value || '';
+
+            // Time input fallback
+            const timeInput = document.getElementById('reading-time').value;
+            const timestamp = new Date().toISOString();  // ✅ ALWAYS USE ISO
+
+            // Validation
+            if (!systolic || !diastolic) {
+                alert('Please enter both systolic and diastolic values!');
+                return;
+            }
+
+            if (systolic < 70 || systolic > 250 || diastolic < 40 || diastolic > 150) {
+                if (!confirm('These blood pressure values seem unusual. Are you sure you want to record them?')) {
+                    return;
+                }
+            }
+
+            // ✅ Perfect unified reading object
+            const reading = {
+                id: crypto.randomUUID(),
+                systolic,
+                diastolic,
+                pulse,
+                notes,
+                timestamp,       // full ISO precision
+                time: timeInput, // UI-friendly time
+                tags: [...selectedTags] // ✅ NEW TAGS FEATURE
+            };
+
+            // ✅ Prepend newest reading
+            bpReadings.unshift(reading);
+            console.log('💾 Saved reading:', reading);
+
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+
+                if (accessToken && currentUser) {
+                    const bpData = {
+                        systolic,
+                        diastolic,
+                        pulse,
+                        notes,
+                        timestamp,
+                        tags: [...selectedTags]
+                    };
+
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/blood-pressure/me`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(bpData)
+                    });
+
+                    if (response.ok) {
+                        console.log('✅ BP reading saved to API');
+                    } else {
+                        console.warn('API save failed — saving locally.');
+                        saveToLocalStorage();
+                    }
+                } else {
+                    console.warn('No access token → saving locally...');
+                    saveToLocalStorage();
+                }
+            } catch (e) {
+                console.error('API save error:', e);
+                saveToLocalStorage();
+            }
+
+            // ✅ Update UI (correct order — no double sorting)
+            updateStats();
+            updateLog();
+            updateChart();
+            generateHealthInsights();
+            updateProgressTracking();
+            generateDoctorSummary();  // ✅ NEW doctor AI summary
+
+            // ✅ Reset form cleanly
+            systolicInput.value = '';
+            diastolicInput.value = '';
+            pulseInput.value = '';
+            document.getElementById('bp-notes').value = '';
+            selectedTags = [];    // ✅ reset tags
+
+            // ✅ Remove active class from tag buttons
+            document.querySelectorAll(".tag-btn").forEach(btn => btn.classList.remove("active"));
+
+            bpDisplay.textContent = '--/--';
+            statusDisplay.innerHTML = '';
+            setCurrentTime();
+
+            // ✅ Show success toast
+            showSuccessMessage('Blood pressure reading recorded successfully!');
+        }
+
+        function showSuccessMessage(message) {
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: #a15e32;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(161, 94, 50, 0.3);
+                z-index: 1000;
+                animation: slideIn 0.3s ease;
+            `;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        function updateStats() {
+            const latestBP = document.getElementById('latest-bp');
+            const avgBP = document.getElementById('avg-bp');
+            const pulseRate = document.getElementById('pulse-rate');
+            const totalReadings = document.getElementById('total-readings');
+
+            // No readings
+            if (!bpReadings || bpReadings.length === 0) {
+                latestBP.textContent = 'No data yet';
+                avgBP.textContent = 'No data yet';
+                pulseRate.textContent = 'No data yet';
+                totalReadings.textContent = '0';
+                ['latest-progress', 'avg-progress', 'pulse-progress', 'total-progress']
+                    .forEach(id => { const el = document.getElementById(id); if (el) el.style.width = '0%'; });
+                return;
+            }
+
+            // Always sort newest → oldest for stats
+            bpReadings.sort((a, b) => getNormalizedDateObj(b) - getNormalizedDateObj(a));
+
+            // Latest reading
+            const latest = bpReadings[0];
+            latestBP.textContent = `${latest.systolic}/${latest.diastolic}`;
+            latestBP.className = getBPStatusClass(latest.systolic, latest.diastolic);
+
+            highlightBPcategory(latest.systolic, latest.diastolic);
+
+            // Weekly averages (last 7 days by timestamp)
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+
+            const weeklyReadings = bpReadings.filter(r => getNormalizedDateObj(r) >= weekAgo);
+            if (weeklyReadings.length > 0) {
+                const avgSys = Math.round(weeklyReadings.reduce((s, r) => s + Number(r.systolic || 0), 0) / weeklyReadings.length);
+                const avgDias = Math.round(weeklyReadings.reduce((s, r) => s + Number(r.diastolic || 0), 0) / weeklyReadings.length);
+
+                avgBP.textContent = `${avgSys}/${avgDias}`;
+                avgBP.className = getBPStatusClass(avgSys, avgDias);
+
+                // Fill bar proportional to #readings in last 7 days (7 = 100%)
+                const weeklyPercent = Math.min((weeklyReadings.length / 7) * 100, 100);
+                document.getElementById('avg-progress').style.width = weeklyPercent + '%';
+            } else {
+                avgBP.textContent = 'No data yet';
+                document.getElementById('avg-progress').style.width = '0%';
+            }
+
+            // Pulse (from latest if available)
+            if (latest.pulse != null && latest.pulse !== '') {
+                pulseRate.textContent = `${latest.pulse} BPM`;
+                // Normalize 60–100 bpm to ~0–100%
+                const pulsePercent = Math.min(Math.max(((Number(latest.pulse) - 60) / 40) * 100, 0), 100);
+                document.getElementById('pulse-progress').style.width = pulsePercent + '%';
+            } else {
+                pulseRate.textContent = 'No data yet';
+                document.getElementById('pulse-progress').style.width = '0%';
+            }
+
+            // Totals
+            totalReadings.textContent = String(bpReadings.length);
+            document.getElementById('total-progress').style.width =
+                Math.min((bpReadings.length / 20) * 100, 100) + '%';
+
+            // Latest "health score" bar
+            const latestPercent = getBPHealthScore(latest.systolic, latest.diastolic);
+            document.getElementById('latest-progress').style.width = latestPercent + '%';
+        }
+
+        function getBPStatusClass(systolic, diastolic) {
+
+            // ✅ Normal blood pressure
+            if (systolic < 120 && diastolic < 80) {
+                return 'bp-normal';
+            }
+
+            // ✅ Elevated
+            if (systolic < 130 && diastolic < 80) {
+                return 'bp-elevated';
+            }
+
+            // ✅ High Stage 1
+            if (systolic < 140 || diastolic < 90) {
+                return 'bp-high';
+            }
+
+            // ✅ High Stage 2 (most severe)
+            return 'bp-high';
+        }
+
+        /* -----------------------------------------
+   ✅ NEW: BP CATEGORY HIGHLIGHTER
+ ------------------------------------------ */
+        function highlightBPcategory(systolic, diastolic) {
+
+            // 1. Clear previous highlights
+            document.querySelectorAll('.bp-stage-reference tbody tr').forEach(row => {
+                row.classList.remove('bp-highlight');
+            });
+
+            if (!systolic || !diastolic) return;
+
+            // 2. Determine the category based on AHA/ACC Guidelines
+            let currentCategoryElementId = '';
+
+            if (systolic >= 180 || diastolic >= 120) {
+                currentCategoryElementId = 'category-crisis';
+            } else if (systolic >= 140 || diastolic >= 90) {
+                currentCategoryElementId = 'category-hbp2';
+            } else if (systolic >= 130 || diastolic >= 80) {
+                currentCategoryElementId = 'category-hbp1';
+            } else if (systolic >= 120 && diastolic < 80) {
+                currentCategoryElementId = 'category-elevated';
+            } else if (systolic < 120 && diastolic < 80) {
+                currentCategoryElementId = 'category-normal';
+            }
+
+            // 3. Apply the highlight
+            if (currentCategoryElementId) {
+                const targetRow = document.getElementById(currentCategoryElementId);
+                if (targetRow) {
+                    targetRow.classList.add('bp-highlight');
+                }
+            }
+        }
+
+        function getBPHealthScore(systolic, diastolic) {
+            if (systolic < 120 && diastolic < 80) return 90;
+            if (systolic < 130 && diastolic < 80) return 70;
+            if (systolic < 140 || diastolic < 90) return 50;
+            return 30;
+        }
+
+        function formatReadingDate(reading) {
+            try {
+                if (reading.timestamp) {
+                    const d = new Date(reading.timestamp);
+                    if (!isNaN(d)) {
+                        const date = d.toLocaleDateString();
+                        const time = d.toLocaleTimeString().slice(0, 5);
+                        return `${date} - ${time}`;
+                    }
+                }
+
+                // Fallback for local format
+                if (reading.date && reading.time) {
+                    return `${reading.date} - ${reading.time}`;
+                }
+
+                // Single date no time
+                if (reading.date) return reading.date;
+
+                return "Unknown date";
+            } catch (e) {
+                console.warn("Date format error:", e);
+                return "Unknown date";
+            }
+        }
+
+
+        function updateLog() {
+            const logContainer = document.getElementById('log-entries');
+
+            if (!bpReadings || bpReadings.length === 0) {
+                logContainer.innerHTML = `
+            <div class="empty-log">
+                📝 No readings recorded yet. Start tracking your blood pressure by recording your first reading above!
+            </div>
+        `;
+                return;
+            }
+
+            // ✅ Always sort newest → oldest
+            bpReadings.sort((a, b) => getNormalizedDateObj(b) - getNormalizedDateObj(a));
+
+            logContainer.innerHTML = bpReadings.slice(0, 10).map(reading => {
+                const formattedDate = formatReadingDate(reading);
+                const status = getBPStatusText(reading.systolic, reading.diastolic);
+                const statusClass = getBPStatusClass(reading.systolic, reading.diastolic);
+
+                // ✅ Safe notes
+                const safeNotes = (reading.notes || "").toString()
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;");
+
+                // ✅ Display tags if present
+                let tagHTML = "";
+                if (reading.tags && reading.tags.length > 0) {
+                    tagHTML = `
+                <div class="log-tags">
+                    ${reading.tags.map(tag => `<span class="tag-pill">${tag}</span>`).join("")}
+                </div>
+            `;
+                }
+
+                return `
+            <div class="log-entry">
+                <div class="log-date">${formattedDate}</div>
+
+                <div class="log-details">
+                    <div><strong>BP:</strong> ${reading.systolic}/${reading.diastolic} mmHg</div>
+
+                    ${reading.pulse ? `<div><strong>Pulse:</strong> ${reading.pulse} BPM</div>` : ''}
+
+                    <div><strong>Status:</strong>
+                        <span class="${statusClass}">${status}</span>
+                    </div>
+
+                    ${safeNotes ? `<div><strong>Notes:</strong> ${safeNotes}</div>` : ''}
+
+                    ${tagHTML}
+                </div>
+            </div>
+        `;
+            }).join('');
+        }
+
+        function getBPStatusText(systolic, diastolic) {
+
+            if (systolic < 120 && diastolic < 80) {
+                return 'Normal';
+            }
+
+            if (systolic < 130 && diastolic < 80) {
+                return 'Elevated';
+            }
+
+            if (systolic < 140 || diastolic < 90) {
+                return 'High Stage 1';
+            }
+
+            return 'High Stage 2';
+        }
+
+        /* -----------------------------------------
+           ✅ LINEAR REGRESSION TRENDLINE CALCULATOR
+        ------------------------------------------ */
+        function calculateTrendline(sortedReadings) {
+            if (!sortedReadings || sortedReadings.length < 2) return [];
+
+            const x = sortedReadings.map((_, i) => i);
+            const y = sortedReadings.map(r => Number(r.systolic)); // use systolic for trend
+
+            const n = y.length;
+            const sumX = x.reduce((a, b) => a + b, 0);
+            const sumY = y.reduce((a, b) => a + b, 0);
+            const sumXY = x.map((xi, i) => xi * y[i]).reduce((a, b) => a + b, 0);
+            const sumX2 = x.map(xi => xi * xi).reduce((a, b) => a + b, 0);
+
+            const denominator = (n * sumX2 - sumX * sumX) || 1;
+            const slope = (n * sumXY - sumX * sumY) / denominator;
+            const intercept = (sumY - slope * sumX) / n;
+
+            return x.map(xi => Math.round(slope * xi + intercept));
+        }
+
+        /* -----------------------------------------
+           ✅ CHART INITIALIZER
+        ------------------------------------------ */
+        function initChart() {
+            const ctx = document.getElementById('bpChart').getContext('2d');
+            bpChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Systolic',
+                            data: [],
+                            borderColor: '#a15e32',
+                            backgroundColor: 'rgba(161, 94, 50, 0.1)',
+                            tension: 0.4,
+                            pointRadius: 2,
+                        },
+                        {
+                            label: 'Diastolic',
+                            data: [],
+                            borderColor: '#8b6c58',
+                            backgroundColor: 'rgba(139, 108, 88, 0.1)',
+                            tension: 0.4,
+                            pointRadius: 2,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#4b3621'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 50,
+                            max: 200,
+                            ticks: { color: '#4b3621' },
+                            grid: { color: 'rgba(161, 94, 50, 0.1)' }
+                        },
+                        x: {
+                            ticks: { color: '#4b3621' },
+                            grid: { color: 'rgba(161, 94, 50, 0.1)' }
+                        }
+                    }
+                }
+            });
+
+            updateChart();
+        }
+
+        /* -----------------------------------------
+           ✅ CHART UPDATE (WITH TRENDLINE INCLUDED)
+        ------------------------------------------ */
+        function updateChart() {
+
+            if (!bpChart) return;
+
+            if (!bpReadings || bpReadings.length === 0) {
+                bpChart.data.labels = [];
+                bpChart.data.datasets[0].data = [];
+                bpChart.data.datasets[1].data = [];
+                if (bpChart.data.datasets[2]) {
+                    bpChart.data.datasets[2].data = [];
+                }
+                bpChart.update();
+                return;
+            }
+
+            // ✅ Sort ascending for chart timeline
+            const sorted = [...bpReadings].sort((a, b) => getNormalizedDateObj(a) - getNormalizedDateObj(b));
+
+            // ✅ Limit to last 30 entries
+            const last30 = sorted.slice(-30);
+
+            // ✅ X-axis labels
+            bpChart.data.labels = last30.map(r => {
+                const d = getNormalizedDateObj(r);
+                return `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}`;
+            });
+
+            // ✅ Systolic & Diastolic datasets
+            bpChart.data.datasets[0].data = last30.map(r => r.systolic);
+            bpChart.data.datasets[1].data = last30.map(r => r.diastolic);
+
+            // ✅ Trendline calculation
+            const trendline = calculateTrendline(last30);
+
+            // ✅ Auto-color trendline
+            let trendColor = "#777";  // neutral fallback
+            if (trendline.length > 1) {
+                const start = trendline[0];
+                const end = trendline[trendline.length - 1];
+                trendColor = end > start ? "#b13a2c" : "#2e7d32"; // red = rising, green = improving
+            }
+
+            // ✅ Add or update trendline dataset
+            if (!bpChart.data.datasets[2]) {
+                bpChart.data.datasets.push({
+                    label: "Trendline",
+                    data: trendline,
+                    borderColor: trendColor,
+                    borderDash: [6, 6],
+                    borderWidth: 2,
+                    pointRadius: 0,
+                    tension: 0, // straight line
+                });
+            } else {
+                bpChart.data.datasets[2].data = trendline;
+                bpChart.data.datasets[2].borderColor = trendColor;
+            }
+
+            bpChart.update();
+        }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all blood pressure data? This action cannot be undone.')) {
+                bpReadings = [];
+                demoMode = false;
+                saveData();
+                updateStats();
+                updateLog();
+                updateChart();
+                generateDoctorSummary();
+                showSuccessMessage('All data has been cleared successfully!');
+            }
+        }
+
+
+        function exportToCSV() {
+            if (!bpReadings.length) {
+                alert("No data to export.");
+                return;
+            }
+
+            const headers = ["Date", "Time", "Systolic", "Diastolic", "Pulse", "Notes"];
+
+            const rows = bpReadings.map(r => {
+                const dt = formatReadingDate(r);        // "10/11/2025 - 12:30"
+                const [date, time] = dt.split(" - ");   // safe split
+
+                return [
+                    date,
+                    time || "",
+                    r.systolic,
+                    r.diastolic,
+                    r.pulse || "",
+                    `"${r.notes || ""}"`
+                ].join(",");
+            });
+
+            const csv = [headers.join(","), ...rows].join("\n");
+
+            downloadFile(csv, "blood_pressure_readings.csv", "text/csv");
+        }
+
+
+        function exportToPDF() {
+            if (bpReadings.length === 0) {
+                alert('No data to export. Please record some readings first.');
+                return;
+            }
+
+            // Create a simple HTML report for PDF
+            const reportHTML = generatePDFReport();
+            const blob = new Blob([reportHTML], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'blood_pressure_report.html';
+            link.click();
+
+            URL.revokeObjectURL(url);
+            showSuccessMessage('PDF report downloaded! Open in browser and print to PDF.');
+        }
+
+        function generatePDFReport() {
+            // Safeguards
+            const safeReadings = Array.isArray(bpReadings) ? [...bpReadings] : [];
+
+            // Sort newest → oldest for the report
+            safeReadings.sort((a, b) => getNormalizedDateObj(b) - getNormalizedDateObj(a));
+
+            const latest = safeReadings[0];
+            const weeklyAvg = calculateWeeklyAverage();
+
+            // Build rows using the unified formatter
+            const rowsHtml = safeReadings.map(reading => {
+                const dt = formatReadingDate(reading); // e.g., "10/11/2025 - 12:30"
+                return `
+                    <tr>
+                        <td>${dt}</td>
+                        <td>${reading.systolic}</td>
+                        <td>${reading.diastolic}</td>
+                        <td>${reading.pulse ?? 'N/A'}</td>
+                        <td>${(reading.notes || '').toString().replace(/</g, '&lt;').replace(/>/g, '&gt;')}</td>
+                    </tr>
+                    `;
+            }).join('');
+
+            return `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                <meta charset="utf-8" />
+                <title>Blood Pressure Report</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 20px; color: #222; }
+                    .header { text-align: center; margin-bottom: 30px; }
+                    .summary { background: #f5f5f5; padding: 16px; border-radius: 8px; margin-bottom: 20px; }
+                    .readings { margin-top: 20px; }
+                    table { width: 100%; border-collapse: collapse; }
+                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                    th { background-color: #f9f9f9; }
+                </style>
+                </head>
+                <body>
+                <div class="header">
+                    <h1>Blood Pressure Report</h1>
+                    <p>Generated on: ${new Date().toLocaleDateString()}</p>
+                </div>
+
+                <div class="summary">
+                    <h2>Summary</h2>
+                    <p><strong>Latest Reading:</strong> ${latest ? `${latest.systolic}/${latest.diastolic} mmHg` : 'No data'}</p>
+                    <p><strong>Weekly Average:</strong> ${weeklyAvg}</p>
+                    <p><strong>Total Readings:</strong> ${safeReadings.length}</p>
+                </div>
+
+                <div class="readings">
+                    <h2>All Readings</h2>
+                    <table>
+                    <thead>
+                        <tr>
+                        <th>Date & Time</th>
+                        <th>Systolic</th>
+                        <th>Diastolic</th>
+                        <th>Pulse</th>
+                        <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                    </table>
+                </div>
+                </body>
+                </html>
+            `;
+        }
+
+        function calculateWeeklyAverage() {
+            const weekAgo = new Date();
+            weekAgo.setDate(weekAgo.getDate() - 7);
+
+            const weeklyReadings = (bpReadings || []).filter(r => {
+                const d = getNormalizedDateObj(r); // unified parser
+                return !isNaN(d) && d >= weekAgo;
+            });
+
+            if (weeklyReadings.length === 0) return 'No data';
+
+            const avgSys = Math.round(
+                weeklyReadings.reduce((sum, r) => sum + Number(r.systolic || 0), 0) / weeklyReadings.length
+            );
+            const avgDias = Math.round(
+                weeklyReadings.reduce((sum, r) => sum + Number(r.diastolic || 0), 0) / weeklyReadings.length
+            );
+
+            return `${avgSys}/${avgDias} mmHg`;
+        }
+
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            URL.revokeObjectURL(url);
+            showSuccessMessage(`${filename} downloaded successfully!`);
+        }
+
+        function setReminder() {
+            const enabled = document.getElementById('reminder-enabled').value === 'true';
+            const time = document.getElementById('reminder-time').value;
+
+            if (enabled && 'Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        // Save reminder settings
+                        const reminderData = { enabled, time };
+                        // Note: In a real app, you'd use a service worker for persistent notifications
+                        showSuccessMessage(`Reminder set for ${time} daily!`);
+                    } else {
+                        alert('Please enable notifications to use reminders.');
+                    }
+                });
+            } else if (enabled) {
+                alert('Your browser does not support notifications.');
+            } else {
+                showSuccessMessage('Reminders disabled.');
+            }
+        }
+
+        function setCurrentTime() {
+            document.getElementById('reading-time').value = new Date().toTimeString().slice(0, 5);
+        }
+
+        function saveData() {
+            // Note: In the original code, there was localStorage usage which we're avoiding
+            // In a real application, this would save to a backend service
+        }
+
+        function saveToLocalStorage() {
+            try {
+                localStorage.setItem(`bpData_${currentUser}`, JSON.stringify(bpReadings));
+                console.log('✅ Blood pressure data saved to localStorage');
+            } catch (error) {
+                console.error('Failed to save to localStorage:', error);
+            }
+        }
+
+        async function loadData() {
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                if (accessToken && currentUser) {
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/blood-pressure/me`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        bpReadings = data || [];
+
+                        // ✅ DO NOT SORT HERE
+                        bpManager.data = bpReadings;
+                        console.log('✅ Blood pressure data loaded from API');
+                    } else {
+                        console.warn('Failed to load from API, falling back to localStorage');
+                        useLocalFallback();
+                    }
+                } else {
+                    useLocalFallback();
+                }
+            } catch (error) {
+                console.warn('Error loading from API:', error);
+                useLocalFallback();
+            }
+
+            // ✅ UI refresh in correct order
+            updateLog();       // Sorts here
+            updateStats();     // Uses sorted result
+            updateChart();     // Sorts internally again (ascending for chart)
+            generateDoctorSummary();
+        }
+
+        function useLocalFallback() {
+            const stored = localStorage.getItem(`bpData_${currentUser}`);
+            if (stored) {
+                try {
+                    bpReadings = JSON.parse(stored);
+                    bpManager.data = bpReadings;
+                    console.log('✅ Blood pressure data loaded from localStorage');
+                } catch (e) {
+                    console.error('Failed to parse blood pressure data:', e);
+                    bpReadings = [];
+                }
+            }
+        }
+
+
+
+        // Health Insights
+        function generateHealthInsights() {
+            const insightsContainer = document.getElementById('bp-insights');
+            const insights = [];
+
+            if (!bpReadings || bpReadings.length === 0) {
+                insights.push({
+                    title: "📊 Start Tracking",
+                    content: "Begin recording your blood pressure readings to get personalized insights and recommendations."
+                });
+            } else {
+                // ✅ Sort by date (ascending)
+                const sorted = [...bpReadings].sort(
+                    (a, b) => getNormalizedDateObj(a) - getNormalizedDateObj(b)
+                );
+
+                // ✅ Basic averages
+                const avgSystolic = sorted.reduce((sum, r) => sum + Number(r.systolic || 0), 0) / sorted.length;
+                const avgDiastolic = sorted.reduce((sum, r) => sum + Number(r.diastolic || 0), 0) / sorted.length;
+
+                // ✅ Overall BP category
+                if (avgSystolic < 120 && avgDiastolic < 80) {
+                    insights.push({
+                        title: "✅ Excellent Control",
+                        content: "Your blood pressure is in the normal range. Keep maintaining a heart-healthy routine."
+                    });
+                } else if (avgSystolic < 130 && avgDiastolic < 80) {
+                    insights.push({
+                        title: "⚠️ Slightly Elevated",
+                        content: "Your blood pressure is slightly elevated. Try reducing sodium, caffeine, and stress triggers."
+                    });
+                } else if (avgSystolic < 140 || avgDiastolic < 90) {
+                    insights.push({
+                        title: "⚠️ Stage 1 Hypertension",
+                        content: "Readings are entering Stage 1 range. Monitor regularly and consider lifestyle modifications."
+                    });
+                } else {
+                    insights.push({
+                        title: "🚨 High Blood Pressure",
+                        content: "Your readings indicate hypertension. Please consult your healthcare provider."
+                    });
+                }
+
+                // ✅ Time-based morning pattern
+                const morningReadings = sorted.filter(r => {
+                    const d = getNormalizedDateObj(r);
+                    const hour = d.getHours();
+                    return hour >= 6 && hour < 12;
+                });
+
+                if (morningReadings.length > 0) {
+                    const morningAvg = morningReadings.reduce((sum, r) => sum + Number(r.systolic || 0), 0) / morningReadings.length;
+
+                    if (morningAvg > 135) {
+                        insights.push({
+                            title: "🌅 Morning Hypertension",
+                            content: "Your morning readings show elevated systolic pressure. Avoid early caffeine or stress."
+                        });
+                    }
+                }
+
+                // ✅ Trend insights — Compare last 7 days vs previous 7
+                if (sorted.length >= 14) {
+                    const last7 = sorted.slice(-7);
+                    const older7 = sorted.slice(-14, -7);
+
+                    const recentAvg = last7.reduce((s, r) => s + Number(r.systolic || 0), 0) / last7.length;
+                    const olderAvg = older7.reduce((s, r) => s + Number(r.systolic || 0), 0) / older7.length;
+
+                    if (recentAvg < olderAvg - 5) {
+                        insights.push({
+                            title: "📉 Improving Trend",
+                            content: "Your blood pressure has been trending downward over the past two weeks."
+                        });
+                    } else if (recentAvg > olderAvg + 5) {
+                        insights.push({
+                            title: "📈 Rising Trend",
+                            content: "Your blood pressure has increased in recent days—try reducing stress triggers."
+                        });
+                    } else {
+                        insights.push({
+                            title: "➡️ Stable Pattern",
+                            content: "Your readings are stable. Continue regular tracking."
+                        });
+                    }
+                }
+
+                // ✅ Pulse insight
+                const latest = sorted[sorted.length - 1];
+                if (latest?.pulse) {
+                    if (latest.pulse < 60) {
+                        insights.push({
+                            title: "❤️ Low Pulse Detected",
+                            content: "A lower-than-normal pulse may be due to fitness, medications, or fatigue. Track if persistent."
+                        });
+                    } else if (latest.pulse > 100) {
+                        insights.push({
+                            title: "❤️ High Pulse Alert",
+                            content: "Your pulse is elevated. Ensure hydration and relaxation."
+                        });
+                    }
+                }
+
+                // ✅ Tag-based insights (NEW)
+                const tagStats = { med: 0, exercise: 0, stress: 0 };
+                sorted.forEach(r => {
+                    if (r.tags && Array.isArray(r.tags)) {
+                        if (r.tags.includes("after_med")) tagStats.med++;
+                        if (r.tags.includes("after_exercise")) tagStats.exercise++;
+                        if (r.tags.includes("stress")) tagStats.stress++;
+                    }
+                });
+
+                if (tagStats.med > 0) {
+                    insights.push({
+                        title: "💊 Medication Pattern",
+                        content: "You recorded readings after medication. Keep noting this—it helps doctors track treatment response."
+                    });
+                }
+
+                if (tagStats.exercise > 0) {
+                    insights.push({
+                        title: "🏃‍♀️ Exercise Impact",
+                        content: "You logged readings after exercise. Post-exercise spikes are normal—measure after cooling down."
+                    });
+                }
+
+                if (tagStats.stress > 0) {
+                    insights.push({
+                        title: "🧠 Stress Influence",
+                        content: "Stress-tagged readings detected. Try breathing exercises or meditation to bring pressure down."
+                    });
+                }
+            }
+
+            // ✅ Render to DOM
+            insightsContainer.innerHTML = insights.map(insight => `
+        <div class="insight-card">
+            <h4>${insight.title}</h4>
+            <p>${insight.content}</p>
+        </div>
+    `).join('');
+        }
+
+        function generateDoctorSummary() {
+            const container = document.getElementById("doctor-summary-content");
+            const warningContainer = document.getElementById("doctor-warning-section");
+
+            if (!container || !warningContainer) return;
+
+            warningContainer.innerHTML = "";  // reset warnings every refresh
+
+            if (!bpReadings || bpReadings.length < 2) {
+                container.innerHTML = `
+            <div class="doctor-summary-item warning">
+                <i class="fa-solid fa-circle-info"></i>
+                You need more readings for accurate medical analysis.
+            </div>`;
+                return;
+            }
+
+            // ✅ Sort readings by date (ascending)
+            const sorted = [...bpReadings].sort(
+                (a, b) => getNormalizedDateObj(a) - getNormalizedDateObj(b)
+            );
+
+            const last7 = sorted.slice(-7);
+            const older7 = sorted.slice(-(last7.length + 7), -7);
+            const latest = sorted[sorted.length - 1];
+
+            let summaryHtml = "";
+
+            // ✅ 7-day systolic trend
+            if (older7.length > 0) {
+                const olderAvg = older7.reduce((s, r) => s + r.systolic, 0) / older7.length;
+                const newAvg = last7.reduce((s, r) => s + r.systolic, 0) / last7.length;
+                const diff = Math.round(olderAvg - newAvg);
+
+                if (diff > 3) {
+                    summaryHtml += `
+                <div class="doctor-summary-item positive">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Your 7-day systolic average improved by <strong>${diff} mmHg</strong>.
+                </div>`;
+                } else if (diff < -3) {
+                    summaryHtml += `
+                <div class="doctor-summary-item danger">
+                    <i class="fa-solid fa-circle-exclamation"></i>
+                    Your 7-day systolic average increased by <strong>${Math.abs(diff)} mmHg</strong>.
+                </div>`;
+                } else {
+                    summaryHtml += `
+                <div class="doctor-summary-item warning">
+                    <i class="fa-solid fa-circle-minus"></i>
+                    Stable trend — good consistency, keep monitoring.
+                </div>`;
+                }
+            }
+
+            // ✅ Pulse evaluation
+            if (latest.pulse >= 60 && latest.pulse <= 100) {
+                summaryHtml += `
+            <div class="doctor-summary-item positive">
+                <i class="fa-solid fa-heart-circle-check"></i>
+                Your pulse rate is in the normal range (${latest.pulse} bpm).
+            </div>`;
+            } else {
+                summaryHtml += `
+            <div class="doctor-summary-item danger">
+                <i class="fa-solid fa-heart-circle-exclamation"></i>
+                Pulse variation detected (${latest.pulse} bpm). Keep monitoring your readings.
+            </div>`;
+            }
+
+            // ✅ Consistency insight
+            summaryHtml += `
+        <div class="doctor-summary-item positive">
+            <i class="fa-solid fa-calendar-check"></i>
+            You have ${bpReadings.length} total readings — excellent consistency!
+        </div>`;
+
+            container.innerHTML = summaryHtml;
+
+            // ✅ WARNING SECTION (accumulated)
+            let warningHtml = "";
+
+            // ❗ High BP: 140/90 threshold
+            const highRisk = sorted.filter(r => r.systolic > 140 || r.diastolic > 90);
+            if (highRisk.length > 0) {
+                warningHtml += `
+            <div class="doctor-alert">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Your blood pressure crossed <strong>140/90</strong> in recent readings.
+                Monitor closely — consider taking <strong>2 readings daily</strong>.
+            </div>`;
+            }
+
+            // ❗ Morning peaks (6am–12pm)
+            const morningHigh = sorted.filter(r => {
+                const d = getNormalizedDateObj(r);
+                const hour = d.getHours();
+                return hour >= 6 && hour < 12 && r.systolic > 135;
+            });
+            if (morningHigh.length > 0) {
+                warningHtml += `
+            <div class="doctor-alert">
+                <i class="fa-solid fa-sun"></i>
+                Morning blood pressure peaks detected. Recheck after resting.
+            </div>`;
+            }
+
+            // ❗ Sudden spike detection
+            if (sorted.length >= 3) {
+                const last = sorted[sorted.length - 1];
+                const prev = sorted[sorted.length - 2];
+                const spike = last.systolic - prev.systolic;
+
+                if (spike > 20) {
+                    warningHtml += `
+                <div class="doctor-alert">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                    Sudden spike of <strong>${spike} mmHg</strong> detected. Retake the reading after 5 minutes.
+                </div>`;
+                }
+            }
+
+            // ✅ EMERGENCY CONDITIONS (your new request)
+            const latestSys = Number(latest.systolic);
+            const latestDia = Number(latest.diastolic);
+            const latestPulse = Number(latest.pulse || 0);
+
+            // ✅ Hypertensive Crisis
+            if (latestSys >= 180 || latestDia >= 120) {
+                warningHtml += `
+            <div class="doctor-alert critical">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                ⚠️ Your reading is significantly higher than recommended.<br>
+                Please rest and retake it after a few minutes.<br>
+                If it remains high, consider seeking medical advice.
+            </div>`;
+            }
+
+            // ✅ Pulse Danger Zone
+            if (latestPulse < 45 || latestPulse > 120) {
+                warningHtml += `
+            <div class="doctor-alert critical">
+                <i class="fa-solid fa-heart-pulse"></i>
+                Your pulse reading is outside the safe range.<br>
+                Retake after resting and ensure you're hydrated.
+            </div>`;
+            }
+
+            warningContainer.innerHTML = warningHtml;
+        }
+
+
+        // Goal Management
+        function updateBPGoals() {
+            const targetSystolic = parseInt(document.getElementById('target-systolic').value);
+            const targetDiastolic = parseInt(document.getElementById('target-diastolic').value);
+            const targetPulse = parseInt(document.getElementById('target-pulse').value);
+
+            bpGoals = {
+                targetSystolic: targetSystolic,
+                targetDiastolic: targetDiastolic,
+                targetPulse: targetPulse,
+                setDate: new Date().toISOString()
+            };
+
+            localStorage.setItem(`${currentUser}_bpGoals`, JSON.stringify(bpGoals));
+            updateProgressTracking();
+            bpManager.showNotification('Blood pressure goals updated successfully', 'success');
+        }
+
+        function updateProgressTracking() {
+            if (!bpReadings || bpReadings.length === 0) return;
+
+            // ✅ Last 7 readings (already sorted globally)
+            const last7Days = bpReadings.slice(0, 7);
+
+            if (last7Days.length === 0) return;
+
+            const avgSystolic = last7Days.reduce((sum, r) => sum + Number(r.systolic || 0), 0) / last7Days.length;
+            const avgDiastolic = last7Days.reduce((sum, r) => sum + Number(r.diastolic || 0), 0) / last7Days.length;
+
+            document.getElementById('weekly-bp-average').textContent =
+                `${Math.round(avgSystolic)}/${Math.round(avgDiastolic)}`;
+
+            // ✅ Divide-by-zero guard
+            if (avgSystolic === 0 || avgDiastolic === 0) {
+                document.getElementById('goal-achievement').textContent = "0%";
+                document.getElementById('risk-level').textContent = "Unknown";
+                return;
+            }
+
+            // ✅ Goal achievement calculation
+            const targetSys = bpGoals.targetSystolic || 120;
+            const targetDias = bpGoals.targetDiastolic || 80;
+
+            const systolicAchievement = Math.round((targetSys / avgSystolic) * 100);
+            const diastolicAchievement = Math.round((targetDias / avgDiastolic) * 100);
+
+            const overallAchievement = Math.min(100, Math.max(0, (systolicAchievement + diastolicAchievement) / 2));
+
+            document.getElementById('goal-achievement').textContent = `${overallAchievement}%`;
+
+            // ✅ Risk level
+            let riskLevel = 'Low';
+            if (avgSystolic >= 140 || avgDiastolic >= 90) riskLevel = 'High';
+            else if (avgSystolic >= 130 || avgDiastolic >= 80) riskLevel = 'Moderate';
+
+            document.getElementById('risk-level').textContent = riskLevel;
+
+            // ✅ Trend analysis
+            if (bpReadings.length >= 14) {
+                const recent = bpReadings.slice(0, 7);
+                const older = bpReadings.slice(7, 14);
+
+                const recentAvg = recent.reduce((sum, r) => sum + r.systolic, 0) / recent.length;
+                const olderAvg = older.reduce((sum, r) => sum + r.systolic, 0) / older.length;
+
+                let trend = 'Stable';
+                if (recentAvg < olderAvg - 5) trend = 'Improving';
+                else if (recentAvg > olderAvg + 5) trend = 'Rising';
+
+                document.getElementById('bp-trend').textContent = trend;
+            }
+        }
+
+        // Export functionality
+        function exportBPData() {
+            const dataToExport = {
+                domain: 'blood-pressure',
+                user: currentUser,
+                exportDate: new Date().toISOString(),
+                data: bpReadings
+            };
+
+            const blob = new Blob([JSON.stringify(dataToExport, null, 2)], {
+                type: 'application/json'
+            });
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `blood_pressure_data_${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Add CSS animation for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Profile dropdown functionality
+        function updateProfileCircle() {
+            const profileCircle = document.getElementById('user-profile');
+            if (profileCircle) {
+                const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+                if (userEmail) {
+                    const firstName = userEmail.split('@')[0];
+                    const firstInitial = firstName.charAt(0).toUpperCase();
+                    profileCircle.textContent = firstInitial;
+                } else {
+                    profileCircle.textContent = 'V';
+                }
+            }
+        }
+
+        // Initialize profile dropdown
+        document.addEventListener('DOMContentLoaded', function () {
+            updateProfileCircle();
+
+            const profileCircle = document.getElementById('user-profile');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            if (profileCircle && profileDropdown) {
+                profileCircle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const isVisible = profileDropdown.style.display === 'block';
+                    profileDropdown.style.display = isVisible ? 'none' : 'block';
+                });
+
+                // Hide dropdown when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                        profileDropdown.style.display = 'none';
+                    }
+                });
+            }
+        });
+
+        // User authentication and profile management (keeping original code)
+        // currentUser already declared above
+
+        function getUserKey(key) {
+            return `${currentUser}_${key}`;
+        }
+    </script>
+    <script src="scripts/navigation.js"></script>
+</body>
+
+</html>

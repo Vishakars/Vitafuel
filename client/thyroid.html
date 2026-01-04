@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | Thyroid Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/thyroid.css" />
+    <link rel="stylesheet" href="css/commonstyles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/user-auth.js"></script>
+    <script src="js/health-domain-common.js"></script>
+    <script src="js/mongodb-integration.js"></script>
+</head>
+
+<body>
+    <div class="floating-icon"><i class="fa-solid fa-dna"></i></div>
+
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">V</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Loading Placeholder -->
+    <div id="loadingPlaceholder"
+        style="display: block; padding: 20px; text-align: center; color: #a15e32; background: #fdf6ec;">
+        <div style="font-size: 1.2rem; margin-bottom: 10px;"><i class="fa-solid fa-dna"></i> Thyroid Tracker</div>
+        <div style="font-size: 0.9rem; opacity: 0.7;">Loading your thyroid data...</div>
+    </div>
+
+    <div class="container" id="mainContent" style="display: none;">
+        <div class="header">
+            <h1><i class="fa-solid fa-butterfly"></i> Thyroid Tracker</h1>
+            <p>Monitor your thyroid health with comprehensive tracking and insights</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>TSH Level</h3>
+                        <div class="stat-value" id="tsh-level">No data yet</div>
+                        <div class="stat-goal">Target: 0.4–4.0 mIU/L</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="tsh-progress"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>T4 Level</h3>
+                        <div class="stat-value" id="t4-level">No data yet</div>
+                        <div class="stat-goal">Target: 4.5–12.0 μg/dL</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-chart-line"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="t4-progress"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>T3 Level</h3>
+                        <div class="stat-value" id="t3-level">No data yet</div>
+                        <div class="stat-goal">Target: 80–200 ng/dL</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-capsules"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%" id="t3-progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tracking-section">
+            <h2><i class="fa-solid fa-pen-clip"></i> Thyroid Data Entry</h2>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">TSH Level (mIU/L)</label>
+                    <input type="number" class="form-input" id="tsh-input" placeholder="e.g., 2.5" step="0.1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">T4 Level (μg/dL)</label>
+                    <input type="number" class="form-input" id="t4-input" placeholder="e.g., 8.5" step="0.1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">T3 Level (ng/dL)</label>
+                    <input type="number" class="form-input" id="t3-input" placeholder="e.g., 140" step="1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Medication Taken</label>
+                    <select class="form-input" id="medication-input">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                        <option value="late">Late</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Weight (kg)</label>
+                    <input type="number" class="form-input" id="weight-input" placeholder="e.g., 65.5" step="0.1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Heart Rate (bpm)</label>
+                    <input type="number" class="form-input" id="heart-rate-input" placeholder="e.g., 75" step="1">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Sleep Quality (1–10)</label>
+                <input type="range" class="form-input" id="sleep-slider" min="1" max="10" value="5">
+                <span id="sleep-value">5</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Energy Level (1–10)</label>
+                <input type="range" class="form-input" id="energy-level-slider" min="1" max="10" value="5">
+                <span id="energy-value">5</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Stress Level (1–10)</label>
+                <input type="range" class="form-input" id="stress-slider" min="1" max="10" value="5">
+                <span id="stress-value">5</span>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Symptoms (select all that apply)</label>
+                <div class="symptom-checkboxes">
+                    <label><input type="checkbox" value="fatigue"> <i class="fa-solid fa-bed"></i> Fatigue</label>
+                    <label><input type="checkbox" value="weight_gain"> <i class="fa-solid fa-weight-scale"></i> Weight
+                        Gain</label>
+                    <label><input type="checkbox" value="weight_loss"> <i class="fa-solid fa-person-running"></i> Weight
+                        Loss</label>
+                    <label><input type="checkbox" value="hair_loss"> <i class="fa-solid fa-wind"></i> Hair Loss</label>
+                    <label><input type="checkbox" value="dry_skin"> <i class="fa-solid fa-droplet"></i> Dry Skin</label>
+                    <label><input type="checkbox" value="mood_changes"> <i class="fa-solid fa-face-meh"></i> Mood
+                        Changes</label>
+                    <label><input type="checkbox" value="heart_palpitations"> <i class="fa-solid fa-heart-pulse"></i>
+                        Heart Throbbing</label>
+                    <label><input type="checkbox" value="temperature_sensitivity"> <i
+                            class="fa-solid fa-temperature-half"></i> Temp Sensitivity</label>
+                    <label><input type="checkbox" value="constipation"> <i class="fa-solid fa-toilet-paper"></i>
+                        Constipation</label>
+                    <label><input type="checkbox" value="none" id="none-checkbox"> <i class="fa-solid fa-ban"></i>
+                        None</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Additional Notes</label>
+                <textarea class="form-input" id="notes-input" rows="3"
+                    placeholder="Any additional observations, medication changes, or notes..."></textarea>
+            </div>
+
+            <button class="btn btn-primary" onclick="addThyroidEntry()">
+                <i class="fa-solid fa-notes-medical"></i> Add Entry
+            </button>
+        </div>
+
+        <div class="wellness-suggestion-card" id="wellnessSuggestion"></div>
+
+        <div class="motivation-card" id="dailyMotivation"></div>
+
+        <div class="chart-container">
+            <h2><i class="fa-solid fa-chart-line"></i> Thyroid Trends</h2>
+            <div class="chart-wrapper">
+                <canvas id="thyroidChart"></canvas>
+            </div>
+        </div>
+
+        <div class="thyroid-log">
+            <div class="log-header"
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <h2><i class="fa-solid fa-book-medical"></i> Thyroid Log</h2>
+                <button onclick="deleteAllThyroidLogs()" class="clear-all-btn"
+                    style="background: #dc3545; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 14px; transition: all 0.3s ease;">
+                    <i class="fa-solid fa-trash-can"></i> Clear All Data
+                </button>
+            </div>
+            <div id="log-entries">
+                <div class="empty-log">
+                    <i class="fa-regular fa-clipboard"></i> No entries recorded yet. Start tracking your thyroid health
+                    by adding your first entry above!
+                </div>
+            </div>
+        </div>
+
+        <div class="export-section">
+            <h2><i class="fa-solid fa-file-export"></i> Export Your Data</h2>
+            <p>Download your thyroid tracking data for your healthcare provider</p>
+            <button class="btn btn-secondary" onclick="exportData()">
+                <i class="fa-solid fa-file-csv"></i> Export as CSV
+            </button>
+        </div>
+
+        <div class="ai-interpretation-card" id="aiInterpretation"></div>
+
+        <div class="insights-card">
+            <h2><i class="fa-solid fa-notes-medical"></i> Thyroid Health Insights</h2>
+            <div class="tip-card"><i class="fa-solid fa-seedling"></i> Maintain a balanced diet with selenium, zinc, and
+                iodine to support thyroid function.</div>
+            <div class="tip-card"><i class="fa-solid fa-clock"></i> Take thyroid medication at the same time daily,
+                ideally on an empty stomach.</div>
+            <div class="tip-card"><i class="fa-solid fa-mug-hot"></i> Avoid coffee or high-fiber foods for at least 30
+                minutes after taking medication.</div>
+            <div class="tip-card"><i class="fa-solid fa-heart-pulse"></i> Monitor heart rate regularly — sudden changes
+                may signal hormone imbalance.</div>
+            <div class="tip-card"><i class="fa-solid fa-weight-scale"></i> Track weight fluctuations, as they can
+                indicate changes in thyroid activity.</div>
+            <div class="tip-card"><i class="fa-solid fa-bed"></i> Prioritize sleep — good rest helps regulate hormones
+                and energy levels.</div>
+            <div class="tip-card"><i class="fa-solid fa-brain"></i> Manage stress through mindfulness or yoga to reduce
+                thyroid-related fatigue.</div>
+            <div class="tip-card"><i class="fa-solid fa-chart-line"></i> Review lab results with your doctor regularly
+                to adjust treatment as needed.</div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+
+    <script>
+        /* --------------------------------------------------------------
+           GLOBAL INITIALIZATION
+        -------------------------------------------------------------- */
+        const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+        const thyroidManager = new HealthDomainManager('thyroid', currentUser);
+
+        let thyroidEntries = thyroidManager.data;
+        let chart;
+
+        /* --------------------------------------------------------------
+           UNIFIED INIT FUNCTION
+        -------------------------------------------------------------- */
+        async function initApp() {
+            if (window.__thyroidAppInitialized) return;
+            window.__thyroidAppInitialized = true;
+
+            await loadThyroidData();
+            updateLogDisplay();
+            updateStats();
+
+            if (thyroidEntries.length > 0) {
+                const latestEntry = thyroidEntries[0];
+                const interpretationHTML = generateInterpretation(latestEntry);
+                const interpretBox = document.getElementById("aiInterpretation");
+                interpretBox.innerHTML = interpretationHTML;
+                interpretBox.style.display = "block";
+            }
+
+            initChart();
+
+            /* ---------------- Sliders ---------------- */
+            const sleepSlider = document.getElementById('sleep-slider');
+            const energySlider = document.getElementById('energy-level-slider');
+            const stressSlider = document.getElementById('stress-slider');
+
+            const sleepValue = document.getElementById('sleep-value');
+            const energyValue = document.getElementById('energy-value');
+            const stressValue = document.getElementById('stress-value');
+
+            // Unified function to update wellness suggestions
+            function updateAllWellness() {
+                const stress = stressSlider?.value || 5;
+                const energy = energySlider?.value || 5;
+                const sleep = sleepSlider?.value || 5;
+                updateWellnessSuggestion(stress, energy, sleep);
+            }
+
+            if (sleepSlider && sleepValue) {
+                sleepValue.textContent = sleepSlider.value;
+                sleepSlider.addEventListener('input', function () {
+                    sleepValue.textContent = this.value;
+                    updateAllWellness();
+                });
+            }
+
+            if (energySlider && energyValue) {
+                energyValue.textContent = energySlider.value;
+                energySlider.addEventListener('input', function () {
+                    energyValue.textContent = this.value;
+                    updateAllWellness();
+                });
+            }
+
+            if (stressSlider && stressValue) {
+                stressValue.textContent = stressSlider.value;
+                stressSlider.addEventListener('input', function () {
+                    stressValue.textContent = this.value;
+                    updateAllWellness();
+                });
+            }
+            // 🔁 Also listen for live updates when sliders change
+            sleepSlider.addEventListener('input', updateAllWellness);
+            energySlider.addEventListener('input', updateAllWellness);
+            stressSlider.addEventListener('input', updateAllWellness);
+
+
+            /* ---------------- Symptoms "None" logic ---------------- */
+            const noneCheckbox = document.getElementById('none-checkbox');
+            const otherCheckboxes = document.querySelectorAll('input[type="checkbox"]:not(#none-checkbox)');
+
+            if (noneCheckbox) {
+                noneCheckbox.addEventListener('change', function () {
+                    if (this.checked) {
+                        otherCheckboxes.forEach(cb => cb.checked = false);
+                    }
+                });
+            }
+
+            otherCheckboxes.forEach(cb => {
+                cb.addEventListener('change', function () {
+                    if (this.checked && noneCheckbox) noneCheckbox.checked = false;
+                });
+            });
+
+            /* ---------------- Profile Dropdown ---------------- */
+            updateProfileCircle();
+
+            const profileCircle = document.getElementById('user-profile');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            if (profileCircle && profileDropdown) {
+                profileCircle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    const isVisible = profileDropdown.style.display === 'block';
+                    profileDropdown.style.display = isVisible ? 'none' : 'block';
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                        profileDropdown.style.display = 'none';
+                    }
+                });
+            }
+
+            /* ---------------- Daily Reset + Show Page ---------------- */
+            checkThyroidDailyReset();
+            setTimeout(showMainContent, 100);
+
+            /* ---------------- Motivation + Wellness ---------------- */
+            displayDailyMotivation();
+            updateAllWellness(); // initial call to display a suggestion on load
+            /* ---------------- Slider Fill Color Update ---------------- */
+            document.querySelectorAll('input[type="range"]').forEach(slider => {
+                const updateFill = () => {
+                    const value = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
+                    slider.style.setProperty('--val', `${value}%`);
+                };
+                slider.addEventListener('input', updateFill);
+                updateFill();
+            });
+        }
+
+        /* --------------------------------------------------------------
+        MOTIVATIONAL SECTION
+        -------------------------------------------------------------- */
+        function displayDailyMotivation() {
+            const quotes = [
+                '<i class="fa-solid fa-sun"></i> Keep going — consistency keeps hormones happy!',
+                '<i class="fa-solid fa-dumbbell"></i> Small steps today lead to big health wins tomorrow.',
+                '<i class="fa-solid fa-leaf"></i> Balance your body, balance your mind.',
+                '<i class="fa-solid fa-heart"></i> Your well-being is your greatest wealth — nurture it!',
+                '<i class="fa-solid fa-mug-hot"></i> Take it slow, good things grow with patience.',
+                '<i class="fa-solid fa-seedling"></i> Each healthy habit is a seed — water it daily.',
+                '<i class="fa-solid fa-fire"></i> You’ve got this! Even small progress is progress.',
+                '<i class="fa-solid fa-brain"></i> A calm mind supports a healthy thyroid — breathe easy.',
+                '<i class="fa-solid fa-rainbow"></i> Celebrate every day you show up for your health.',
+                '<i class="fa-solid fa-butterfly"></i> Change takes time, but you’re already blooming beautifully!'
+            ];
+
+            // Pick quote based on day number (so it changes daily)
+            const dayIndex = new Date().getDate() % quotes.length;
+            const dailyQuote = quotes[dayIndex];
+
+            const motivationBox = document.getElementById("dailyMotivation");
+            if (motivationBox) {
+                motivationBox.innerHTML = `<i class="fa-solid fa-heart"></i> ${dailyQuote}`;
+            }
+        }
+
+        function generateInterpretation(entry) {
+            let messages = [];
+
+            /* ------------------ TSH Interpretation ------------------ */
+            if (entry.tsh) {
+                const tsh = parseFloat(entry.tsh);
+
+                if (tsh < 0.4) {
+                    messages.push(
+                        '<i class="fa-solid fa-triangle-exclamation" style="color:#d9534f;"></i> ' +
+                        '<strong>TSH is low</strong>, which may suggest hyperthyroidism. Monitor irritability, anxiety, or rapid heartbeat.'
+                    );
+                } else if (tsh > 4.0) {
+                    messages.push(
+                        '<i class="fa-solid fa-circle-exclamation" style="color:#d9534f;"></i> ' +
+                        '<strong>TSH is high</strong>, which may indicate hypothyroidism. Track fatigue, weight gain, or cold sensitivity.'
+                    );
+                } else {
+                    messages.push(
+                        '<i class="fa-solid fa-check-circle" style="color:#28a745;"></i> ' +
+                        '<strong>TSH is within normal range.</strong> Good job maintaining stable thyroid function!'
+                    );
+                }
+            }
+
+            /* ------------------ T4 Interpretation ------------------ */
+            if (entry.t4) {
+                const t4 = parseFloat(entry.t4);
+
+                if (t4 < 4.5) {
+                    messages.push(
+                        '<i class="fa-solid fa-circle-exclamation" style="color:#d9534f;"></i> ' +
+                        '<strong>T4 is slightly low</strong>, which may correlate with hypothyroid symptoms.'
+                    );
+                } else if (t4 > 12.0) {
+                    messages.push(
+                        '<i class="fa-solid fa-circle-exclamation" style="color:#d9534f;"></i> ' +
+                        '<strong>T4 is elevated</strong>. Discuss hormone levels with your doctor.'
+                    );
+                } else {
+                    messages.push(
+                        '<i class="fa-solid fa-check-circle" style="color:#28a745;"></i> ' +
+                        '<strong>T4 level appears normal.</strong>'
+                    );
+                }
+            }
+
+            /* ------------------ T3 Interpretation ------------------ */
+            if (entry.t3) {
+                const t3 = parseFloat(entry.t3);
+
+                if (t3 < 80) {
+                    messages.push(
+                        '<i class="fa-solid fa-circle-exclamation" style="color:#d9534f;"></i> ' +
+                        '<strong>T3 is lower than usual</strong>, often seen in hypothyroid patterns.'
+                    );
+                } else if (t3 > 200) {
+                    messages.push(
+                        '<i class="fa-solid fa-circle-exclamation" style="color:#d9534f;"></i> ' +
+                        '<strong>T3 is very high</strong>, could indicate hyperthyroid symptoms.'
+                    );
+                } else {
+                    messages.push(
+                        '<i class="fa-solid fa-check-circle" style="color:#28a745;"></i> ' +
+                        '<strong>T3 level looks stable.</strong>'
+                    );
+                }
+            }
+
+            /* ------------------ Symptoms Interpretation ------------------ */
+            if (entry.symptoms && entry.symptoms.length > 0) {
+
+                if (entry.symptoms.includes("fatigue")) {
+                    messages.push(
+                        '<i class="fa-solid fa-battery-quarter" style="color:#f0ad4e;"></i> ' +
+                        'Fatigue detected — improve sleep schedule & hydration.'
+                    );
+                }
+
+                if (entry.symptoms.includes("weight_gain")) {
+                    messages.push(
+                        '<i class="fa-solid fa-weight-scale" style="color:#5a3924;"></i> ' +
+                        'Weight gain may be linked with low thyroid function.'
+                    );
+                }
+
+                if (entry.symptoms.includes("heart_palpitations")) {
+                    messages.push(
+                        '<i class="fa-solid fa-heart-pulse" style="color:#d9534f;"></i> ' +
+                        'Heart palpitations detected — monitor this closely.'
+                    );
+                }
+
+                if (entry.symptoms.includes("mood_changes")) {
+                    messages.push(
+                        '<i class="fa-solid fa-face-meh" style="color:#6f42c1;"></i> ' +
+                        'Mood changes may be tied to hormonal imbalance.'
+                    );
+                }
+
+            } else {
+                messages.push(
+                    '<i class="fa-solid fa-check" style="color:#28a745;"></i> ' +
+                    'No symptoms reported today — great stability!'
+                );
+            }
+
+            /* ------------------ Energy Interpretation ------------------ */
+            if (entry.energy) {
+                const energy = parseInt(entry.energy);
+
+                if (energy <= 3) {
+                    messages.push(
+                        '<i class="fa-solid fa-battery-empty" style="color:#d9534f;"></i> ' +
+                        'Low energy levels today. Rest & hydrate well.'
+                    );
+                } else if (energy >= 8) {
+                    messages.push(
+                        '<i class="fa-solid fa-battery-full" style="color:#28a745;"></i> ' +
+                        'High energy — keep maintaining healthy habits!'
+                    );
+                }
+            }
+
+            /* ------------------ Sleep Interpretation ------------------ */
+            if (entry.sleep && entry.sleep <= 4) {
+                messages.push(
+                    '<i class="fa-solid fa-moon" style="color:#6c757d;"></i> ' +
+                    'Poor sleep detected — try to improve nighttime routine.'
+                );
+            }
+
+            return messages.join("<br><br>");
+        }
+
+        /* --------------------------------------------------------------
+   HOLISTIC WELLNESS SUGGESTIONS
+   Combines Stress, Energy, and Sleep
+-------------------------------------------------------------- */
+        function updateWellnessSuggestion(stress, energy, sleep) {
+            const box = document.getElementById("wellnessSuggestion");
+            if (!box) return;
+
+            let message = "";
+            let icon = "";
+
+            stress = parseInt(stress);
+            energy = parseInt(energy);
+            sleep = parseInt(sleep);
+
+            // 🌞 Case 1: All balanced
+            if (stress <= 4 && energy >= 6 && sleep >= 7) {
+                icon = '<i class="fa-solid fa-face-smile-beam"></i>';
+                message = "You’re in great balance today! 🌿 Keep this steady routine — good rest, calm mind, and strong energy mean your hormones are happy.";
+            }
+            // 😴 Case 2: Low energy or poor sleep
+            else if (sleep <= 4 && energy <= 4) {
+                icon = '<i class="fa-solid fa-bed"></i>';
+                message = "You seem tired and drained. 😴 Prioritize 7–8 hours of sleep tonight — your body needs recovery for stable thyroid function.";
+            }
+            // ⚡ Case 3: High stress, low sleep
+            else if (stress >= 7 && sleep <= 5) {
+                icon = '<i class="fa-solid fa-brain"></i>';
+                message = "High stress + poor sleep detected 🧠💤 — take deep breaths, drink water, and step away from screens for 30 minutes.";
+            }
+            // 🌸 Case 4: High stress but good energy
+            else if (stress >= 7 && energy >= 6) {
+                icon = '<i class="fa-solid fa-fire"></i>';
+                message = "You’re running on adrenaline 🔥. Try to slow down with light stretching or calm music before bedtime.";
+            }
+            // 🌙 Case 5: Low stress, low energy
+            else if (stress <= 3 && energy <= 4) {
+                icon = '<i class="fa-solid fa-mug-hot"></i>';
+                message = "You’re calm but low on energy ☕ — maybe a gentle walk or protein-rich snack will perk you up.";
+            }
+            // 💗 Case 6: Moderate everything (balanced)
+            else if (stress >= 4 && stress <= 6 && energy >= 4 && energy <= 7 && sleep >= 5) {
+                icon = '<i class="fa-solid fa-leaf"></i>';
+                message = "Your day looks fairly balanced 🌿 — keep staying consistent with small habits that keep your rhythm steady.";
+            }
+            // 🌧️ Case 7: Everything off-balance
+            else {
+                icon = '<i class="fa-solid fa-cloud-rain"></i>';
+                message = "Your stress, sleep, and energy levels need some love today 🌧️. Try journaling, meditation, or just taking a quiet break.";
+            }
+
+            box.innerHTML = `${icon} ${message}`;
+        }
+
+        /* ✅ SINGLE LISTENER FOR ENTIRE PAGE */
+        document.addEventListener('DOMContentLoaded', initApp);
+
+        /* --------------------------------------------------------------
+           LOAD DATA FROM API OR LOCAL
+        -------------------------------------------------------------- */
+        async function loadThyroidData() {
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                if (accessToken && currentUser) {
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/thyroid/me`, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        if (data && data.length > 0) {
+                            thyroidEntries = data;
+                            thyroidManager.data = data;
+                            return;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading from API:', error);
+            }
+
+            thyroidEntries = thyroidManager.data;
+        }
+
+        /* --------------------------------------------------------------
+           ADD ENTRY
+        -------------------------------------------------------------- */
+        async function addThyroidEntry() {
+            const tsh = document.getElementById('tsh-input').value.trim();
+            const t4 = document.getElementById('t4-input').value.trim();
+            const t3 = document.getElementById('t3-input').value.trim();
+            const medication = document.getElementById('medication-input').value;
+            const weight = document.getElementById('weight-input').value.trim();
+            const heartRate = document.getElementById('heart-rate-input').value.trim();
+            const sleep = document.getElementById('sleep-slider').value;
+            const energy = document.getElementById('energy-level-slider').value;
+            const notes = document.getElementById('notes-input').value.trim();
+
+            const symptoms = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+                if (cb.value !== 'none') symptoms.push(cb.value);
+            });
+
+            const entry = {
+                id: Date.now(),
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+                tsh: tsh || null,
+                t4: t4 || null,
+                t3: t3 || null,
+                medication: medication || null,
+                weight: weight || null,
+                heartRate: heartRate || null,
+                sleep: sleep || null,
+                energy: energy || null,
+                symptoms: symptoms,
+                notes: notes || null,
+                timestamp: new Date().toISOString()
+            };
+
+            thyroidEntries.unshift(entry);
+
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                if (accessToken && currentUser) {
+                    const thyroidData = { ...entry };
+
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const response = await fetch(`${apiBaseUrl}/thyroid/me`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(thyroidData)
+                    });
+
+                    if (!response.ok) {
+                        console.warn('API save failed → fallback to local');
+                        thyroidManager.addEntry(thyroidData);
+                    }
+                } else {
+                    thyroidManager.addEntry(entry);
+                }
+            } catch (err) {
+                thyroidManager.addEntry(entry);
+            }
+
+            const interpretationHTML = generateInterpretation(entry);
+            const interpretBox = document.getElementById("aiInterpretation");
+            interpretBox.innerHTML = interpretationHTML;
+            interpretBox.style.display = "block";
+
+
+            updateLogDisplay();
+            updateStats();
+            updateChart();
+            clearForm();
+        }
+
+        /* --------------------------------------------------------------
+           CLEAR FORM
+        -------------------------------------------------------------- */
+        function clearForm() {
+            document.getElementById('tsh-input').value = '';
+            document.getElementById('t4-input').value = '';
+            document.getElementById('t3-input').value = '';
+            document.getElementById('medication-input').value = 'no';
+            document.getElementById('weight-input').value = '';
+            document.getElementById('heart-rate-input').value = '';
+            document.getElementById('sleep-slider').value = 5;
+            document.getElementById('energy-level-slider').value = 5;
+            document.getElementById('sleep-value').textContent = '5';
+            document.getElementById('energy-value').textContent = '5';
+            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.getElementById('notes-input').value = '';
+        }
+
+        /* --------------------------------------------------------------
+           DISPLAY LOGS
+        -------------------------------------------------------------- */
+        function updateLogDisplay() {
+            const logContainer = document.getElementById('log-entries');
+
+            if (thyroidEntries.length === 0) {
+                logContainer.innerHTML = `
+            <div class="empty-log">📝 No entries recorded yet.</div>`;
+                return;
+            }
+
+            logContainer.innerHTML = thyroidEntries.slice(0, 10).map(entry => {
+                let symptomsText = 'None reported';
+                if (Array.isArray(entry.symptoms) && entry.symptoms.length > 0) {
+                    symptomsText = entry.symptoms.join(', ');
+                } else if (typeof entry.symptoms === 'string' && entry.symptoms.trim() !== '') {
+                    symptomsText = entry.symptoms;
+                }
+
+                const dateText = entry.date || (entry.timestamp ? new Date(entry.timestamp).toLocaleDateString() : 'Unknown');
+
+                return `
+            <div class="log-entry">
+                <div class="log-date">${dateText} at ${entry.time || 'Unknown'}</div>
+                <div class="log-details">
+                    <div><strong>TSH:</strong> ${entry.tsh || 'Not recorded'}</div>
+                    <div><strong>T4:</strong> ${entry.t4 || 'Not recorded'}</div>
+                    <div><strong>T3:</strong> ${entry.t3 || 'Not recorded'}</div>
+                    <div><strong>Med:</strong> ${entry.medication}</div>
+                    <div><strong>Weight:</strong> ${entry.weight || 'Not recorded'}</div>
+                    <div><strong>Heart:</strong> ${entry.heartRate || 'Not recorded'}</div>
+                    <div><strong>Sleep:</strong> ${entry.sleep}/10</div>
+                    <div><strong>Energy:</strong> ${entry.energy}/10</div>
+                    <div><strong>Symptoms:</strong> ${symptomsText}</div>
+                    ${entry.notes ? `<div><strong>Notes:</strong> ${entry.notes}</div>` : ""}
+                </div>
+                <button class="delete-btn" onclick="deleteThyroidEntry('${entry.id}')">
+                    <i class="fa-solid fa-trash"></i> Delete
+                </button>
+
+            </div>`;
+            }).join('');
+        }
+
+        /* --------------------------------------------------------------
+           STATS
+        -------------------------------------------------------------- */
+        function updateStats() {
+            if (thyroidEntries.length === 0) return;
+
+            const latest = thyroidEntries[0];
+
+            if (latest.tsh) {
+                document.getElementById('tsh-level').textContent = `${latest.tsh} mIU/L`;
+                const progress = Math.min((parseFloat(latest.tsh) / 4) * 100, 100);
+                document.getElementById('tsh-progress').style.width = progress + '%';
+            }
+
+            if (latest.t4) {
+                document.getElementById('t4-level').textContent = `${latest.t4} μg/dL`;
+                const progress = Math.min((parseFloat(latest.t4) / 12) * 100, 100);
+                document.getElementById('t4-progress').style.width = progress + '%';
+            }
+
+            if (latest.t3) {
+                document.getElementById('t3-level').textContent = `${latest.t3} ng/dL`;
+                const progress = Math.min((parseFloat(latest.t3) / 200) * 100, 100);
+                document.getElementById('t3-progress').style.width = progress + '%';
+            }
+        }
+
+        /* --------------------------------------------------------------
+           CHART INITIALIZATION
+        -------------------------------------------------------------- */
+        function initChart() {
+            const ctx = document.getElementById('thyroidChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'TSH',
+                            data: [],
+                            borderColor: '#a15e32',
+                            backgroundColor: 'rgba(161,94,50,0.1)',
+                            tension: 0.4
+                        },
+                        {
+                            label: 'Energy',
+                            data: [],
+                            borderColor: '#8b6c58',
+                            backgroundColor: 'rgba(139,108,88,0.1)',
+                            tension: 0.4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            updateChart();
+        }
+
+        /* --------------------------------------------------------------
+           UPDATE CHART
+        -------------------------------------------------------------- */
+        function updateChart() {
+            if (!chart) return;
+
+            const last10 = thyroidEntries.slice(0, 10).reverse();
+
+            chart.data.labels = last10.map(e => e.date || new Date(e.timestamp).toLocaleDateString());
+
+            chart.data.datasets[0].data = last10.map(e => e.tsh ? parseFloat(e.tsh) : null);
+            chart.data.datasets[1].data = last10.map(e => e.energy ? parseFloat(e.energy) : null);
+
+            chart.update();
+        }
+
+        /* --------------------------------------------------------------
+           DELETE SINGLE
+        -------------------------------------------------------------- */
+        async function deleteThyroidEntry(entryId) {
+            if (!confirm("Delete this entry?")) return;
+
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+                if (!accessToken) {
+                    thyroidEntries = thyroidEntries.filter(e => e.id !== entryId);
+                    updateLogDisplay();
+                    updateChart();
+                    return;
+                }
+
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/thyroid/me/${entryId}`, {
+                    method: "DELETE",
+                    headers: { 'Authorization': `Bearer ${accessToken}` }
+                });
+
+                if (!response.ok) throw new Error("Failed");
+
+                thyroidEntries = thyroidEntries.filter(e => e.id !== entryId);
+                updateLogDisplay();
+                updateChart();
+            } catch (err) {
+                alert("Error deleting entry.");
+            }
+        }
+
+        /* --------------------------------------------------------------
+           DELETE ALL
+        -------------------------------------------------------------- */
+        async function deleteAllThyroidLogs() {
+            if (!confirm("Delete ALL thyroid logs?")) return;
+
+            try {
+                const accessToken = localStorage.getItem('accessToken');
+
+                if (accessToken) {
+                    const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                    const res = await fetch(`${apiBaseUrl}/thyroid/me`, {
+                        headers: { 'Authorization': `Bearer ${accessToken}` }
+                    });
+
+                    if (res.ok) {
+                        const all = await res.json();
+                        for (let entry of all) {
+                            const id = entry.id || entry._id;
+                            await fetch(`${apiBaseUrl}/thyroid/me/${id}`, {
+                                method: 'DELETE',
+                                headers: { 'Authorization': `Bearer ${accessToken}` }
+                            });
+                        }
+                    }
+                }
+
+                thyroidEntries = [];
+                updateLogDisplay();
+                updateChart();
+            } catch (err) {
+                console.error(err);
+                alert("Error deleting logs.");
+            }
+        }
+
+        /* --------------------------------------------------------------
+           EXPORT CSV
+        -------------------------------------------------------------- */
+        function exportData() {
+            if (thyroidEntries.length === 0) {
+                alert('No data to export');
+                return;
+            }
+
+            let csv = "Date,Time,TSH,T4,T3,Medication,Weight,HeartRate,Sleep,Energy,Symptoms,Notes\n";
+            thyroidEntries.forEach(e => {
+                csv += `"${e.date}","${e.time}","${e.tsh}","${e.t4}","${e.t3}","${e.medication}","${e.weight}","${e.heartRate}","${e.sleep}","${e.energy}","${e.symptoms}","${e.notes}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: "text/csv" });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = url;
+            link.download = "thyroid_data.csv";
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        /* --------------------------------------------------------------
+           AUTO RESET DAILY
+        -------------------------------------------------------------- */
+        function checkThyroidDailyReset() {
+            const today = new Date().toISOString().split("T")[0];
+            const last = localStorage.getItem("thyroid_lastDate");
+
+            if (last && last !== today) {
+                localStorage.setItem("thyroid_lastDate", today);
+                thyroidEntries = [];
+                updateLogDisplay();
+                updateChart();
+            } else if (!last) {
+                localStorage.setItem("thyroid_lastDate", today);
+            }
+        }
+
+        /* --------------------------------------------------------------
+           SHOW CONTENT
+        -------------------------------------------------------------- */
+        function showMainContent() {
+            console.log("Showing main content...");
+            document.getElementById('loadingPlaceholder').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        /* --------------------------------------------------------------
+           PROFILE CIRCLE
+        -------------------------------------------------------------- */
+        function updateProfileCircle() {
+            const profileCircle = document.getElementById('user-profile');
+            const userEmail = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+            if (userEmail) {
+                profileCircle.textContent = userEmail.charAt(0).toUpperCase();
+            }
+        }
+
+    </script>
+
+    <script src="scripts/navigation.js"></script>
+</body>
+
+</html>

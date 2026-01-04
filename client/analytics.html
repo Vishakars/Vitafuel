@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VitaFuel | Analytics</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/analytics.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="navbar">
+    <div class="hero-img1">
+      <img src="logo/image.png" alt="VitaFuel - Health & Wellness" style="height: 50px; width: auto;" />
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="nutrition.html">Nutrition</a>
+      <a href="activity.html">Activities</a>
+      <a href="analytics.html" class="active">Analytics</a>
+      <div class="profile-container">
+        <div class="profile-circle" id="user-profile">U</div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="profile.html">My Profile</a>
+          <a href="settings.html">Settings</a>
+          <a href="about.html">About</a>
+          <a href="#" onclick="logout()">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="container">
+    <div class="header">
+      <h1><i class="fa-solid fa-chart-column"></i> Analytics & Insights</h1>
+    </div>
+
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-tab="overview"><i class="fa-solid fa-chart-line"></i> Overview</button>
+      <button class="nav-tab" data-tab="nutrition">🍎 Nutrition</button>
+      <button class="nav-tab" data-tab="activity">🏃‍♂️ Activity</button>
+      <button class="nav-tab" data-tab="health">❤️ Health</button>
+    </div>
+
+    <!-- Overview Tab -->
+    <div id="overview" class="tab-content active">
+      <!-- Time Filter -->
+      <div class="time-filter">
+        <button class="filter-btn active" data-period="7">7 Days</button>
+        <button class="filter-btn" data-period="30">30 Days</button>
+        <button class="filter-btn" data-period="90">3 Months</button>
+        <button class="filter-btn" data-period="365">1 Year</button>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value" id="avg-calories">0</div>
+          <div class="stat-label">Avg Daily Calories</div>
+          <div class="stat-change" id="calories-change">+0%</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avg-activity">0</div>
+          <div class="stat-label">Avg Daily Activity</div>
+          <div class="stat-change" id="activity-change">+0 min</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avg-weight">0</div>
+          <div class="stat-label">Current Weight</div>
+          <div class="stat-change" id="weight-change">+0 kg</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avg-sleep">0</div>
+          <div class="stat-label">Avg Sleep</div>
+          <div class="stat-change" id="sleep-change">+0 hrs</div>
+        </div>
+      </div>
+
+      <!-- Progress Rings -->
+      <div class="comparison-grid">
+        <div class="comparison-card">
+          <div class="progress-ring">
+            <svg>
+              <circle class="background" cx="60" cy="60" r="52"></circle>
+              <circle class="progress" cx="60" cy="60" r="52" id="calories-progress"></circle>
+            </svg>
+            <div class="progress-text" id="calories-progress-text">0%</div>
+          </div>
+          <div class="comparison-label">Calorie Goal</div>
+        </div>
+        <div class="comparison-card">
+          <div class="progress-ring">
+            <svg>
+              <circle class="background" cx="60" cy="60" r="52"></circle>
+              <circle class="progress" cx="60" cy="60" r="52" id="activity-progress"></circle>
+            </svg>
+            <div class="progress-text" id="activity-progress-text">0%</div>
+          </div>
+          <div class="comparison-label">Activity Goal</div>
+        </div>
+        <div class="comparison-card">
+          <div class="progress-ring">
+            <svg>
+              <circle class="background" cx="60" cy="60" r="52"></circle>
+              <circle class="progress" cx="60" cy="60" r="52" id="water-progress"></circle>
+            </svg>
+            <div class="progress-text" id="water-progress-text">0%</div>
+          </div>
+          <div class="comparison-label">Water Goal</div>
+        </div>
+      </div>
+
+      <!-- Trends Chart -->
+      <div class="chart-container">
+        <h2 class="chart-title">Health Trends</h2>
+        <div class="chart-wrapper">
+          <canvas id="trends-chart"></canvas>
+        </div>
+      </div>
+
+      <!-- Insights -->
+      <div class="insights-grid">
+        <div class="insight-card">
+          <h3 class="insight-title">💡 Nutrition Insight</h3>
+          <div class="insight-content" id="nutrition-insight">
+            Loading insights...
+          </div>
+        </div>
+        <div class="insight-card">
+          <h3 class="insight-title">🏃‍♂️ Activity Insight</h3>
+          <div class="insight-content" id="activity-insight">
+            Loading insights...
+          </div>
+        </div>
+        <div class="insight-card">
+          <h3 class="insight-title">🎯 Goal Progress</h3>
+          <div class="insight-content" id="goal-insight">
+            Loading insights...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nutrition Tab -->
+    <div id="nutrition" class="tab-content">
+      <div class="chart-container">
+        <h2 class="chart-title">Daily Calorie Intake</h2>
+        <div class="chart-wrapper">
+          <canvas id="calories-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <h2 class="chart-title">Macronutrient Distribution</h2>
+        <div class="chart-wrapper">
+          <canvas id="macros-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="insights-grid">
+        <div class="insight-card">
+          <h3 class="insight-title">📊 Nutrition Summary</h3>
+          <div class="insight-content" id="nutrition-summary">
+            Loading nutrition data...
+          </div>
+        </div>
+        <div class="insight-card">
+          <h3 class="insight-title">🎯 Recommendations</h3>
+          <div class="insight-content" id="nutrition-recommendations">
+            Loading recommendations...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Tab -->
+    <div id="activity" class="tab-content">
+      <div class="chart-container">
+        <h2 class="chart-title">Activity Duration</h2>
+        <div class="chart-wrapper">
+          <canvas id="activity-duration-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <h2 class="chart-title">Calories Burned</h2>
+        <div class="chart-wrapper">
+          <canvas id="calories-burned-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="insights-grid">
+        <div class="insight-card">
+          <h3 class="insight-title">🏃‍♂️ Activity Summary</h3>
+          <div class="insight-content" id="activity-summary">
+            Loading activity data...
+          </div>
+        </div>
+        <div class="insight-card">
+          <h3 class="insight-title">💪 Performance Tips</h3>
+          <div class="insight-content" id="activity-tips">
+            Loading tips...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Health Tab -->
+    <div id="health" class="tab-content">
+      <div class="chart-container">
+        <h2 class="chart-title">Weight Trend</h2>
+        <div class="chart-wrapper">
+          <canvas id="weight-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <h2 class="chart-title">Sleep Quality</h2>
+        <div class="chart-wrapper">
+          <canvas id="sleep-chart"></canvas>
+        </div>
+      </div>
+
+      <div class="insights-grid">
+        <div class="insight-card">
+          <h3 class="insight-title">❤️ Health Summary</h3>
+          <div class="insight-content" id="health-summary">
+            Loading health data...
+          </div>
+        </div>
+        <div class="insight-card">
+          <h3 class="insight-title">🏥 Health Insights</h3>
+          <div class="insight-content" id="health-insights">
+            Loading insights...
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Global variables
+    let currentUser = localStorage.getItem('userEmail');
+    let accessToken = localStorage.getItem('accessToken');
+    let currentPeriod = 7;
+    let charts = {};
+
+    // Check authentication
+    if (!currentUser || !accessToken) {
+      console.log('Authentication failed - redirecting to login');
+      console.log('currentUser:', currentUser);
+      console.log('accessToken:', accessToken ? 'Present' : 'Missing');
+      window.location.href = 'login.html';
+      return;
+    }
+    
+    console.log('User authenticated:', currentUser);
+
+    // Initialize the page
+    // Check if it's a new day and auto-reset analytics data
+    function checkAnalyticsDailyReset() {
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+      const lastDate = localStorage.getItem('analytics_lastDate');
+      
+      if (lastDate && lastDate !== today) {
+        console.log('📊 New day detected! Auto-resetting analytics data...');
+        console.log('Last date:', lastDate, 'Today:', today);
+        
+        // Clear analytics data
+        const currentUser = localStorage.getItem('userEmail');
+        if (currentUser) {
+          localStorage.removeItem(`${currentUser}_analyticsData`);
+          localStorage.removeItem(`${currentUser}_chartData`);
+        }
+        
+        // Update last date
+        localStorage.setItem('analytics_lastDate', today);
+        
+        // Show notification
+        if (typeof showNotification === 'function') {
+          showNotification('🌅 Good morning! Analytics data has been reset for a fresh start!', 'success');
+        } else {
+          console.log('🌅 Good morning! Analytics data has been reset for a fresh start!');
+        }
+      } else if (!lastDate) {
+        // First time - set today as last date
+        localStorage.setItem('analytics_lastDate', today);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Check for daily reset
+      checkAnalyticsDailyReset();
+      
+      setupEventListeners();
+      await loadAnalyticsData();
+    });
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Tab switching
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+      });
+
+      // Time filter
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentPeriod = parseInt(btn.dataset.period);
+          loadAnalyticsData();
+        });
+      });
+
+      // Logout functionality is handled by navigation.js
+    }
+
+    // Tab switching
+    function switchTab(tabName) {
+      document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+      document.getElementById(tabName).classList.add('active');
+      
+      // Load specific data for the tab
+      if (tabName === 'nutrition') {
+        loadNutritionCharts();
+      } else if (tabName === 'activity') {
+        loadActivityCharts();
+      } else if (tabName === 'health') {
+        loadHealthCharts();
+      }
+    }
+
+    // Load analytics data
+    async function loadAnalyticsData() {
+      try {
+        await Promise.all([
+          loadOverviewData(),
+          loadInsights()
+        ]);
+      } catch (error) {
+        console.error('Error loading analytics data:', error);
+      }
+    }
+
+    // Load overview data
+    async function loadOverviewData() {
+      try {
+        // Load nutrition summary for the period
+        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+        const nutritionResponse = await fetch(`${apiBaseUrl}/nutrition/me/nutrition/summary?days=${currentPeriod}`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        }).catch(() => ({ ok: false }));
+        
+        // Load activity summary for today
+        const activityResponse = await fetch(`${apiBaseUrl}/activity/me/activities/summary`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        }).catch(() => ({ ok: false }));
+        
+        // Load health data
+        const healthResponse = await fetch(`${apiBaseUrl}/health/me`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+
+        const [nutritionData, activityData, healthData] = await Promise.all([
+          nutritionResponse.ok ? nutritionResponse.json() : null,
+          activityResponse.ok ? activityResponse.json() : null,
+          healthResponse.ok ? healthResponse.json() : null
+        ]);
+
+        console.log('Analytics data loaded:', { nutritionData, activityData, healthData });
+
+        updateOverviewStats(nutritionData, activityData, healthData);
+        updateProgressRings(nutritionData, activityData);
+        createTrendsChart(nutritionData, activityData, healthData);
+      } catch (error) {
+        console.error('Error loading overview data:', error);
+      }
+    }
+
+    // Update overview stats
+    function updateOverviewStats(nutrition, activity, health) {
+      // Update calorie stats - calculate average from nutrition summary
+      let avgCalories = 0;
+      if (nutrition && Array.isArray(nutrition) && nutrition.length > 0) {
+        const totalCalories = nutrition.reduce((sum, day) => sum + (day.totals?.calories || 0), 0);
+        avgCalories = totalCalories / nutrition.length;
+      }
+      document.getElementById('avg-calories').textContent = Math.round(avgCalories);
+      
+      // Update activity stats
+      const avgActivity = activity?.total_duration_minutes || 0;
+      document.getElementById('avg-activity').textContent = Math.round(avgActivity);
+      
+      // Update weight stats
+      const currentWeight = health?.healthData?.weight || 0;
+      document.getElementById('avg-weight').textContent = currentWeight.toFixed(1);
+      
+      // Update sleep stats (placeholder - no sleep data endpoint yet)
+      document.getElementById('avg-sleep').textContent = '7.5';
+    }
+
+    // Update progress rings
+    function updateProgressRings(nutrition, activity) {
+      // Calories progress - use today's data or average
+      const caloriesGoal = 2000; // Default goal
+      let caloriesCurrent = 0;
+      if (nutrition && Array.isArray(nutrition) && nutrition.length > 0) {
+        // Use today's data (last entry) or average
+        const todayData = nutrition[nutrition.length - 1];
+        caloriesCurrent = todayData?.totals?.calories || 0;
+      }
+      const caloriesProgress = Math.min((caloriesCurrent / caloriesGoal) * 100, 100);
+      updateProgressRing('calories-progress', caloriesProgress);
+      document.getElementById('calories-progress-text').textContent = Math.round(caloriesProgress) + '%';
+      
+      // Activity progress
+      const activityGoal = 30; // 30 minutes default
+      const activityCurrent = activity?.total_duration_minutes || 0;
+      const activityProgress = Math.min((activityCurrent / activityGoal) * 100, 100);
+      updateProgressRing('activity-progress', activityProgress);
+      document.getElementById('activity-progress-text').textContent = Math.round(activityProgress) + '%';
+      
+      // Water progress (placeholder - no water data endpoint yet)
+      const waterProgress = 75; // 75% placeholder
+      updateProgressRing('water-progress', waterProgress);
+      document.getElementById('water-progress-text').textContent = waterProgress + '%';
+    }
+
+    // Update progress ring
+    function updateProgressRing(elementId, percentage) {
+      const circle = document.getElementById(elementId);
+      const radius = 52;
+      const circumference = 2 * Math.PI * radius;
+      const offset = circumference - (percentage / 100) * circumference;
+      circle.style.strokeDasharray = circumference;
+      circle.style.strokeDashoffset = offset;
+    }
+
+    // Create trends chart
+    function createTrendsChart(nutrition, activity, health) {
+      const ctx = document.getElementById('trends-chart').getContext('2d');
+      
+      // Destroy existing chart
+      if (charts.trends) {
+        charts.trends.destroy();
+      }
+      
+      // Use real data from nutrition summary
+      const labels = [];
+      const caloriesData = [];
+      const activityData = [];
+      
+      if (nutrition && Array.isArray(nutrition)) {
+        nutrition.forEach(day => {
+          const date = new Date(day.date);
+          labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+          caloriesData.push(day.totals?.calories || 0);
+          // For activity data, we'll use placeholder since we only have today's activity data
+          activityData.push(Math.floor(Math.random() * 60) + 20);
+        });
+      } else {
+        // Fallback to sample data if no nutrition data
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+          caloriesData.push(0);
+          activityData.push(0);
+        }
+      }
+      
+      charts.trends = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Calories',
+            data: caloriesData,
+            borderColor: '#8c5e2a',
+            backgroundColor: 'rgba(140, 94, 42, 0.1)',
+            tension: 0.4,
+            yAxisID: 'y'
+          }, {
+            label: 'Activity (min)',
+            data: activityData,
+            borderColor: '#a66f3f',
+            backgroundColor: 'rgba(166, 111, 63, 0.1)',
+            tension: 0.4,
+            yAxisID: 'y1'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              type: 'linear',
+              display: true,
+              position: 'left',
+              title: {
+                display: true,
+                text: 'Calories'
+              }
+            },
+            y1: {
+              type: 'linear',
+              display: true,
+              position: 'right',
+              title: {
+                display: true,
+                text: 'Activity (minutes)'
+              },
+              grid: {
+                drawOnChartArea: false,
+              },
+            }
+          }
+        }
+      });
+    }
+
+    // Load nutrition charts
+    async function loadNutritionCharts() {
+      try {
+        // Load nutrition summary for the period
+        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+        const response = await fetch(`${apiBaseUrl}/nutrition/me/nutrition/summary?days=${currentPeriod}`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        }).catch(() => ({ ok: false }));
+        
+        const nutritionData = response.ok ? await response.json() : null;
+        createCaloriesChart(nutritionData);
+        createMacrosChart(nutritionData);
+      } catch (error) {
+        console.error('Error loading nutrition charts:', error);
+        createCaloriesChart(null);
+        createMacrosChart(null);
+      }
+    }
+
+    // Create calories chart
+    function createCaloriesChart(nutritionData) {
+      const ctx = document.getElementById('calories-chart').getContext('2d');
+      
+      if (charts.calories) {
+        charts.calories.destroy();
+      }
+      
+      const labels = [];
+      const data = [];
+      
+      if (nutritionData && Array.isArray(nutritionData)) {
+        nutritionData.forEach(day => {
+          const date = new Date(day.date);
+          labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+          data.push(day.totals?.calories || 0);
+        });
+      } else {
+        // Fallback to empty data
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+          data.push(0);
+        }
+      }
+      
+      charts.calories = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Daily Calories',
+            data: data,
+            backgroundColor: 'rgba(140, 94, 42, 0.8)',
+            borderColor: '#8c5e2a',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Calories'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Create macros chart
+    function createMacrosChart(nutritionData) {
+      const ctx = document.getElementById('macros-chart').getContext('2d');
+      
+      if (charts.macros) {
+        charts.macros.destroy();
+      }
+      
+      // Calculate average macros from nutrition data
+      let avgProtein = 0, avgCarbs = 0, avgFat = 0;
+      
+      if (nutritionData && Array.isArray(nutritionData) && nutritionData.length > 0) {
+        const totalProtein = nutritionData.reduce((sum, day) => sum + (day.totals?.protein || 0), 0);
+        const totalCarbs = nutritionData.reduce((sum, day) => sum + (day.totals?.carbs || 0), 0);
+        const totalFat = nutritionData.reduce((sum, day) => sum + (day.totals?.fat || 0), 0);
+        
+        avgProtein = totalProtein / nutritionData.length;
+        avgCarbs = totalCarbs / nutritionData.length;
+        avgFat = totalFat / nutritionData.length;
+      }
+      
+      charts.macros = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Protein', 'Carbs', 'Fat'],
+          datasets: [{
+            data: [avgProtein, avgCarbs, avgFat],
+            backgroundColor: [
+              '#8c5e2a',
+              '#a66f3f',
+              '#d4a574'
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+
+    // Load activity charts
+    async function loadActivityCharts() {
+      try {
+        // Load weekly activity stats
+        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+        const response = await fetch(`${apiBaseUrl}/activity/me/stats/weekly`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        
+        const activityData = response.ok ? await response.json() : null;
+        createActivityDurationChart(activityData);
+        createCaloriesBurnedChart(activityData);
+      } catch (error) {
+        console.error('Error loading activity charts:', error);
+        createActivityDurationChart(null);
+        createCaloriesBurnedChart(null);
+      }
+    }
+
+    // Create activity duration chart
+    function createActivityDurationChart(activityData) {
+      const ctx = document.getElementById('activity-duration-chart').getContext('2d');
+      
+      if (charts.activityDuration) {
+        charts.activityDuration.destroy();
+      }
+      
+      const labels = [];
+      const data = [];
+      
+      if (activityData && activityData.daily_stats) {
+        // Sort dates and extract data
+        const sortedDates = Object.keys(activityData.daily_stats).sort();
+        sortedDates.forEach(date => {
+          const dateObj = new Date(date);
+          labels.push(dateObj.toLocaleDateString('en-US', { weekday: 'short' }));
+          data.push(activityData.daily_stats[date].duration || 0);
+        });
+      } else {
+        // Fallback to empty data
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+          data.push(0);
+        }
+      }
+      
+      charts.activityDuration = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Activity Duration (min)',
+            data: data,
+            borderColor: '#8c5e2a',
+            backgroundColor: 'rgba(140, 94, 42, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Minutes'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Create calories burned chart
+    function createCaloriesBurnedChart(activityData) {
+      const ctx = document.getElementById('calories-burned-chart').getContext('2d');
+      
+      if (charts.caloriesBurned) {
+        charts.caloriesBurned.destroy();
+      }
+      
+      const labels = [];
+      const data = [];
+      
+      if (activityData && activityData.daily_stats) {
+        // Sort dates and extract data
+        const sortedDates = Object.keys(activityData.daily_stats).sort();
+        sortedDates.forEach(date => {
+          const dateObj = new Date(date);
+          labels.push(dateObj.toLocaleDateString('en-US', { weekday: 'short' }));
+          data.push(activityData.daily_stats[date].calories || 0);
+        });
+      } else {
+        // Fallback to empty data
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+          data.push(0);
+        }
+      }
+      
+      charts.caloriesBurned = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Calories Burned',
+            data: data,
+            backgroundColor: 'rgba(166, 111, 63, 0.8)',
+            borderColor: '#a66f3f',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Calories'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Load health charts
+    async function loadHealthCharts() {
+      try {
+        // Load health data
+        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+        const response = await fetch(`${apiBaseUrl}/health/me`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+        
+        const healthData = response.ok ? await response.json() : null;
+        createWeightChart(healthData);
+        createSleepChart(healthData);
+      } catch (error) {
+        console.error('Error loading health charts:', error);
+        createWeightChart(null);
+        createSleepChart(null);
+      }
+    }
+
+    // Create weight chart
+    function createWeightChart(healthData) {
+      const ctx = document.getElementById('weight-chart').getContext('2d');
+      
+      if (charts.weight) {
+        charts.weight.destroy();
+      }
+      
+      const labels = [];
+      const data = [];
+      
+      // For now, we'll use the current weight as a single data point
+      // In a real implementation, you'd want to track weight over time
+      if (healthData && healthData.healthData && healthData.healthData.weight) {
+        const currentWeight = healthData.healthData.weight;
+        // Create a simple trend with the current weight
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+          // Use current weight with slight variation for demo
+          data.push((currentWeight + (Math.random() - 0.5) * 0.5).toFixed(1));
+        }
+      } else {
+        // Fallback to empty data
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+          data.push(0);
+        }
+      }
+      
+      charts.weight = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Weight (kg)',
+            data: data,
+            borderColor: '#8c5e2a',
+            backgroundColor: 'rgba(140, 94, 42, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              title: {
+                display: true,
+                text: 'Weight (kg)'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Create sleep chart
+    function createSleepChart(healthData) {
+      const ctx = document.getElementById('sleep-chart').getContext('2d');
+      
+      if (charts.sleep) {
+        charts.sleep.destroy();
+      }
+      
+      const labels = [];
+      const data = [];
+      
+      // For now, we'll use placeholder data since there's no sleep tracking endpoint yet
+      // In a real implementation, you'd want to track sleep over time
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+        // Placeholder sleep data (7-9 hours)
+        data.push(Math.floor(Math.random() * 2) + 7);
+      }
+      
+      charts.sleep = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Sleep Hours',
+            data: data,
+            backgroundColor: 'rgba(140, 94, 42, 0.8)',
+            borderColor: '#8c5e2a',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 10,
+              title: {
+                display: true,
+                text: 'Hours'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Load insights
+    async function loadInsights() {
+      try {
+        // Load nutrition summary for insights
+        const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+        const nutritionResponse = await fetch(`${apiBaseUrl}/nutrition/me/nutrition/summary?days=7`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        }).catch(() => ({ ok: false }));
+        
+        // Load activity summary for insights
+        const activityResponse = await fetch(`${apiBaseUrl}/activity/me/stats/weekly`, {
+          headers: { 'Authorization': `Bearer ${accessToken}` }
+        });
+
+        const [nutritionData, activityData] = await Promise.all([
+          nutritionResponse.ok ? nutritionResponse.json() : null,
+          activityResponse.ok ? activityResponse.json() : null
+        ]);
+
+        // Generate insights based on real data
+        let nutritionInsight = "Start tracking your nutrition to see personalized insights!";
+        let activityInsight = "Start logging activities to see your progress!";
+        let goalInsight = "Set up your goals to track your progress!";
+
+        if (nutritionData && Array.isArray(nutritionData) && nutritionData.length > 0) {
+          const avgCalories = nutritionData.reduce((sum, day) => sum + (day.totals?.calories || 0), 0) / nutritionData.length;
+          const avgProtein = nutritionData.reduce((sum, day) => sum + (day.totals?.protein || 0), 0) / nutritionData.length;
+          
+          if (avgCalories > 0) {
+            nutritionInsight = `Your average daily calorie intake is ${Math.round(avgCalories)} calories. `;
+            if (avgProtein > 50) {
+              nutritionInsight += "Great protein intake! Consider adding more fiber-rich foods.";
+            } else {
+              nutritionInsight += "Consider increasing your protein intake for better nutrition.";
+            }
+          }
+        }
+
+        if (activityData && activityData.total_duration_minutes > 0) {
+          const activeDays = Object.values(activityData.daily_stats || {}).filter(day => day.duration > 0).length;
+          activityInsight = `You've been active ${activeDays} out of 7 days this week. `;
+          if (activeDays >= 5) {
+            activityInsight += "Excellent consistency! Keep up the great work!";
+          } else {
+            activityInsight += "Try to increase your activity frequency for better health.";
+          }
+        }
+
+        if (nutritionData && activityData) {
+          goalInsight = "You're making good progress! Keep tracking your nutrition and activities consistently.";
+        }
+
+        document.getElementById('nutrition-insight').textContent = nutritionInsight;
+        document.getElementById('activity-insight').textContent = activityInsight;
+        document.getElementById('goal-insight').textContent = goalInsight;
+      } catch (error) {
+        console.error('Error loading insights:', error);
+        // Fallback to default insights
+        document.getElementById('nutrition-insight').textContent = 
+          "Start tracking your nutrition to see personalized insights!";
+        document.getElementById('activity-insight').textContent = 
+          "Start logging activities to see your progress!";
+        document.getElementById('goal-insight').textContent = 
+          "Set up your goals to track your progress!";
+      }
+    }
+
+    // Get date range
+    function getDateRange() {
+      const end = new Date();
+      const start = new Date();
+      start.setDate(start.getDate() - currentPeriod);
+      
+      return {
+        start: start.toISOString().split('T')[0],
+        end: end.toISOString().split('T')[0]
+      };
+    }
+
+    // Logout
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('userEmail');
+      window.location.href = 'login.html';
+    }
+  </script>
+  <script src="scripts/navigation.js"></script>
+</body>
+</html>

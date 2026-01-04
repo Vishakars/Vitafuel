@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VitaFuel | Shopping List</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/commonstyles.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .list-container {
+      width: 700px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #fffaf5;
+      border-radius: 16px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      font-family: 'Georgia', serif;
+      font-size: 17px;
+      color: #6F4E37;
+    }
+
+    .list-container h2 {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #D2B48C;
+      ;
+    }
+
+    .item-row button {
+      background-color: #A0522D;
+      border: none;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-family: 'Georgia', serif;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .item-row button:hover {
+      background-color: #873F1D;
+      transform: scale(1.05);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .clear-btn {
+      margin-top: 20px;
+      background-color: #6e4b3a;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      font-family: 'Georgia', serif;
+      font-size: 16px;
+    }
+
+    .clear-btn:hover {
+      background-color: #6F4E37;
+      transform: scale(1.05);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .add-btn {
+      background-color: #DDB67D;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-family: 'Georgia', serif;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .add-btn:hover {
+      background-color: #CFA25F;
+      transform: scale(1.05);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .shopping-title {
+      color: #A0522D;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      font-size: 29px;
+      font-family: 'Georgia', serif;
+      margin-bottom: 15px;
+    }
+
+    .input-container {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .item-input {
+      flex: 1;
+      padding: 8px;
+      font-family: 'Georgia', serif;
+      border-radius: 8px;
+      border: 1px solid #8B5E3C;
+      font-size: 16px;
+      background-color: white;
+      color: #A0522D;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .item-input:focus {
+      outline: none;
+      border-color: #A0522D;
+      box-shadow: 0 0 6px rgba(160, 82, 45, 0.25);
+    }
+
+    .plus-icon {
+      font-weight: 900;
+      font-size: 1rem;
+    }
+
+    .close-icon {
+      font-size: 1.1rem;
+    }
+
+    .delete-icon {
+      font-size: 50px;
+      color: #000;
+      /* Default color */
+      cursor: pointer;
+      transition: transform 0.2s ease, color 0.2s ease;
+    }
+
+    .delete-icon:hover {
+      color: #a15e32;
+      /* coffee brown hover color */
+      transform: scale(1.1);
+    }
+
+    .cart {
+      font-size: 1.5rem;
+      text-shadow: 0 0 8px #d2b48c, 0 0 15px #c49e77;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      20%,
+      50%,
+      80%,
+      100% {
+        transform: translateY(0);
+      }
+
+      40% {
+        transform: translateY(-10px);
+      }
+
+      60% {
+        transform: translateY(-5px);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="hero-img1">
+      <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+    </div>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="health-insights.html">Wellness Hub</a>
+      <a href="recommendations.html">Recommendations</a>
+      <a href="chatbot.html">Chatbot</a>
+      <a href="shopping-list.html" class="active">Shopping List</a>
+      <div class="profile-container">
+        <div class="profile-circle" id="user-profile">V</div>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="profile.html">My Profile</a>
+          <a href="settings.html">Settings</a>
+          <a href="about.html">About</a>
+          <a href="logout.html">Logout</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="list-container">
+    <h2 class="shopping-title"><i class="fa-solid fa-cart-shopping cart"></i> Your Shopping List</h2>
+
+    <!-- Add Item Form -->
+    <form class="input-container" id="addItemForm">
+      <input id="itemInput" type="text" placeholder="Add item..." class="item-input" />
+      <button type="submit" class="add-btn"><i class="fa-solid fa-plus plus-icon"></i></button>
+    </form>
+
+
+    <div id="shopping-items"></div>
+    <button class="clear-btn" onclick="clearList()"><i class="fa-solid fa-trash"></i> Clear All</button>
+  </div>
+
+  <footer class="footer">
+    <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+  </footer>
+
+  <script>
+    const container = document.getElementById("shopping-items");
+
+    function loadList() {
+      const list = JSON.parse(localStorage.getItem("shoppingList")) || [];
+      container.innerHTML = "";
+
+      if (list.length === 0) {
+        container.innerHTML = "<p>Your list is empty.</p>";
+        return;
+      }
+
+      list.forEach((entry, index) => {
+        const row = document.createElement("div");
+        row.className = "item-row";
+        row.innerHTML = `
+          <span>• ${entry.item} <small style="color:	#DDB67D;">(${entry.added})</small></span>
+          <button onclick="removeItem(${index})"><i class="fa-regular fa-circle-xmark close-icon"></i></button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function addItem() {
+      const input = document.getElementById("itemInput");
+      const value = input.value.trim();
+      if (!value) return;
+
+      const list = JSON.parse(localStorage.getItem("shoppingList")) || [];
+      list.push({ item: value, added: new Date().toLocaleDateString() });
+      localStorage.setItem("shoppingList", JSON.stringify(list));
+      input.value = "";
+      loadList();
+    }
+
+    function removeItem(index) {
+      const list = JSON.parse(localStorage.getItem("shoppingList")) || [];
+      list.splice(index, 1);
+      localStorage.setItem("shoppingList", JSON.stringify(list));
+      loadList();
+    }
+
+    function clearList() {
+      localStorage.removeItem("shoppingList");
+      loadList();
+    }
+
+    loadList();
+
+    document.getElementById("addItemForm").addEventListener("submit", function (event) {
+      event.preventDefault(); // prevents form from refreshing page
+      addItem(); // calls your existing function
+    });
+
+  </script>
+
+  <script src="scripts/navigation.js"></script>
+
+  <script>
+    // Direct profile dropdown fix for Shopping List page
+    document.addEventListener('DOMContentLoaded', function () {
+      const profileCircle = document.getElementById('user-profile');
+      const profileDropdown = document.getElementById('profileDropdown');
+
+      if (profileCircle && profileDropdown) {
+        // Add click handler
+        profileCircle.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          // Toggle dropdown
+          if (profileDropdown.style.display === 'block') {
+            profileDropdown.style.display = 'none';
+          } else {
+            profileDropdown.style.display = 'block';
+            profileDropdown.style.position = 'absolute';
+            profileDropdown.style.right = '0';
+            profileDropdown.style.top = '100%';
+            profileDropdown.style.backgroundColor = '#fff';
+            profileDropdown.style.zIndex = '9999';
+            profileDropdown.style.minWidth = '150px';
+            profileDropdown.style.border = '1px solid #ddd';
+            profileDropdown.style.borderRadius = '10px';
+            profileDropdown.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+            profileDropdown.style.padding = '10px 0';
+          }
+        });
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', function (e) {
+          if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+            profileDropdown.style.display = 'none';
+          }
+        });
+      }
+    });
+  </script>
+
+</body>
+
+</html>

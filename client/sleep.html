@@ -1,0 +1,2490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | Sleep Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/sleep.css">
+    <link rel="stylesheet" href="css/commonstyles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/health-domain-common.js"></script>
+</head>
+
+<body>
+    <div class="floating-moon"><i class="fa-solid fa-moon"></i></div>
+
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text" onclick="window.location.href='index.html'">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">U</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="logout.html">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fa-solid fa-moon"></i> Sleep Tracker</h1>
+            <p>Track, analyze, and improve your sleep quality</p>
+            <div class="sleep-quote"><i class="fa-solid fa-bed"></i> "Sleep is the best meditation." - Dalai Lama</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Last Night</h3>
+                        <div class="stat-value" id="last-sleep">0h 0m</div>
+                        <div class="stat-goal">Goal: 8 hours</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-bed"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Weekly Average</h3>
+                        <div class="stat-value" id="avg-sleep">0h 0m</div>
+                        <div class="stat-goal">Start tracking to see progress</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-chart-column"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Sleep Quality</h3>
+                        <div class="stat-value" id="sleep-quality">0%</div>
+                        <div class="stat-goal">Log quality ratings</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-star"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-info">
+                        <h3>Sleep Streak</h3>
+                        <div class="stat-value" id="sleep-streak">0</div>
+                        <div class="stat-goal">Consecutive days tracked</div>
+                    </div>
+                    <div class="stat-icon"><i class="fa-solid fa-fire"></i></div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sleep-logger">
+            <h2><i class="fa-solid fa-pen-to-square"></i> Log Your Sleep</h2>
+            <p style="color: #7c5e47; margin-bottom: 20px;">Record your sleep data to track patterns and improve your
+                rest</p>
+
+            <div class="sleep-form">
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-bed"></i> Bedtime</label>
+                    <input type="time" class="form-input" id="sleep-time" value="22:00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-sun"></i> Wake Time</label>
+                    <input type="time" class="form-input" id="wake-time" value="06:00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-hourglass-half"></i> Sleep Duration (hours)</label>
+                    <input type="number" class="form-input" id="sleep-duration" min="0" max="24" step="0.5"
+                        placeholder="8.0">
+                    <small style="color: #7c5e47; font-size: 0.8rem;">Auto-calculated when you enter bedtime & wake
+                        time</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-star"></i> Sleep Quality (1-10)</label>
+                    <input type="range" class="form-input" id="sleep-quality-slider" min="1" max="10" value="5">
+                    <span id="sleep-quality-value">5</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"><i class="fa-solid fa-note-sticky"></i> Notes (Optional)</label>
+                <textarea class="form-input" id="sleep-notes"
+                    placeholder="How did you sleep? Any factors affecting your rest?" rows="3"></textarea>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" id="calculate-btn"><i class="fa-solid fa-flask"></i>
+                    Calculate</button>
+                <button class="btn btn-primary" id="save-btn"><i class="fa-solid fa-floppy-disk"></i> Save Sleep
+                    Entry</button>
+            </div>
+        </div>
+
+        <!-- Sleep Goals Section -->
+        <div class="sleep-goals">
+            <h2><i class="fa-solid fa-bullseye"></i> Sleep Goals</h2>
+            <div class="goals-grid">
+                <div class="goal-card">
+                    <div class="goal-title"><i class="fa-solid fa-clock"></i> Sleep Duration Goal</div>
+                    <input type="number" class="form-input" id="duration-goal" value="8" min="4" max="12" step="0.5">
+                    <small>hours per night</small>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-title"><i class="fa-solid fa-trophy"></i> Consistency Goal</div>
+                    <input type="number" class="form-input" id="consistency-goal" value="7" min="1" max="7">
+                    <small>days per week</small>
+                </div>
+                <div class="goal-card">
+                    <div class="goal-title"><i class="fa-solid fa-star-half-stroke"></i> Quality Goal</div>
+                    <input type="number" class="form-input" id="quality-goal" value="7" min="1" max="10">
+                    <small>average rating</small>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Sleep Habits Tracker -->
+        <div class="sleep-habits">
+            <h2><i class="fa-solid fa-moon"></i> Sleep Habits</h2>
+            <p style="text-align: center; margin-bottom: 25px; color: #8b6c58;">Track simple habits that affect your
+                sleep</p>
+            <div class="habits-grid">
+                <div class="habit-card">
+                    <div class="habit-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
+                    <h4>Screen Time</h4>
+                    <select class="form-input" id="screen-time">
+                        <option value="">How long before bed?</option>
+                        <option value="3+ hours">3+ hours before</option>
+                        <option value="1-3 hours">1-3 hours before</option>
+                        <option value="30-60 min">30-60 min before</option>
+                        <option value="right before">Right before bed</option>
+                    </select>
+                </div>
+                <div class="habit-card">
+                    <div class="habit-icon"><i class="fa-solid fa-mug-hot"></i></div>
+                    <h4>Caffeine</h4>
+                    <select class="form-input" id="caffeine">
+                        <option value="">Last caffeine?</option>
+                        <option value="6+ hours">6+ hours before</option>
+                        <option value="3-6 hours">3-6 hours before</option>
+                        <option value="1-3 hours">1-3 hours before</option>
+                        <option value="evening">In the evening</option>
+                    </select>
+                </div>
+                <div class="habit-card">
+                    <div class="habit-icon"><i class="fa-solid fa-utensils"></i></div>
+                    <h4>Last Meal</h4>
+                    <select class="form-input" id="last-meal">
+                        <option value="">When did you eat?</option>
+                        <option value="3+ hours">3+ hours before</option>
+                        <option value="2-3 hours">2-3 hours before</option>
+                        <option value="1-2 hours">1-2 hours before</option>
+                        <option value="right before">Right before bed</option>
+                    </select>
+                </div>
+                <div class="habit-card">
+                    <div class="habit-icon"><i class="fa-solid fa-person-running"></i></div>
+                    <h4>Exercise</h4>
+                    <select class="form-input" id="exercise">
+                        <option value="">Exercise today?</option>
+                        <option value="morning">Morning workout</option>
+                        <option value="afternoon">Afternoon workout</option>
+                        <option value="evening">Evening workout</option>
+                        <option value="none">No exercise</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary" id="save-habits-btn" style="width: 100%; margin-top: 20px;">
+                <i class="fa-solid fa-floppy-disk"></i> Save Sleep Habits
+            </button>
+        </div>
+
+        <!-- Pre-Sleep Meditation Timer -->
+        <div class="meditation-timer">
+            <h2><i class="fa-solid fa-bed"></i> Pre-Sleep Meditation</h2>
+            <p style="color: #7c5e47; margin-bottom: 20px;">Calm your mind before sleep with guided meditation</p>
+            <div class="meditation-display" id="meditation-display">05:00</div>
+            <div class="preset-times">
+                <button class="preset-btn" onclick="setMeditationTime(5)">5 min</button>
+                <button class="preset-btn" onclick="setMeditationTime(10)">10 min</button>
+                <button class="preset-btn" onclick="setMeditationTime(15)">15 min</button>
+                <button class="preset-btn" onclick="setMeditationTime(20)">20 min</button>
+            </div>
+            <div class="meditation-controls">
+                <button class="btn btn-primary" onclick="startMeditation()"><i class="fa-solid fa-play"></i> Start
+                    Meditation</button>
+                <button class="btn btn-secondary" onclick="pauseMeditation()"><i class="fa-solid fa-pause"></i>
+                    Pause</button>
+                <button class="btn btn-danger" onclick="stopMeditation()"><i class="fa-solid fa-stop"></i> Stop</button>
+            </div>
+        </div>
+
+        <!-- Sleep Habits Checklist -->
+        <div class="sleep-habits">
+            <h2> Daily Sleep Habits</h2>
+            <p style="text-align: center; margin-bottom: 25px; color: #8b6c58;">Check off healthy habits you practiced
+                today</p>
+            <div class="habits-checklist">
+                <div class="habit-item">
+                    <div class="habit-checkbox" data-habit="avoid-caffeine"></div>
+                    <span><i class="fa-solid fa-mug-saucer"></i> Avoided caffeine 6+ hours before bed</span>
+                </div>
+                <div class="habit-item">
+                    <div class="habit-checkbox" data-habit="no-screens"></div>
+                    <span><i class="fa-solid fa-mobile-screen-button"></i> No screens 1 hour before bed</span>
+                </div>
+                <div class="habit-item">
+                    <div class="habit-checkbox" data-habit="consistent-time"></div>
+                    <span><i class="fa-solid fa-clock"></i> Went to bed at consistent time</span>
+                </div>
+                <div class="habit-item">
+                    <div class="habit-checkbox" data-habit="cool-room"></div>
+                    <span><i class="fa-solid fa-temperature-low"></i> Kept bedroom cool (16-19°C)</span>
+                </div>
+                <div class="habit-item">
+                    <div class="habit-checkbox" data-habit="dark-room"></div>
+                    <span><i class="fa-solid fa-moon"></i> Made room as dark as possible</span>
+                </div>
+                <div class="habit-item">
+                    <div class="habit-checkbox" data-habit="exercise"></div>
+                    <span><i class="fa-solid fa-dumbbell"></i> Exercised during the day</span>
+                </div>
+                <div class="habit-item">
+                    <div class="habit-checkbox" data-habit="relaxation"></div>
+                    <span><i class="fa-solid fa-spa"></i> Practiced relaxation technique</span>
+                </div>
+                <div class="habit-item">
+                    <div class="habit-checkbox" data-habit="comfortable-bed"></div>
+                    <span><i class="fa-solid fa-bed"></i> Comfortable mattress and pillows</span>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="sleep-log">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2><i class="fa-solid fa-book"></i> Sleep Log</h2>
+                <button class="btn btn-secondary" id="clear-log-btn" onclick="clearSleepLog()"
+                    style="background: #dc3545; color: white; border: none;">
+                    <i class="fa-solid fa-trash"></i> Clear Log
+                </button>
+            </div>
+            <div id="sleep-log-entries">
+                <div class="no-data-message">
+                    <h3><i class="fa-solid fa-pen-to-square"></i> No sleep entries yet</h3>
+                    <p>Start tracking your sleep to see your log entries here. Use the sleep timer above or manually
+                        enter your sleep data!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep Goals & Targets -->
+        <div class="goals-section">
+            <h2><i class="fa-solid fa-bullseye"></i> Sleep Goals & Targets</h2>
+            <div class="goals-grid">
+                <div class="goal-card">
+                    <h3><i class="fa-solid fa-calendar-days"></i> Weekly Goals</h3>
+                    <div class="goal-item">
+                        <label>Target Sleep Duration (hours)</label>
+                        <input type="number" id="target-duration" min="6" max="12" step="0.5" value="8">
+                    </div>
+                    <div class="goal-item">
+                        <label>Target Sleep Quality (1-10)</label>
+                        <input type="number" id="target-quality" min="1" max="10" value="8">
+                    </div>
+                    <div class="goal-item">
+                        <label>Consistency Goal (days/week)</label>
+                        <input type="number" id="target-consistency" min="1" max="7" value="5">
+                    </div>
+                    <button class="btn btn-primary" onclick="updateSleepGoals()">Update Goals</button>
+                </div>
+
+                <div class="goal-card">
+                    <h3><i class="fa-solid fa-chart-column"></i> Progress Tracking</h3>
+                    <div class="progress-item">
+                        <span>This Week's Average:</span>
+                        <span id="weekly-average">0h 0m</span>
+                    </div>
+                    <div class="progress-item">
+                        <span>Quality Score:</span>
+                        <span id="quality-score">0/10</span>
+                    </div>
+                    <div class="progress-item">
+                        <span>Consistency:</span>
+                        <span id="consistency-score">0/7 days</span>
+                    </div>
+                    <div class="progress-item">
+                        <span>Goal Achievement:</span>
+                        <span id="goal-achievement">0%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 🔍 Smart Insights -->
+        <div class="smart-insights">
+            <h2><i class="fa-solid fa-brain"></i> Smart Sleep Insights</h2>
+            <p id="sleep-insights-text">Not enough data yet — log more sleep! 😴</p>
+        </div>
+
+        <!-- 🛏️ Smart Bedtime Reminder -->
+        <div class="bedtime-alert-section">
+            <h2><i class="fa-solid fa-bell"></i> Bedtime Reminder</h2>
+            <p id="bedtime-status" style="margin-bottom:10px; color:#7c5e47;">Waiting for your bedtime...</p>
+        </div>
+
+        <!-- 😴 Dream Journal -->
+        <div class="dream-journal">
+            <h2><i class="fa-solid fa-book-open"></i> Dream Journal</h2>
+
+            <div class="emoji-row icons-row">
+                <i class="fa-regular fa-face-tired mood-icon" data-mood="exhausted"></i>
+                <i class="fa-regular fa-face-smile-beam mood-icon" data-mood="happy"></i>
+                <i class="fa-regular fa-face-grin-tears mood-icon" data-mood="funny"></i>
+                <i class="fa-regular fa-face-surprise mood-icon" data-mood="scary"></i>
+                <i class="fa-regular fa-face-angry mood-icon" data-mood="stress"></i>
+                <i class="fa-solid fa-star-and-crescent mood-icon" data-mood="fantasy"></i>
+                <i class="fa-solid fa-ghost mood-icon" data-mood="weird"></i>
+                <i class="fa-solid fa-skull-crossbones mood-icon" data-mood="nightmare"></i>
+                <i class="fa-solid fa-heart mood-icon" data-mood="romantic"></i>
+            </div>
+
+            <textarea id="dream-text" placeholder="What happened in your dream?" class="form-input"
+                style="height:120px;"></textarea>
+            <button id="save-dream-btn" class="btn btn-primary" style="margin-top:10px;">Save Entry</button>
+
+            <div id="dream-log"></div>
+        </div>
+
+        <!-- 🌿 Wind Down Routine -->
+        <div class="wind-down-section upgraded-winddown">
+            <h2><i class="fa-solid fa-spa"></i> Wind-Down Checklist</h2>
+            <p class="small-note">Finish these before sleep for a calmer night</p>
+
+            <div class="wind-grid">
+                <label class="wind-item">
+                    <input type="checkbox" class="wind-check">
+                    <span><i class="fa-solid fa-wind"></i> Deep breathing</span>
+                </label>
+
+                <label class="wind-item">
+                    <input type="checkbox" class="wind-check">
+                    <span><i class="fa-solid fa-hand-sparkles"></i> Light stretching</span>
+                </label>
+
+                <label class="wind-item">
+                    <input type="checkbox" class="wind-check">
+                    <span><i class="fa-solid fa-mug-hot"></i> Herbal tea</span>
+                </label>
+
+                <label class="wind-item">
+                    <input type="checkbox" class="wind-check">
+                    <span><i class="fa-solid fa-ban"></i> No scrolling</span>
+                </label>
+
+                <label class="wind-item">
+                    <input type="checkbox" class="wind-check">
+                    <span><i class="fa-solid fa-pen-to-square"></i> Journaling</span>
+                </label>
+
+                <label class="wind-item">
+                    <input type="checkbox" class="wind-check">
+                    <span><i class="fa-solid fa-brain"></i> Meditation</span>
+                </label>
+
+                <label class="wind-item">
+                    <input type="checkbox" class="wind-check">
+                    <span><i class="fa-solid fa-book-open"></i> Read a book</span>
+                </label>
+
+                <label class="wind-item">
+                    <input type="checkbox" class="wind-check">
+                    <span><i class="fa-solid fa-star"></i> Aromatherapy</span>
+                </label>
+
+                <label class="wind-item">
+                    <input type="checkbox" class="wind-check">
+                    <span><i class="fa-solid fa-music"></i> Calm music</span>
+                </label>
+
+                <label class="wind-item">
+                    <input type="checkbox" class="wind-check">
+                    <span><i class="fa-solid fa-bed"></i> Cozy bedding setup</span>
+                </label>
+
+            </div>
+
+            <div class="readiness-display">
+                <div class="ring">
+                    <span id="readiness-score">0</span>%
+                </div>
+                <p>Sleep Readiness Score</p>
+            </div>
+        </div>
+
+        <!-- 🤖 AI Routine Advice -->
+        <div class="routine-advice">
+            <h2><i class="fa-solid fa-robot"></i> AI Routine Insights</h2>
+            <p id="advice-text">Tracking your habits... come back soon 💤</p>
+        </div>
+
+        <!-- 🎵 Sleep Sounds -->
+        <div class="sleep-sounds">
+            <h2><i class="fa-solid fa-music"></i> Sleep Sounds</h2>
+            <audio id="sleep-audio" controls preload="metadata" style="width:100%; margin-bottom:10px;">
+                <source id="audio-source" src="" type="audio/mpeg">
+            </audio>
+            <div class="sound-select">
+                <div class="sound-selected">🎵 Select a sound...</div>
+                <ul class="sound-dropdown">
+                    <li data-value="./sounds/rain.mp3"><i class="fa-solid fa-cloud-rain"></i> Rain</li>
+                    <li data-value="./sounds/forest.mp3"><i class="fa-solid fa-tree"></i> Forest Breeze</li>
+                    <li data-value="./sounds/lofi.mp3"><i class="fa-solid fa-music"></i> Lo-Fi Piano</li>
+                    <li data-value="./sounds/brown.mp3"><i class="fa-solid fa-wave-square"></i> Brown Noise</li>
+                    <li data-value="./sounds/waves.mp3"><i class="fa-solid fa-water"></i> Ocean Waves</li>
+                </ul>
+            </div>
+            <p id="sound-preview"></p>
+
+        </div>
+
+        <!-- 📊 Sleep Score -->
+        <div class="sleep-score">
+            <h2><i class="fa-solid fa-star-half-stroke"></i> Sleep Score</h2>
+            <div id="sleep-score-value" class="score-display">--</div>
+        </div>
+
+        <!-- 📅 Chronotype -->
+        <div class="chronotype-section">
+            <h2><i class="fa-solid fa-clock"></i> Sleep Style</h2>
+            <select id="chronotype-selector" class="form-input">
+                <option value="">Select your chronotype</option>
+                <option value="owl"><i class="fa-solid fa-owl"></i> Night Owl</option>
+                <option value="early-bird"><i class="fa-solid fa-dove"></i> Early Bird</option>
+                <option value="bear"><i class="fa-solid fa-paw"></i> Bear</option>
+                <option value="wolf"><i class="fa-brands fa-wolf-pack-battalion"></i> Wolf</option>
+            </select>
+
+            <p id="chronotype-recommendation" style="margin-top:10px; color:#7c5e47;"></p>
+        </div>
+
+        <!-- ⏳ Sleep Debt -->
+        <div class="sleep-debt">
+            <h2><i class="fa-solid fa-hourglass-half"></i> Sleep Debt</h2>
+            <p id="sleep-debt-value">Calculating...</p>
+        </div>
+
+
+        <!-- Sleep Tips & Science -->
+        <div class="sleep-tips">
+            <h2><i class="fa-solid fa-bed"></i> Sleep Tips & Science</h2>
+
+            <div class="tip-card">
+                <i class="fa-solid fa-temperature-low"></i>
+                <strong> Temperature Matters:</strong> Your body temperature naturally drops before sleep. Keep your
+                bedroom between 16-19°C (60-67°F) for optimal sleep quality.
+            </div>
+
+            <div class="tip-card">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+                <strong> Blue Light Blues:</strong> Blue light from screens suppresses melatonin production. Use blue
+                light filters or avoid screens 1-2 hours before bed.
+            </div>
+
+            <div class="tip-card">
+                <i class="fa-solid fa-utensils"></i>
+                <strong> The 3-2-1 Rule:</strong> Stop eating 3 hours before bed, stop drinking 2 hours before, and stop
+                screens 1 hour before for better sleep.
+            </div>
+
+            <div class="tip-card">
+                <i class="fa-solid fa-clock"></i>
+                <strong> Consistent Schedule:</strong> Going to bed and waking up at the same time daily helps regulate
+                your circadian rhythm, even on weekends.
+            </div>
+
+            <div class="tip-card">
+                <i class="fa-solid fa-sun"></i>
+                <strong> Morning Sunlight:</strong> Get 10-15 minutes of morning sunlight to help regulate your
+                sleep-wake cycle naturally.
+            </div>
+
+            <div class="tip-card">
+                <i class="fa-solid fa-mug-saucer"></i>
+                <strong> Caffeine Half-Life:</strong> Caffeine stays in your system for 6-8 hours. Avoid coffee after 2
+                PM if you sleep at 10 PM.
+            </div>
+        </div>
+
+        <!-- Sleep Tips & Recommendations -->
+        <div class="tips-section">
+            <h2><i class="fa-solid fa-lightbulb"></i> Sleep Tips & Recommendations</h2>
+            <div class="tips-grid" id="sleep-tips">
+                <!-- Tips will be populated dynamically -->
+            </div>
+        </div>
+
+        <div class="bedtime-reminder">
+            <i class="fa-solid fa-clock"></i> <span class="reminder-time" id="bedtime-reminder">Set your sleep goal to
+                see personalized bedtime
+                reminder</span>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+
+    <script>
+        // Initialize sleep tracker with common functionality
+        const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('recentEmail');
+        const sleepManager = new HealthDomainManager('sleep', currentUser);
+
+        // Sleep data storage
+        let sleepData = [];
+        let sleepGoals = JSON.parse(localStorage.getItem(`${currentUser}_sleepGoals`) || '{}');
+        let sleepCharts = {};
+
+        // Initialize sleep tracker
+        async function initializeSleepTracker() {
+            console.log('🚀 Initializing sleep tracker...');
+
+            // Initialize sleepManager first
+            await sleepManager.initialize();
+            console.log('Sleep manager initialized, data:', sleepManager.data);
+
+            await loadSleepData();
+            initializeCharts();
+            updateProgressTracking();
+            loadSleepTips();
+            updateBedtimeReminder();
+            updateStats(); // Update summary statistics on initialization
+            updateAnalytics(); // Update analytics on initialization
+            initializeHabits(); // Initialize daily sleep habits
+            console.log('✅ Sleep tracker initialization complete');
+        }
+
+        // Initialize charts (removed - no longer needed)
+        function initializeCharts() {
+            console.log('📊 Charts section removed - no initialization needed');
+        }
+
+        // Update charts with current data (removed - no longer needed)
+        function updateCharts() {
+            console.log('📊 Charts section removed - no update needed');
+        }
+
+        // Update sleep goals
+        function updateSleepGoals() {
+            const targetDuration = parseFloat(document.getElementById('target-duration').value);
+            const targetQuality = parseInt(document.getElementById('target-quality').value);
+            const targetConsistency = parseInt(document.getElementById('target-consistency').value);
+
+            sleepGoals = {
+                targetDuration: targetDuration,
+                targetQuality: targetQuality,
+                targetConsistency: targetConsistency,
+                setDate: new Date().toISOString()
+            };
+
+            localStorage.setItem(`${currentUser}_sleepGoals`, JSON.stringify(sleepGoals));
+            updateProgressTracking();
+            sleepManager.showNotification('Sleep goals updated successfully', 'success');
+        }
+
+        // Update progress tracking
+        function updateProgressTracking() {
+            console.log('📊 Updating progress tracking...');
+            console.log('sleepData for progress:', sleepData);
+
+            const last7Days = sleepData.slice(0, 7);
+            console.log('Last 7 days for progress:', last7Days);
+
+            if (last7Days.length > 0) {
+                // Calculate average duration in hours
+                const totalMinutes = last7Days.reduce((sum, entry) => {
+                    if (entry.durationMinutes && !isNaN(entry.durationMinutes)) {
+                        return sum + entry.durationMinutes;
+                    } else if (entry.duration) {
+                        // Parse "8h 30m" format
+                        const match = entry.duration.match(/(\d+)h\s*(\d*)m?/);
+                        if (match) {
+                            const hours = parseInt(match[1]);
+                            const minutes = parseInt(match[2] || 0);
+                            if (!isNaN(hours) && !isNaN(minutes)) {
+                                return sum + (hours * 60 + minutes);
+                            }
+                        }
+                    }
+                    return sum;
+                }, 0);
+
+                const avgDurationHours = totalMinutes > 0 ? totalMinutes / (last7Days.length * 60) : 0;
+                const avgQuality = last7Days.reduce((sum, entry) => {
+                    const quality = entry.quality || 0;
+                    return sum + (isNaN(quality) ? 0 : quality);
+                }, 0) / last7Days.length;
+
+                // Calculate consistency (days meeting target duration)
+                const targetDurationHours = sleepGoals.targetDuration || 8;
+                const consistency = last7Days.filter(entry => {
+                    let entryHours = 0;
+                    if (entry.durationMinutes && !isNaN(entry.durationMinutes)) {
+                        entryHours = entry.durationMinutes / 60;
+                    } else if (entry.duration) {
+                        const match = entry.duration.match(/(\d+)h\s*(\d*)m?/);
+                        if (match) {
+                            const hours = parseInt(match[1]);
+                            const minutes = parseInt(match[2] || 0);
+                            if (!isNaN(hours) && !isNaN(minutes)) {
+                                entryHours = hours + minutes / 60;
+                            }
+                        }
+                    }
+                    return entryHours >= targetDurationHours;
+                }).length;
+
+                // Format duration display based on data availability
+                const hours = Math.floor(avgDurationHours);
+                const minutes = Math.round((avgDurationHours - hours) * 60);
+
+                let durationDisplay;
+                let displayLabel = "This Week's Average:";
+
+                if (last7Days.length === 1) {
+                    // Only one day of data - show as "Today's Sleep"
+                    durationDisplay = avgDurationHours > 0 ? `${hours}h ${minutes}m` : '0h 0m';
+                    displayLabel = "Today's Sleep:";
+                } else if (last7Days.length < 7) {
+                    // Less than a week - show as "X-Day Average"
+                    durationDisplay = avgDurationHours > 0 ? `${hours}h ${minutes}m` : '0h 0m';
+                    displayLabel = `${last7Days.length}-Day Average:`;
+                } else {
+                    // Full week of data
+                    durationDisplay = avgDurationHours > 0 ? `${hours}h ${minutes}m` : '0h 0m';
+                    displayLabel = "This Week's Average:";
+                }
+
+                const weeklyAvgElement = document.getElementById('weekly-average');
+                const weeklyAvgLabel = document.querySelector('.progress-item span:first-child');
+
+                if (weeklyAvgElement) {
+                    weeklyAvgElement.textContent = durationDisplay;
+                    console.log('✅ Updated weekly average:', durationDisplay);
+                }
+
+                if (weeklyAvgLabel) {
+                    weeklyAvgLabel.textContent = displayLabel;
+                    console.log('✅ Updated label:', displayLabel);
+                }
+
+                const qualityElement = document.getElementById('quality-score');
+                if (qualityElement) {
+                    const qualityDisplay = !isNaN(avgQuality) ? `${avgQuality.toFixed(1)}/10` : '0/10';
+                    qualityElement.textContent = qualityDisplay;
+                    console.log('✅ Updated quality score:', qualityDisplay);
+                }
+
+                const consistencyElement = document.getElementById('consistency-score');
+                if (consistencyElement) {
+                    consistencyElement.textContent = `${consistency}/7 days`;
+                    console.log('✅ Updated consistency:', consistency);
+                }
+
+                // Calculate goal achievement
+                const durationAchievement = avgDurationHours > 0 ? (avgDurationHours / (sleepGoals.targetDuration || 8)) * 100 : 0;
+                const qualityAchievement = !isNaN(avgQuality) ? (avgQuality / (sleepGoals.targetQuality || 8)) * 100 : 0;
+                const consistencyAchievement = (consistency / (sleepGoals.targetConsistency || 5)) * 100;
+
+                const overallAchievement = (durationAchievement + qualityAchievement + consistencyAchievement) / 3;
+                const goalElement = document.getElementById('goal-achievement');
+                if (goalElement) {
+                    const achievementDisplay = !isNaN(overallAchievement) ? `${Math.round(overallAchievement)}%` : '0%';
+                    goalElement.textContent = achievementDisplay;
+                    console.log('✅ Updated goal achievement:', achievementDisplay);
+                }
+            } else {
+                // Set default values when no data
+                const weeklyAvgElement = document.getElementById('weekly-average');
+                const weeklyAvgLabel = document.querySelector('.progress-item span:first-child');
+
+                if (weeklyAvgElement) {
+                    weeklyAvgElement.textContent = '0h 0m';
+                }
+
+                if (weeklyAvgLabel) {
+                    weeklyAvgLabel.textContent = "This Week's Average:";
+                }
+
+                const qualityElement = document.getElementById('quality-score');
+                if (qualityElement) {
+                    qualityElement.textContent = '0/10';
+                }
+
+                const consistencyElement = document.getElementById('consistency-score');
+                if (consistencyElement) {
+                    consistencyElement.textContent = '0/7 days';
+                }
+
+                const goalElement = document.getElementById('goal-achievement');
+                if (goalElement) {
+                    goalElement.textContent = '0%';
+                }
+
+                console.log('📊 No sleep data available, set default progress values');
+            }
+        }
+
+        // Load sleep tips
+        function loadSleepTips() {
+            const tipsContainer = document.getElementById('sleep-tips');
+            const tips = [
+                {
+                    icon: '<i class="fa-solid fa-moon"></i>',
+                    title: "Consistent Sleep Schedule",
+                    content: "Go to bed and wake up at the same time every day, even on weekends. This helps regulate your body's internal clock.",
+                    category: "consistent-schedule"
+                },
+                {
+                    icon: '<i class="fa-solid fa-mobile-screen-button"></i>',
+                    title: "Digital Sunset",
+                    content: "Avoid screens 1 hour before bedtime. The blue light can interfere with melatonin production and disrupt sleep.",
+                    category: "digital-sunset"
+                },
+                {
+                    icon: '<i class="fa-solid fa-temperature-low"></i>',
+                    title: "Cool Environment",
+                    content: "Keep your bedroom cool (65-68°F) and dark. A cooler environment promotes better sleep quality.",
+                    category: "cool-environment"
+                },
+                {
+                    icon: '<i class="fa-solid fa-person-praying"></i>',
+                    title: "Relaxation Routine",
+                    content: "Develop a calming bedtime routine like reading, meditation, or gentle stretching to signal your body it's time to sleep.",
+                    category: "relaxation-routine"
+                },
+                {
+                    icon: '<i class="fa-solid fa-mug-saucer"></i>',
+                    title: "Caffeine Timing",
+                    content: "Avoid caffeine 6 hours before bedtime. It can stay in your system and affect sleep quality.",
+                    category: "nutrition"
+                },
+                {
+                    icon: '<i class="fa-solid fa-person-running"></i>',
+                    title: "Regular Exercise",
+                    content: "Regular physical activity can improve sleep quality, but avoid intense exercise close to bedtime.",
+                    category: "exercise"
+                }
+            ];
+
+            tipsContainer.innerHTML = tips.map(tip => `
+                <div class="tip-card ${tip.category}">
+                    <span class="tip-icon">${tip.icon}</span>
+                    <div class="tip-title">${tip.title}</div>
+                    <div class="tip-description">${tip.content}</div>
+                </div>
+            `).join('');
+        }
+
+        // MongoDB API integration for sleep
+        async function saveSleepToMongoDB(data) {
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                console.warn('No access token found, saving to localStorage only');
+                return false;
+            }
+
+            try {
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/sleep/me`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    console.log('✅ Sleep data saved to MongoDB');
+                    return true;
+                } else {
+                    console.error(`❌ Failed to save sleep to MongoDB: ${response.status}`);
+                    return false;
+                }
+            } catch (error) {
+                console.error('❌ Error saving sleep to MongoDB:', error);
+                return false;
+            }
+        }
+
+        async function loadSleepFromMongoDB() {
+            const accessToken = localStorage.getItem('accessToken');
+            if (!accessToken) {
+                console.warn('No access token found, loading from localStorage only');
+                return [];
+            }
+
+            try {
+                const apiBaseUrl = window.API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8005/api`;
+                const response = await fetch(`${apiBaseUrl}/sleep/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('✅ Sleep data loaded from MongoDB');
+                    return data;
+                } else {
+                    console.error(`❌ Failed to load sleep from MongoDB: ${response.status}`);
+                    return [];
+                }
+            } catch (error) {
+                console.error('❌ Error loading sleep from MongoDB:', error);
+                return [];
+            }
+        }
+
+        // Load sleep data
+        async function loadSleepData() {
+            console.log('Loading sleep data...');
+
+            // Try to load from MongoDB first
+            const mongoData = await loadSleepFromMongoDB();
+            if (mongoData && mongoData.length > 0) {
+                // Convert MongoDB data to display format
+                sleepData = mongoData.map(entry => {
+                    // Format date - use 'date' field first (YYYY-MM-DD), fallback to timestamp
+                    let formattedDate = 'Invalid Date';
+                    if (entry.date) {
+                        // Parse YYYY-MM-DD format
+                        const dateParts = entry.date.split('-');
+                        if (dateParts.length === 3) {
+                            const dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
+                            if (!isNaN(dateObj.getTime())) {
+                                formattedDate = dateObj.toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                });
+                            }
+                        }
+                    } else if (entry.timestamp) {
+                        // Fallback to timestamp if date is not available
+                        const dateObj = new Date(entry.timestamp);
+                        if (!isNaN(dateObj.getTime())) {
+                            formattedDate = dateObj.toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                        }
+                    }
+                    
+                    return {
+                        date: formattedDate,
+                        dateISO: entry.date || (entry.timestamp ? new Date(entry.timestamp).toISOString().split('T')[0] : null), // Store original date for sorting
+                        sleepTime: entry.bedtime || '00:00',
+                        wakeTime: entry.wakeTime || '00:00',
+                        duration: entry.sleepDuration ? `${Math.floor(entry.sleepDuration)}h ${Math.round((entry.sleepDuration % 1) * 60)}m` : '0h 0m',
+                        durationMinutes: entry.sleepDuration ? entry.sleepDuration * 60 : 0,
+                        quality: entry.sleepQuality || 0,
+                        notes: entry.notes || '',
+                        timestamp: entry.timestamp || entry.date,
+                        id: entry.id || entry._id
+                    };
+                });
+                // Sort by date (most recent first)
+                sleepData.sort((a, b) => {
+                    const dateA = a.dateISO || a.timestamp || a.date;
+                    const dateB = b.dateISO || b.timestamp || b.date;
+                    return new Date(dateB) - new Date(dateA);
+                });
+                
+                sleepManager.data = sleepData;
+                console.log('✅ Sleep data loaded from MongoDB:', sleepData);
+            } else {
+                // Fallback to localStorage
+                loadSleepDataFromLocalStorage();
+                console.log('✅ Sleep data loaded from localStorage:', sleepData);
+            }
+
+            // Update sleepManager data
+            sleepManager.data = sleepData;
+
+            // Update all displays with loaded data
+            updateSleepLog(); // Update sleep log display
+            updateStats(); // Update summary statistics
+            updateProgressTracking(); // Update progress tracking
+            loadFormFromLatestEntry(); // Load form with latest entry data
+        }
+
+        // Load form with latest entry data
+        function loadFormFromLatestEntry() {
+            console.log('🔄 Loading form from latest entry...');
+            console.log('sleepData available:', sleepData);
+            console.log('sleepData length:', sleepData ? sleepData.length : 0);
+
+            if (sleepData && sleepData.length > 0) {
+                const latestEntry = sleepData[0];
+                console.log('📝 Loading form with latest entry:', latestEntry);
+
+                // Load sleep form data
+                if (latestEntry.sleepTime) {
+                    document.getElementById('sleep-time').value = latestEntry.sleepTime;
+                    console.log('✅ Set sleep time:', latestEntry.sleepTime);
+                }
+                if (latestEntry.wakeTime) {
+                    document.getElementById('wake-time').value = latestEntry.wakeTime;
+                    console.log('✅ Set wake time:', latestEntry.wakeTime);
+                }
+                if (latestEntry.duration) {
+                    // Convert "8h 30m" to "8.5"
+                    const durationMatch = latestEntry.duration.match(/(\d+)h\s*(\d*)m?/);
+                    if (durationMatch) {
+                        const hours = parseInt(durationMatch[1]);
+                        const minutes = parseInt(durationMatch[2] || 0);
+                        const totalHours = hours + (minutes / 60);
+                        document.getElementById('sleep-duration').value = totalHours.toFixed(1);
+                        console.log('✅ Set duration:', totalHours.toFixed(1));
+                    }
+                }
+                if (latestEntry.quality) {
+                    document.getElementById('sleep-quality-slider').value = latestEntry.quality;
+                    document.getElementById('sleep-quality-value').textContent = latestEntry.quality;
+                    console.log('✅ Set quality:', latestEntry.quality);
+                }
+                if (latestEntry.notes) {
+                    document.getElementById('sleep-notes').value = latestEntry.notes;
+                    console.log('✅ Set notes:', latestEntry.notes);
+                }
+
+                console.log('✅ Form loaded with latest entry data');
+            } else {
+                console.log('❌ No sleep data available to load into form');
+            }
+        }
+
+        let sleepHabits = {};
+
+        // Auto-calculate sleep duration when bedtime/wake time changes
+        function calculateSleepDuration() {
+            const sleepTime = document.getElementById('sleep-time').value;
+            const wakeTime = document.getElementById('wake-time').value;
+            const durationInput = document.getElementById('sleep-duration');
+
+            console.log('Calculating sleep duration:', { sleepTime, wakeTime });
+
+            if (sleepTime && wakeTime) {
+                const [sleepHour, sleepMin] = sleepTime.split(':').map(Number);
+                const [wakeHour, wakeMin] = wakeTime.split(':').map(Number);
+
+                let sleepMinutes = sleepHour * 60 + sleepMin;
+                let wakeMinutes = wakeHour * 60 + wakeMin;
+
+                // If wake time is earlier than sleep time, it's next day
+                if (wakeMinutes < sleepMinutes) {
+                    wakeMinutes += 24 * 60; // Add 24 hours
+                }
+
+                const totalMinutes = wakeMinutes - sleepMinutes;
+                const hours = totalMinutes / 60;
+
+                console.log('Calculated duration:', hours.toFixed(1), 'hours');
+                durationInput.value = hours.toFixed(1);
+            }
+        }
+
+        // Test function for debugging
+        function testSleepCalculation() {
+            console.log('Testing sleep calculation...');
+            const sleepTime = document.getElementById('sleep-time');
+            const wakeTime = document.getElementById('wake-time');
+            const duration = document.getElementById('sleep-duration');
+
+            console.log('Elements found:', {
+                sleepTime: !!sleepTime,
+                wakeTime: !!wakeTime,
+                duration: !!duration
+            });
+
+            if (sleepTime && wakeTime && duration) {
+                console.log('Current values:', {
+                    sleepTime: sleepTime.value,
+                    wakeTime: wakeTime.value,
+                    duration: duration.value
+                });
+                calculateSleepDuration();
+            }
+        }
+
+        // Make test function available globally
+        window.testSleepCalculation = testSleepCalculation;
+
+        // Debug function to check sleep data
+        window.debugSleepData = function () {
+            console.log('=== SLEEP DATA DEBUG ===');
+            console.log('sleepData:', sleepData);
+            console.log('sleepData length:', sleepData.length);
+            if (sleepData.length > 0) {
+                console.log('First entry:', sleepData[0]);
+                console.log('Duration field:', sleepData[0].duration);
+                console.log('Duration type:', typeof sleepData[0].duration);
+            }
+
+            // Check localStorage
+            const user = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+            const sleepDataKey = `${user}_sleepData`;
+            const storedData = localStorage.getItem(sleepDataKey);
+            console.log('localStorage data:', storedData);
+
+            // Check form values
+            console.log('Form values:');
+            console.log('- Sleep time:', document.getElementById('sleep-time').value);
+            console.log('- Wake time:', document.getElementById('wake-time').value);
+            console.log('- Duration:', document.getElementById('sleep-duration').value);
+            console.log('- Quality:', document.getElementById('sleep-quality-slider').value);
+
+            console.log('=== END DEBUG ===');
+        };
+
+        // Create test data for debugging
+        window.createTestSleepData = function () {
+            const testEntry = {
+                date: new Date().toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                }),
+                sleepTime: '23:30',
+                wakeTime: '09:00',
+                duration: '9h 30m',
+                durationMinutes: 570,
+                quality: 5,
+                notes: 'Test entry',
+                timestamp: new Date().toISOString()
+            };
+
+            sleepData = [testEntry];
+            console.log('Created test sleep data:', sleepData);
+
+            // Update displays
+            updateStats();
+            updateProgressTracking();
+            loadFormFromLatestEntry();
+
+            alert('Test sleep data created! Check the summary cards.');
+        };
+
+        // Force reload all data
+        window.forceReloadSleepData = async function () {
+            console.log('🔄 Force reloading sleep data...');
+            await loadSleepData();
+            console.log('✅ Sleep data reloaded');
+        };
+
+        // Check localStorage contents
+        window.checkLocalStorage = function () {
+            console.log('🔍 Checking localStorage contents...');
+            const user = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+            console.log('👤 Current user:', user);
+
+            // Check all localStorage keys
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.includes('sleep')) {
+                    console.log(`🔑 ${key}:`, localStorage.getItem(key));
+                }
+            }
+        };
+
+        // Reset daily habits (for testing)
+        window.resetDailyHabits = function () {
+            const user = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+            const habitsKey = `${user}_dailySleepHabits`;
+            localStorage.removeItem(habitsKey);
+
+            // Uncheck all checkboxes
+            const checkboxes = document.querySelectorAll('.habit-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.classList.remove('checked');
+            });
+
+            console.log('🔄 Daily habits reset');
+            alert('Daily habits reset!');
+        };
+
+        // Test daily habits
+        window.testDailyHabits = function () {
+            console.log('🧪 Testing daily habits...');
+            const checkboxes = document.querySelectorAll('.habit-checkbox');
+            console.log('Found checkboxes:', checkboxes.length);
+
+            checkboxes.forEach((checkbox, index) => {
+                const habit = checkbox.getAttribute('data-habit');
+                console.log(`Checkbox ${index}: ${habit} - checked: ${checkbox.classList.contains('checked')}`);
+            });
+        };
+
+        // Test analytics
+        window.testAnalytics = function () {
+            console.log('🧪 Testing analytics...');
+            console.log('Current sleepData:', sleepData);
+            console.log('Analytics elements:');
+            console.log('- Streak:', document.getElementById('analytics-streak')?.textContent);
+            console.log('- Quality:', document.getElementById('analytics-quality')?.textContent);
+            console.log('- Total:', document.getElementById('analytics-total')?.textContent);
+            console.log('- Progress:', document.getElementById('analytics-progress')?.textContent);
+
+            // Force update analytics
+            updateAnalytics();
+        };
+
+        // Force update all analytics
+        window.forceUpdateAnalytics = function () {
+            console.log('🔄 Force updating all analytics...');
+            updateStats();
+            updateAnalytics();
+            updateProgressTracking();
+            updateCharts();
+            console.log('✅ All analytics updated');
+        };
+
+        // Clear hardcoded data and refresh charts
+        window.clearHardcodedData = function () {
+            console.log('🧹 Clearing any hardcoded data...');
+
+            // Clear chart data
+            if (sleepCharts.duration) {
+                sleepCharts.duration.data.labels = [];
+                sleepCharts.duration.data.datasets[0].data = [];
+                sleepCharts.duration.update();
+            }
+
+            if (sleepCharts.quality) {
+                sleepCharts.quality.data.labels = [];
+                sleepCharts.quality.data.datasets[0].data = [];
+                sleepCharts.quality.update();
+            }
+
+            // Force reload real data
+            setTimeout(() => {
+                updateCharts();
+                updateAnalytics();
+                updateStats();
+                updateProgressTracking();
+            }, 100);
+
+            console.log('✅ Hardcoded data cleared, real data loaded');
+        };
+
+        // Test chart data
+        window.testChartData = function () {
+            console.log('🧪 Testing chart data...');
+            console.log('sleepData:', sleepData);
+            console.log('sleepCharts:', sleepCharts);
+
+            if (sleepCharts.duration) {
+                console.log('Duration chart data:', sleepCharts.duration.data);
+            }
+            if (sleepCharts.quality) {
+                console.log('Quality chart data:', sleepCharts.quality.data);
+            }
+        };
+
+        // Fix progress tracking NaN values
+        window.fixProgressTracking = function () {
+            console.log('🔧 Fixing progress tracking NaN values...');
+            console.log('Current sleepData:', sleepData);
+            console.log('Current sleepGoals:', sleepGoals);
+
+            // Force update progress tracking
+            updateProgressTracking();
+
+            // Check for NaN values in elements and fix them immediately
+            const weeklyAvgElement = document.getElementById('weekly-average');
+            const qualityElement = document.getElementById('quality-score');
+            const consistencyElement = document.getElementById('consistency-score');
+            const goalElement = document.getElementById('goal-achievement');
+
+            if (weeklyAvgElement) {
+                if (weeklyAvgElement.textContent.includes('NaN') || weeklyAvgElement.textContent === '') {
+                    weeklyAvgElement.textContent = '0h 0m';
+                    console.log('✅ Fixed weekly average NaN');
+                }
+            }
+
+            if (qualityElement) {
+                if (qualityElement.textContent.includes('NaN') || qualityElement.textContent === '') {
+                    qualityElement.textContent = '0/10';
+                    console.log('✅ Fixed quality score NaN');
+                }
+            }
+
+            if (consistencyElement) {
+                if (consistencyElement.textContent.includes('NaN') || consistencyElement.textContent === '') {
+                    consistencyElement.textContent = '0/7 days';
+                    console.log('✅ Fixed consistency NaN');
+                }
+            }
+
+            if (goalElement) {
+                if (goalElement.textContent.includes('NaN') || goalElement.textContent === '') {
+                    goalElement.textContent = '0%';
+                    console.log('✅ Fixed goal achievement NaN');
+                }
+            }
+
+            console.log('✅ Progress tracking fixed');
+        };
+
+        // Immediate fix for NaN values on page load
+        function fixNaNValuesImmediately() {
+            console.log('🔧 Applying immediate NaN fixes...');
+
+            const weeklyAvgElement = document.getElementById('weekly-average');
+            const qualityElement = document.getElementById('quality-score');
+            const consistencyElement = document.getElementById('consistency-score');
+            const goalElement = document.getElementById('goal-achievement');
+
+            if (weeklyAvgElement) {
+                weeklyAvgElement.textContent = '0h 0m';
+            }
+            if (qualityElement) {
+                qualityElement.textContent = '0/10';
+            }
+            if (consistencyElement) {
+                consistencyElement.textContent = '0/7 days';
+            }
+            if (goalElement) {
+                goalElement.textContent = '0%';
+            }
+
+            console.log('✅ Immediate NaN fixes applied');
+        }
+
+        // Clear sleep log
+        window.clearSleepLog = function () {
+            if (confirm('Are you sure you want to clear all sleep log entries? This action cannot be undone.')) {
+                console.log('🗑️ Clearing sleep log...');
+
+                // Clear sleep data
+                sleepData = [];
+                sleepManager.data = [];
+
+                // Clear localStorage
+                const user = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+                const sleepDataKey = `${user}_sleepData`;
+                localStorage.removeItem(sleepDataKey);
+
+                // Update displays
+                updateSleepLog();
+                updateStats();
+                updateAnalytics();
+                updateProgressTracking();
+
+                console.log('✅ Sleep log cleared');
+                alert('Sleep log cleared successfully! 🗑️');
+            }
+        };
+
+        // Save sleep habits to localStorage
+        function saveSleepHabits(showAlert = true) {
+            const screenTime = document.getElementById('screen-time').value;
+            const caffeine = document.getElementById('caffeine').value;
+            const lastMeal = document.getElementById('last-meal').value;
+            const exercise = document.getElementById('exercise').value;
+
+            const habits = {
+                screenTime: screenTime,
+                caffeine: caffeine,
+                lastMeal: lastMeal,
+                exercise: exercise,
+                timestamp: new Date().toISOString()
+            };
+
+            const user = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+            const habitsKey = `${user}_sleepHabits`;
+            localStorage.setItem(habitsKey, JSON.stringify(habits));
+
+            console.log('Sleep habits saved:', habits);
+            if (showAlert) {
+                alert('Sleep habits saved successfully! 💾');
+            }
+        }
+
+        // Load sleep habits from localStorage
+        function loadSleepHabits() {
+            const user = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+            const habitsKey = `${user}_sleepHabits`;
+            const storedHabits = localStorage.getItem(habitsKey);
+
+            if (storedHabits) {
+                try {
+                    const habits = JSON.parse(storedHabits);
+                    document.getElementById('screen-time').value = habits.screenTime || '';
+                    document.getElementById('caffeine').value = habits.caffeine || '';
+                    document.getElementById('last-meal').value = habits.lastMeal || '';
+                    document.getElementById('exercise').value = habits.exercise || '';
+                    console.log('Sleep habits loaded:', habits);
+                } catch (error) {
+                    console.error('Error loading sleep habits:', error);
+                }
+            }
+        }
+
+        // Simple manual calculation function
+        function manualCalculate() {
+            const sleepTime = document.getElementById('sleep-time').value;
+            const wakeTime = document.getElementById('wake-time').value;
+
+            if (sleepTime && wakeTime) {
+                const [sleepHour, sleepMin] = sleepTime.split(':').map(Number);
+                const [wakeHour, wakeMin] = wakeTime.split(':').map(Number);
+
+                let sleepMinutes = sleepHour * 60 + sleepMin;
+                let wakeMinutes = wakeHour * 60 + wakeMin;
+
+                if (wakeMinutes < sleepMinutes) {
+                    wakeMinutes += 24 * 60;
+                }
+
+                const totalMinutes = wakeMinutes - sleepMinutes;
+                const hours = totalMinutes / 60;
+
+                document.getElementById('sleep-duration').value = hours.toFixed(1);
+                alert(`Calculated: ${hours.toFixed(1)} hours`);
+            } else {
+                alert('Please enter both bedtime and wake time');
+            }
+        }
+
+        window.manualCalculate = manualCalculate;
+
+        // Meditation Timer
+        let meditationInterval;
+        let meditationTime = 5 * 60; // 5 minutes in seconds
+        let currentMeditationTime = meditationTime;
+        const meditationDisplay = document.getElementById('meditation-display');
+
+        function formatTime(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+            const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+            const seconds = String(totalSeconds % 60).padStart(2, '0');
+            return `${hours}:${minutes}:${seconds}`;
+        }
+
+        function formatMinutesSeconds(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+
+        // Meditation Timer Functions
+        function setMeditationTime(minutes) {
+            meditationTime = minutes * 60;
+            currentMeditationTime = meditationTime;
+            meditationDisplay.textContent = formatMinutesSeconds(currentMeditationTime);
+        }
+
+        function startMeditation() {
+            clearInterval(meditationInterval);
+            meditationInterval = setInterval(() => {
+                currentMeditationTime--;
+                meditationDisplay.textContent = formatMinutesSeconds(currentMeditationTime);
+
+                if (currentMeditationTime <= 0) {
+                    clearInterval(meditationInterval);
+                    showNotification("Meditation completed! Time for sleep 🧘‍♀️", "success");
+                    currentMeditationTime = meditationTime;
+                    meditationDisplay.textContent = formatMinutesSeconds(currentMeditationTime);
+                }
+            }, 1000);
+            showNotification("Meditation started. Find your inner peace 🧘‍♀️", "success");
+        }
+
+        function pauseMeditation() {
+            clearInterval(meditationInterval);
+            showNotification("Meditation paused", "info");
+        }
+
+        function stopMeditation() {
+            clearInterval(meditationInterval);
+            currentMeditationTime = meditationTime;
+            meditationDisplay.textContent = formatMinutesSeconds(currentMeditationTime);
+            showNotification("Meditation stopped", "info");
+        }
+
+        // Save Sleep Entry
+        async function saveSleepEntry() {
+            console.log('saveSleepEntry called');
+
+            try {
+                const sleepTime = document.getElementById('sleep-time').value;
+                const wakeTime = document.getElementById('wake-time').value;
+                const duration = document.getElementById('sleep-duration').value;
+                const quality = document.getElementById('sleep-quality-slider').value;
+                const notes = document.getElementById('sleep-notes').value;
+
+                console.log('Form data:', { sleepTime, wakeTime, duration, quality, notes });
+
+                if (!sleepTime || !wakeTime) {
+                    alert("Please enter both sleep time and wake time");
+                    return;
+                }
+
+                // If duration is empty, calculate it
+                let finalDuration = duration;
+                if (!duration || duration === '') {
+                    calculateSleepDuration();
+                    finalDuration = document.getElementById('sleep-duration').value;
+                    console.log('Auto-calculated duration:', finalDuration);
+                }
+
+                if (!finalDuration) {
+                    alert("Please enter sleep duration or ensure bedtime and wake time are set");
+                    return;
+                }
+
+                // Use the duration from the input field (already calculated)
+                const durationHours = parseFloat(finalDuration);
+                const hours = Math.floor(durationHours);
+                const minutes = Math.round((durationHours % 1) * 60);
+
+                // Format date for display
+                const today = new Date();
+                const formattedDate = today.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                
+                const entry = {
+                    date: formattedDate,
+                    sleepTime,
+                    wakeTime,
+                    duration: `${hours}h ${minutes}m`,
+                    durationMinutes: hours * 60 + minutes, // Store for calculations
+                    quality: parseInt(quality),
+                    notes: notes || '',
+                    timestamp: new Date().toISOString(),
+                    dateISO: today.toISOString().split('T')[0] // Store YYYY-MM-DD format for backend
+                };
+
+                sleepData.unshift(entry);
+                console.log('Sleep entry added:', entry); // Debug log
+
+                // Get habit data
+                const screenTime = document.getElementById('screen-time').value;
+                const caffeine = document.getElementById('caffeine').value;
+                const lastMeal = document.getElementById('last-meal').value;
+                const exercise = document.getElementById('exercise').value;
+
+                // 💾 Save data to localStorage and API
+                // Get today's date in YYYY-MM-DD format for backend
+                const today = new Date();
+                const dateString = today.toISOString().split('T')[0]; // YYYY-MM-DD format
+                
+                const sleepEntry = {
+                    date: dateString, // Backend expects YYYY-MM-DD format
+                    bedtime: sleepTime,
+                    wakeTime: wakeTime,
+                    sleepDuration: parseFloat(duration),
+                    sleepQuality: parseInt(quality),
+                    notes: notes,
+                    habits: {
+                        screenTime: screenTime,
+                        caffeine: caffeine,
+                        lastMeal: lastMeal,
+                        exercise: exercise
+                    },
+                    timestamp: new Date().toISOString()
+                };
+
+                // Try to save to MongoDB first
+                const mongoSaved = await saveSleepToMongoDB(sleepEntry);
+                if (!mongoSaved) {
+                    console.log('Falling back to localStorage for sleep data');
+                    // Save to localStorage with correct structure
+                    const user = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+                    const sleepDataKey = `${user}_sleepData`;
+                    let existingData = JSON.parse(localStorage.getItem(sleepDataKey) || '[]');
+                    existingData.unshift(sleepEntry);
+                    localStorage.setItem(sleepDataKey, JSON.stringify(existingData));
+                    console.log('💾 Sleep data saved to localStorage:', existingData);
+                    console.log('🔑 localStorage key used:', sleepDataKey);
+                }
+                // Update sleepManager with new data
+                sleepManager.data = sleepData;
+
+                updateSleepLog();
+                updateStats();
+                updateAnalytics();
+                updateCharts();
+                updateProgressTracking();
+                initializeSleepTracker();
+                generateSmartInsights();
+                calculateSleepScore();
+
+                // Clear form but keep times
+                document.getElementById('sleep-notes').value = '';
+                document.getElementById('sleep-quality-slider').value = '5';
+                document.getElementById('sleep-quality-value').textContent = '5';
+
+                alert("Sleep entry saved successfully! 💾");
+
+            } catch (error) {
+                console.error('Error saving sleep entry:', error);
+                alert("Error saving sleep entry: " + error.message);
+            }
+        }
+
+        // Update Sleep Log Display
+        function updateSleepLog() {
+            const logContainer = document.getElementById('sleep-log-entries');
+
+            if (sleepData.length === 0) {
+                logContainer.innerHTML = `
+                    <div class="no-data-message">
+                        <h3>📝 No sleep entries yet</h3>
+                        <p>Start tracking your sleep to see your log entries here. Use the sleep timer above or manually enter your sleep data!</p>
+                    </div>`;
+                return;
+            }
+
+            logContainer.innerHTML = sleepData.map(entry => {
+                let habitsInfo = '';
+                if (entry.habits && (entry.habits.screenTime || entry.habits.caffeine || entry.habits.lastMeal || entry.habits.exercise)) {
+                    habitsInfo = `
+                        <div style="grid-column: 1/-1; margin-top: 10px; padding-top: 10px; border-top: 1px solid #e6d3b3;">
+                            <strong>Sleep Habits:</strong> 
+                            ${entry.habits.screenTime ? `📱 ${entry.habits.screenTime}, ` : ''}
+                            ${entry.habits.caffeine ? `☕ ${entry.habits.caffeine}, ` : ''}
+                            ${entry.habits.lastMeal ? `🍽️ ${entry.habits.lastMeal}, ` : ''}
+                            ${entry.habits.exercise ? `🏃‍♀️ ${entry.habits.exercise}` : ''}
+                        </div>`;
+                }
+
+                return `
+                    <div class="log-entry">
+                        <div class="log-date">${entry.date}</div>
+                        <div class="log-details">
+                            <div><strong>Slept:</strong> ${entry.sleepTime}</div>
+                            <div><strong>Woke:</strong> ${entry.wakeTime}</div>
+                            <div><strong>Duration:</strong> ${entry.duration}</div>
+                            <div><strong>Quality:</strong> ${entry.quality}/10</div>
+                            ${entry.notes ? `<div style="grid-column: 1/-1;"><strong>Notes:</strong> ${entry.notes}</div>` : ''}
+                            ${habitsInfo}
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+
+        // Update Statistics
+        function updateStats() {
+            console.log('Updating sleep stats, data length:', sleepData.length);
+
+            if (sleepData.length === 0) {
+                console.log('No sleep data available, keeping default values');
+                return;
+            }
+
+            const lastEntry = sleepData[0];
+            console.log('Last entry:', lastEntry);
+
+            // Update Last Night
+            const lastSleepElement = document.getElementById('last-sleep');
+            if (lastSleepElement && lastEntry.duration) {
+                // Ensure duration is in proper format
+                let displayDuration = lastEntry.duration;
+                if (typeof displayDuration === 'string' && displayDuration.includes('h') && displayDuration.includes('m')) {
+                    // Already in correct format like "8h 30m"
+                    lastSleepElement.textContent = displayDuration;
+                } else if (typeof displayDuration === 'number') {
+                    // Convert hours to "Xh Ym" format
+                    const hours = Math.floor(displayDuration);
+                    const minutes = Math.round((displayDuration % 1) * 60);
+                    lastSleepElement.textContent = `${hours}h ${minutes}m`;
+                } else {
+                    // Fallback
+                    lastSleepElement.textContent = displayDuration || '0h 0m';
+                }
+                console.log('Updated last sleep:', lastSleepElement.textContent);
+            }
+
+            // Update progress bars
+            const lastSleepMinutes = lastEntry.durationMinutes || (lastEntry.duration ? parseFloat(lastEntry.duration) * 60 : 0);
+            const lastSleepProgress = Math.min(100, (lastSleepMinutes / (8 * 60)) * 100);
+            const lastSleepProgressBar = document.querySelector('.stats-grid .stat-card:nth-child(1) .progress-fill');
+            if (lastSleepProgressBar) {
+                lastSleepProgressBar.style.width = `${lastSleepProgress}%`;
+            }
+
+            // Calculate weekly average
+            const recentEntries = sleepData.slice(0, 7);
+            const totalMinutes = recentEntries.reduce((sum, entry) => {
+                return sum + (entry.durationMinutes || (entry.duration ? parseFloat(entry.duration) * 60 : 0));
+            }, 0);
+            const avgMinutes = totalMinutes / recentEntries.length;
+            const avgHours = Math.floor(avgMinutes / 60);
+            const avgMins = Math.round(avgMinutes % 60);
+
+            const weeklyAvgElement = document.getElementById('weekly-average');
+            if (weeklyAvgElement) {
+                weeklyAvgElement.textContent = `${avgHours}h ${avgMins}m`;
+                console.log('Updated weekly average:', `${avgHours}h ${avgMins}m`);
+            }
+
+            const avgProgress = Math.min(100, (avgMinutes / (8 * 60)) * 100);
+            const avgProgressBar = document.querySelector('.stats-grid .stat-card:nth-child(2) .progress-fill');
+            if (avgProgressBar) {
+                avgProgressBar.style.width = `${avgProgress}%`;
+            }
+
+            // Calculate average quality
+            const avgQuality = recentEntries.reduce((sum, entry) => sum + (entry.quality || 0), 0) / recentEntries.length;
+            const qualityPercent = Math.round(avgQuality * 10);
+
+            const qualityElement = document.getElementById('sleep-quality');
+            if (qualityElement) {
+                qualityElement.textContent = `${qualityPercent}%`;
+                console.log('Updated sleep quality:', `${qualityPercent}%`);
+            }
+
+            const qualityProgressBar = document.querySelector('.stats-grid .stat-card:nth-child(3) .progress-fill');
+            if (qualityProgressBar) {
+                qualityProgressBar.style.width = `${qualityPercent}%`;
+            }
+
+            // Sleep streak
+            const streakDays = sleepData.length;
+            const streakElement = document.getElementById('sleep-streak');
+            if (streakElement) {
+                streakElement.textContent = streakDays;
+                console.log('Updated sleep streak:', streakDays);
+            }
+
+            const streakProgress = Math.min(100, (streakDays / 30) * 100); // 30 days max for progress bar
+            const streakProgressBar = document.querySelector('.stats-grid .stat-card:nth-child(4) .progress-fill');
+            if (streakProgressBar) {
+                streakProgressBar.style.width = `${streakProgress}%`;
+            }
+        }
+
+        // Update Analytics (removed - no longer needed)
+        function updateAnalytics() {
+            console.log('📊 Analytics section removed - no update needed');
+        }
+
+        // // Habits functionality
+        // function initializeHabits() {
+        //     const checkboxes = document.querySelectorAll('.habit-checkbox');
+        //     checkboxes.forEach(checkbox => {
+        //         checkbox.addEventListener('click', function() {
+        //             const habit = this.getAttribute('data-habit');
+        //             this.classList.toggle('checked');
+        //             sleepHabits[habit] = this.classList.contains('checked');
+        //         });
+        //     });
+        // }
+
+        // function resetHabits() {
+        //     const checkboxes = document.querySelectorAll('.habit-checkbox');
+        //     checkboxes.forEach(checkbox => {
+        //         checkbox.classList.remove('checked');
+        //     });
+        //     sleepHabits = {};
+        // }
+
+        // Daily Sleep Habits functionality
+        function initializeHabits() {
+            console.log('🔄 Initializing daily sleep habits...');
+
+            // Load habits from localStorage on page load
+            const user = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+            const habitsKey = `${user}_dailySleepHabits`;
+            const storedHabits = localStorage.getItem(habitsKey);
+            let savedHabits = {};
+
+            if (storedHabits) {
+                try {
+                    savedHabits = JSON.parse(storedHabits);
+                    console.log('📦 Loaded saved habits:', savedHabits);
+                } catch (e) {
+                    console.error("Failed to load daily sleep habits:", e);
+                }
+            }
+
+            const checkboxes = document.querySelectorAll('.habit-checkbox');
+            console.log('🔍 Found checkboxes:', checkboxes.length);
+
+            checkboxes.forEach(checkbox => {
+                const habit = checkbox.getAttribute('data-habit');
+                console.log('📝 Setting up habit:', habit);
+
+                // Apply saved state to checkbox on load
+                if (savedHabits && savedHabits[habit]) {
+                    checkbox.classList.add('checked');
+                    console.log('✅ Restored habit:', habit);
+                }
+
+                // Add click listener
+                checkbox.addEventListener('click', function () {
+                    console.log('🖱️ Habit clicked:', habit);
+                    this.classList.toggle('checked');
+
+                    // Save to localStorage immediately
+                    const user = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+                    const habitsKey = `${user}_dailySleepHabits`;
+                    let currentHabits = {};
+
+                    try {
+                        const stored = localStorage.getItem(habitsKey);
+                        if (stored) {
+                            currentHabits = JSON.parse(stored);
+                        }
+                    } catch (e) {
+                        console.error('Error loading habits for save:', e);
+                    }
+
+                    // Update the specific habit
+                    currentHabits[habit] = this.classList.contains('checked');
+                    currentHabits.timestamp = new Date().toISOString();
+
+                    localStorage.setItem(habitsKey, JSON.stringify(currentHabits));
+                    console.log('💾 Saved habits:', currentHabits);
+                });
+            });
+
+            console.log('✅ Daily sleep habits initialized');
+        }
+
+        // Sleep quality slider
+        const sleepQualitySlider = document.getElementById('sleep-quality-slider');
+        const sleepQualityValue = document.getElementById('sleep-quality-value');
+
+        if (sleepQualitySlider && sleepQualityValue) {
+            sleepQualitySlider.addEventListener('input', function () {
+                sleepQualityValue.textContent = this.value;
+            });
+        }
+
+        // Notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => document.body.removeChild(notification), 300);
+            }, 3000);
+        }
+
+        // Update bedtime reminder based on goals
+        function updateBedtimeReminder() {
+            const wakeTime = document.getElementById('wake-time').value;
+            const durationGoal = document.getElementById('duration-goal').value;
+
+            if (wakeTime && durationGoal) {
+                const wake = new Date(`2024-01-01 ${wakeTime}`);
+                const bedtime = new Date(wake.getTime() - (parseFloat(durationGoal) * 60 * 60 * 1000));
+                const bedtimeString = bedtime.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
+                document.getElementById('bedtime-reminder').textContent = `Your ideal bedtime is ${bedtimeString}`;
+            }
+        }
+
+        // Initialize everything when page loads
+        // Check if it's a new day and auto-reset sleep data
+        function checkSleepDailyReset() {
+            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+            const lastDate = localStorage.getItem('sleep_lastDate');
+
+            if (lastDate && lastDate !== today) {
+                console.log('😴 New day detected! Auto-resetting sleep data...');
+                console.log('Last date:', lastDate, 'Today:', today);
+
+                // Clear sleep data
+                const currentUser = localStorage.getItem('userEmail');
+                if (currentUser) {
+                    localStorage.removeItem(`${currentUser}_sleepData`);
+                    localStorage.removeItem(`${currentUser}_sleepLogs`);
+                    localStorage.removeItem(`${currentUser}_sleepGoals`);
+                }
+
+                // Update last date
+                localStorage.setItem('sleep_lastDate', today);
+
+                // Show notification
+                if (typeof showNotification === 'function') {
+                    showNotification('🌅 Good morning! Sleep data has been reset for a fresh start!', 'success');
+                } else {
+                    console.log('🌅 Good morning! Sleep data has been reset for a fresh start!');
+                }
+            } else if (!lastDate) {
+                // First time - set today as last date
+                localStorage.setItem('sleep_lastDate', today);
+            }
+        }
+
+        function generateSmartInsights() {
+            if (sleepData.length < 3) {
+                document.getElementById("sleep-insights-text").textContent =
+                    "Log a few more days to unlock personalized insights 🌙";
+                return;
+            }
+
+            const last3 = sleepData.slice(0, 3).map(e => e.durationMinutes / 60);
+            const avg = last3.reduce((a, b) => a + b, 0) / last3.length;
+
+            let message = "";
+
+            if (avg < 6) message = "You're sleeping less than ideal — try earlier bedtime 😴";
+            else if (avg < 7.5) message = "Decent sleep! A little consistency could help 😊";
+            else message = "Fantastic! Your sleep pattern is strong 💪🌙";
+
+            document.getElementById("sleep-insights-text").textContent = message;
+        }
+
+        function calculateSleepDebt() {
+            const REQUIRED = 8;
+            if (!sleepData || sleepData.length === 0) {
+                document.getElementById("sleep-debt-value").textContent = "No sleep logged yet 😴";
+                return;
+            }
+
+            const week = sleepData.slice(0, 7);
+            const total = week.reduce((sum, e) => sum + (e.durationMinutes / 60), 0);
+            const expected = REQUIRED * week.length;
+            const deficit = expected - total;
+
+            let msg = "";
+
+            if (deficit > 0) {
+                msg = `😬 You are short by ${deficit.toFixed(1)} hours this week.`;
+            } else if (deficit === 0) {
+                msg = `😎 Perfect! You're right on target.`;
+            } else {
+                msg = `🟢 You've slept ${Math.abs(deficit).toFixed(1)} hours MORE than needed.`;
+            }
+
+            document.getElementById("sleep-debt-value").textContent = msg;
+        }
+
+        function calculateSleepScore() {
+            if (sleepData.length === 0) return "--";
+
+            const last = sleepData[0];
+            const durationScore = Math.min((last.durationMinutes / 480) * 50, 50);
+            const qualityScore = (last.quality / 10) * 30;
+
+            const habitCheckboxes = document.querySelectorAll(".habit-checkbox.checked");
+            const habitScore = Math.min(habitCheckboxes.length * 5, 20);
+
+            const score = Math.round(durationScore + qualityScore + habitScore);
+
+            document.getElementById("sleep-score-value").textContent = `${score}/100`;
+        }
+
+        document.getElementById("chronotype-selector").addEventListener("change", function () {
+            const type = this.value;
+            const rec = {
+                "owl": "🌙 Best sleep: 12 AM - 8 AM",
+                "early-bird": "🌅 Best sleep: 9 PM - 5 AM",
+                "bear": "🐻 Best sleep: 10 PM - 6 AM",
+                "wolf": "🐺 Best sleep: 11 PM - 7 AM"
+            };
+            document.getElementById("chronotype-recommendation").textContent = rec[type] || "";
+        });
+
+        const selector = document.querySelector('.sound-select');
+        const selected = selector.querySelector('.sound-selected');
+        const dropdown = selector.querySelector('.sound-dropdown');
+        const audio = document.getElementById("sleep-audio");
+        const preview = document.getElementById("sound-preview");
+
+        selector.addEventListener("click", () => {
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
+
+        dropdown.querySelectorAll("li").forEach(option => {
+            option.addEventListener("click", () => {
+                const value = option.getAttribute("data-value");
+                const label = option.innerHTML;
+
+                selected.innerHTML = label;
+                preview.innerHTML = `<i class="fa-solid fa-headphones" style="margin-right:6px;"></i> Now Playing: ${option.textContent}`;
+
+                const source = document.getElementById("audio-source");
+
+                source.src = value;
+                audio.load();
+                audio.currentTime = 0;
+                audio.play();
+
+                dropdown.style.display = "none";
+            });
+        });
+
+        // ---- Audio Sync Fix ----
+        audio.addEventListener("loadedmetadata", () => {
+            audio.currentTime = 0;
+        });
+
+        audio.addEventListener("timeupdate", () => {
+            const range = audio.closest(".sleep-sounds").querySelector("input[type='range']");
+            if (range) {
+                range.max = audio.duration || 1;
+                range.value = audio.currentTime;
+            }
+        });
+
+        document.addEventListener("click", function (e) {
+            if (!selector.contains(e.target)) {
+                dropdown.style.display = "none";
+            }
+        });
+
+        /* ----------------- 🛏️ Bedtime Notification System ------------------ */
+        function startBedtimeReminder() {
+            const goalHours = document.getElementById("duration-goal").value || 8;
+            const wakeTime = document.getElementById("wake-time").value;
+
+            if (!wakeTime) return;
+
+            const now = new Date();
+            const wake = new Date(`2000-01-01 ${wakeTime}`);
+            const bedtime = new Date(wake.getTime() - goalHours * 60 * 60 * 1000);
+
+            // fire reminder 20 min before
+            const reminderTime = new Date(bedtime.getTime() - 20 * 60000);
+
+            if (now.getHours() === reminderTime.getHours() && now.getMinutes() === reminderTime.getMinutes()) {
+                showSleepPopup();
+                showNotification("🛏️ Time to wind down. Sleep in 20 min.", "success");
+            }
+        }
+
+        /* ===========================
+   🕒 SMART BEDTIME REMINDER LOGIC
+   =========================== */
+
+        let bedtimeReminderTimer = null;
+        let snoozeUntil = null;
+
+        // Request Notification Permission
+        if ("Notification" in window) {
+            Notification.requestPermission();
+        }
+
+        function getUserBedtime() {
+            const durationGoal = document.getElementById("duration-goal").value || 8;
+            const wakeTime = document.getElementById("wake-time").value;
+
+            if (!wakeTime) return null;
+
+            const wake = new Date(`2025-01-01 ${wakeTime}`);
+            const bedtime = new Date(wake.getTime() - durationGoal * 60 * 60 * 1000);
+
+            return bedtime.toTimeString().substring(0, 5);
+        }
+
+        function showBedtimePopup(time) {
+            const div = document.createElement("div");
+            div.className = "bedtime-popup";
+
+            div.innerHTML = `
+        <p>⏰ It’s almost bedtime: <strong>${time}</strong></p>
+        <button id="snooze-5">Snooze 5 min</button>
+        <button id="snooze-10">Snooze 10 min</button>
+        <button id="dismiss-bedtime">Dismiss</button>
+    `;
+
+            document.body.appendChild(div);
+
+            document.getElementById("snooze-5").onclick = () => snoozeReminder(5, div);
+            document.getElementById("snooze-10").onclick = () => snoozeReminder(10, div);
+            document.getElementById("dismiss-bedtime").onclick = () => div.remove();
+        }
+
+        function snoozeReminder(minutes, popup) {
+            snoozeUntil = new Date(Date.now() + minutes * 60 * 1000);
+            popup.remove();
+        }
+
+        function sendBrowserNotification(time) {
+            if (Notification.permission === "granted") {
+                new Notification("🛏️ Bedtime Reminder", {
+                    body: `It's almost time to sleep (${time})`,
+                    icon: "https://cdn-icons-png.flaticon.com/512/3342/3342351.png"
+                });
+            }
+        }
+
+        function checkBedtimeReminder() {
+            const now = new Date();
+            const bedtime = getUserBedtime();
+            if (!bedtime) return;
+
+            const bedtimeToday = new Date();
+            bedtimeToday.setHours(bedtime.split(":")[0], bedtime.split(":")[1], 0, 0);
+
+            const diff = bedtimeToday - now;
+            const minutesLeft = Math.floor(diff / 60000);
+
+            document.getElementById("bedtime-status").textContent =
+                minutesLeft > 0
+                    ? `Your bedtime is in ${minutesLeft} min 💤`
+                    : `⏰ It's bedtime now!`;
+
+            // Skip if snoozed
+            if (snoozeUntil && now < snoozeUntil) return;
+
+            // Trigger notifications at 20 min, 10 min, and time reached
+            if ([20, 10, 0].includes(minutesLeft)) {
+                sendBrowserNotification(bedtime);
+                showBedtimePopup(bedtime);
+            }
+        }
+
+        // Run check every 60 seconds
+        bedtimeReminderTimer = setInterval(checkBedtimeReminder, 60000);
+        checkBedtimeReminder(); // Run instantly on load
+
+        function showSleepPopup() {
+            alert("🌙 Almost bedtime! Ready to sleep soon?\n\nSnooze: 5m | 10m | Skip");
+        }
+
+        // check every minute
+        setInterval(startBedtimeReminder, 60000);
+
+
+        /* ----------------- 😴 Dream Journal ------------------ */
+        document.getElementById("save-dream-btn").addEventListener("click", () => {
+            const text = document.getElementById("dream-text").value.trim();
+            if (!text) return alert("Write something first 🙂");
+
+            const log = document.getElementById("dream-log");
+            log.innerHTML = `<div class="dream-entry">${new Date().toLocaleDateString()} - ${text}</div>` + log.innerHTML;
+
+            localStorage.setItem("dreamLog", log.innerHTML);
+        });
+
+        document.getElementById("dream-log").innerHTML = localStorage.getItem("dreamLog") || "";
+
+        /* ----------------- 🎭 Mood Selection ------------------ */
+        let selectedMood = null;
+
+        document.querySelectorAll(".mood-icon").forEach(icon => {
+            icon.addEventListener("click", () => {
+                document.querySelectorAll(".mood-icon").forEach(i => i.classList.remove("active"));
+                icon.classList.add("active");
+                selectedMood = icon.dataset.mood;
+            });
+        });
+
+        /* ----------------- 🌿 Wind Down Readiness Score ------------------ */
+        const readinessRing = document.querySelector(".ring");
+
+        document.querySelectorAll(".wind-check").forEach(check => {
+            check.addEventListener("change", () => {
+                const total = document.querySelectorAll(".wind-check").length;
+                const done = document.querySelectorAll(".wind-check:checked").length;
+
+                const score = Math.round((done / total) * 100);
+                document.getElementById("readiness-score").textContent = score;
+
+                if (score > 60) {
+                    readinessRing.classList.add("glow");
+                } else {
+                    readinessRing.classList.remove("glow");
+                }
+            });
+        });
+
+        /* ----------------- 🤖 AI Routine Insights ------------------ */
+        function generateRoutineAdvice() {
+            if (sleepData.length < 3) return;
+
+            const last3 = sleepData.slice(0, 3).map(e => e.durationMinutes / 60);
+            const avg = last3.reduce((a, b) => a + b, 0) / 3;
+
+            let message = "";
+
+            if (avg < 6) message = "⚠️ Multiple short nights detected — screens & caffeine may be affecting you.";
+            else if (avg >= 7.5) message = "🎉 Improvement streak! Keep following wind-down habits!";
+            else message = "🙂 You're getting closer to consistency — aim for earlier wind-down.";
+
+            document.getElementById("advice-text").textContent = message;
+        }
+
+        // Run with existing functions
+        generateRoutineAdvice();
+
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Sleep page loaded - starting initialization');
+
+            // Check for daily reset
+            checkSleepDailyReset();
+
+            // 🛡️ User Authentication Check
+            const currentUser = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+            if (!currentUser) {
+                console.log('No user found, redirecting to login');
+                window.location.href = 'login.html';
+                return;
+            }
+            console.log('User authenticated:', currentUser);
+
+            // Wait a bit for all scripts to load
+            setTimeout(function () {
+                try {
+                    console.log('Setting up sleep tracker...');
+
+                    // Get form elements
+                    const sleepTimeInput = document.getElementById('sleep-time');
+                    const wakeTimeInput = document.getElementById('wake-time');
+                    const durationInput = document.getElementById('sleep-duration');
+                    const calculateBtn = document.getElementById('calculate-btn');
+                    const saveBtn = document.getElementById('save-btn');
+
+                    console.log('Form elements found:', {
+                        sleepTime: !!sleepTimeInput,
+                        wakeTime: !!wakeTimeInput,
+                        duration: !!durationInput,
+                        calculateBtn: !!calculateBtn,
+                        saveBtn: !!saveBtn
+                    });
+
+                    // Add auto-calculation event listeners
+                    if (sleepTimeInput && wakeTimeInput) {
+                        sleepTimeInput.addEventListener('change', function () {
+                            console.log('Sleep time changed:', this.value);
+                            calculateSleepDuration();
+                        });
+                        wakeTimeInput.addEventListener('change', function () {
+                            console.log('Wake time changed:', this.value);
+                            calculateSleepDuration();
+                        });
+                        sleepTimeInput.addEventListener('input', function () {
+                            calculateSleepDuration();
+                        });
+                        wakeTimeInput.addEventListener('input', function () {
+                            calculateSleepDuration();
+                        });
+                        console.log('Auto-calculation event listeners added');
+                    }
+
+                    // Add button event listeners
+                    if (calculateBtn) {
+                        calculateBtn.addEventListener('click', function () {
+                            console.log('Calculate button clicked');
+                            manualCalculate();
+                        });
+                        console.log('Calculate button event listener added');
+                    }
+
+                    if (saveBtn) {
+                        saveBtn.addEventListener('click', function () {
+                            console.log('Save button clicked');
+                            saveSleepEntry();
+                        });
+                        console.log('Save button event listener added');
+                    }
+
+                    // Add save habits button event listener
+                    const saveHabitsBtn = document.getElementById('save-habits-btn');
+                    if (saveHabitsBtn) {
+                        saveHabitsBtn.addEventListener('click', function () {
+                            console.log('Save habits button clicked');
+                            saveSleepHabits();
+                        });
+                        console.log('Save habits button event listener added');
+                    }
+
+                    // Load saved habits
+                    loadSleepHabits();
+
+                    // Add auto-save for habits when they change
+                    const habitSelects = ['screen-time', 'caffeine', 'last-meal', 'exercise'];
+                    habitSelects.forEach(selectId => {
+                        const select = document.getElementById(selectId);
+                        if (select) {
+                            select.addEventListener('change', function () {
+                                console.log(`Habit changed: ${selectId} = ${this.value}`);
+                                // Auto-save after a short delay (no alert)
+                                setTimeout(() => saveSleepHabits(false), 500);
+                            });
+                        }
+                    });
+
+                    // Run initial calculation
+                    setTimeout(function () {
+                        console.log('Running initial calculation...');
+                        calculateSleepDuration();
+                    }, 500);
+
+                    // Initialize the sleep tracker (load data, update stats, etc.)
+                    setTimeout(function () {
+                        console.log('Initializing sleep tracker...');
+                        initializeSleepTracker();
+                    }, 1000);
+
+                    // Fix NaN values immediately after initialization
+                    setTimeout(function () {
+                        console.log('Applying immediate NaN fixes...');
+                        fixNaNValuesImmediately();
+                        fixProgressTracking();
+                    }, 1500);
+
+                    console.log('Sleep tracker initialization complete');
+
+                } catch (error) {
+                    console.error('Error during sleep tracker initialization:', error);
+                }
+            }, 100);
+        });
+
+        // ---- Fix Sleep Debt Timing ----
+        function runSleepDebtFix() {
+            if (!sleepData || sleepData.length === 0) {
+                console.log("⏳ Waiting for sleep data...");
+                return setTimeout(runSleepDebtFix, 500);
+            }
+            console.log("📌 Sleep data loaded, calculating debt...");
+            calculateSleepDebt();
+        }
+
+        // Run after everything finishes loading
+        setTimeout(runSleepDebtFix, 1500);
+
+
+        // Environment event listeners removed - elements don't exist in current form
+
+        // 🛠 Helper for per-user key generation
+        function getUserKey(key) {
+            const user = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+            return `${user}_${key}`;
+        }
+
+        // 👤 Load and display user initial
+        const fullName = localStorage.getItem(getUserKey("name")) || "User";
+        const firstName = fullName.trim().split(" ")[0];
+        const firstInitial = firstName[0].toUpperCase();
+
+        const profileCircle = document.getElementById("user-profile");
+        const profileDropdown = document.getElementById("profileDropdown");
+
+        if (profileCircle) {
+            profileCircle.textContent = firstInitial;
+            profileCircle.title = firstName;
+        }
+
+        // Add click handler for profile dropdown
+        if (profileDropdown) {
+            profileCircle.addEventListener("click", () => {
+                profileDropdown.style.display = profileDropdown.style.display === "block" ? "none" : "block";
+            });
+
+            // Hide dropdown when clicking outside
+            window.addEventListener("click", function (e) {
+                if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.style.display = "none";
+                }
+            });
+        }
+
+        function loadSleepDataFromLocalStorage() {
+            const user = localStorage.getItem('userEmail') || localStorage.getItem('currentUser');
+            const sleepDataKey = `${user}_sleepData`;
+            const storedData = localStorage.getItem(sleepDataKey);
+
+            console.log('🔍 Loading from localStorage...');
+            console.log('👤 User:', user);
+            console.log('🔑 Key:', sleepDataKey);
+            console.log('📦 Raw stored data:', storedData);
+
+            if (storedData) {
+                try {
+                    const rawData = JSON.parse(storedData);
+                    console.log('📊 Parsed localStorage data:', rawData);
+
+                    // Convert API format to display format
+                    sleepData = rawData.map(entry => {
+                        // Format date - use 'date' field first (YYYY-MM-DD), fallback to timestamp
+                        let formattedDate = 'Invalid Date';
+                        if (entry.date) {
+                            // Parse YYYY-MM-DD format
+                            const dateParts = entry.date.split('-');
+                            if (dateParts.length === 3) {
+                                const dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
+                                if (!isNaN(dateObj.getTime())) {
+                                    formattedDate = dateObj.toLocaleDateString('en-US', {
+                                        year: 'numeric',
+                                        month: 'long',
+                                        day: 'numeric'
+                                    });
+                                }
+                            }
+                        } else if (entry.timestamp) {
+                            // Fallback to timestamp if date is not available
+                            const dateObj = new Date(entry.timestamp);
+                            if (!isNaN(dateObj.getTime())) {
+                                formattedDate = dateObj.toLocaleDateString('en-US', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric'
+                                });
+                            }
+                        }
+                        
+                        return {
+                            date: formattedDate,
+                            dateISO: entry.date || (entry.timestamp ? new Date(entry.timestamp).toISOString().split('T')[0] : null), // Store original date for sorting
+                            sleepTime: entry.bedtime || '00:00',
+                            wakeTime: entry.wakeTime || '00:00',
+                            duration: entry.sleepDuration ? `${Math.floor(entry.sleepDuration)}h ${Math.round((entry.sleepDuration % 1) * 60)}m` : '0h 0m',
+                            durationMinutes: entry.sleepDuration ? entry.sleepDuration * 60 : 0,
+                            quality: entry.sleepQuality || 0,
+                            notes: entry.notes || '',
+                            timestamp: entry.timestamp || entry.date,
+                            id: entry.id || entry._id
+                        };
+                    });
+
+                    console.log('✅ Converted sleep data for display:', sleepData);
+                } catch (e) {
+                    console.error("❌ Failed to parse sleep data from localStorage:", e);
+                    sleepData = [];
+                }
+            } else {
+                console.log('❌ No data found in localStorage');
+                sleepData = [];
+            }
+        }
+
+        function saveEnvironmentData() {
+            const environment = {
+                temperature: document.getElementById('room-temp').value,
+                noise: document.getElementById('noise-level').value,
+                light: document.getElementById('light-level').value,
+                air: document.getElementById('air-quality').value
+            };
+            localStorage.setItem('sleepEnvironment', JSON.stringify(environment));
+        }
+
+        function loadEnvironmentData() {
+            const storedEnvironment = localStorage.getItem('sleepEnvironment');
+            if (storedEnvironment) {
+                try {
+                    const environment = JSON.parse(storedEnvironment);
+                    document.getElementById('room-temp').value = environment.temperature || '';
+                    document.getElementById('noise-level').value = environment.noise || '';
+                    document.getElementById('light-level').value = environment.light || '';
+                    document.getElementById('air-quality').value = environment.air || '';
+                } catch (e) {
+                    console.error("Failed to load sleep environment data:", e);
+                }
+            }
+        }
+
+        /* ------------------------------------------------------------
+📌 AI Insight Engine — Rules Based Sleep Coach
+------------------------------------------------------------ */
+
+        function generateAIInsights() {
+            if (sleepData.length < 2) {
+                document.getElementById("advice-text").textContent =
+                    "Tracking your habits… come back soon 😴";
+                return;
+            }
+
+            const recent = sleepData.slice(0, 5);
+            const durations = recent.map(e => e.durationMinutes / 60);
+            const avg = durations.reduce((a, b) => a + b, 0) / recent.length;
+
+            const last = recent[0];
+            const consistency = Math.abs(
+                recent
+                    .map(e => e.durationMinutes / 60)
+                    .reduce((a, b) => Math.abs(a - b)) || 0
+            );
+
+            const bedtime = document.getElementById("sleep-time").value || null;
+            const windScore = parseInt(document.getElementById("readiness-score").textContent) || 0;
+            const habitsGood = document.querySelectorAll(".habit-checkbox.checked").length;
+
+            let message = "";
+
+            // -------- Sleep Duration Logic ----------
+            if (avg < 6) message += "⚠️ You're running on low sleep. Try moving bedtime earlier.\n";
+            else if (avg < 7.5) message += "🙂 You're close — a bit more consistency will help.\n";
+            else message += "🌙 Great job — your sleep duration looks healthy.\n";
+
+            // -------- Quality Logic ----------
+            if (last.quality < 5) message += "😵 Your sleep quality seems low — screens or caffeine may be sneaking in.\n";
+            else if (last.quality >= 8) message += "✨ Your quality looks amazing — whatever you're doing, keep it!\n";
+
+            // -------- Wind Down Routine ----------
+            if (windScore < 40) message += "🌱 Try improving wind-down habits — journaling, meditation or stretching.\n";
+            else if (windScore > 80) message += "🧘 Your wind-down routine is strong — that’s helping your sleep.\n";
+
+            // -------- Consistency Logic ----------
+            if (consistency > 2) message += "⏱️ Sleep times look irregular — try a more stable bedtime.\n";
+
+            // -------- Bedtime Reminder Logic ----------
+            if (bedtime) message += `🕒 Ideal bedtime target: ${bedtime} — aim to stick to it.\n`;
+
+            // -------- Habit Score ----------
+            if (habitsGood >= 5) message += "💪 Strong daily habits — these will pay off.";
+            else message += "🔧 Work on a few more healthy habits for better sleep.";
+
+            document.getElementById("advice-text").innerText = message.trim();
+        }
+
+        // Auto-run when new entry is saved OR page loads
+        setTimeout(() => generateAIInsights(), 1500);
+
+    </script>
+    <script src="scripts/navigation.js"></script>
+</body>
+
+</html>

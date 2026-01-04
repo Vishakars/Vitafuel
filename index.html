@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | Health Tracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f1eb 0%, #e8dcc6 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 90%;
+        }
+        .logo {
+            font-size: 3rem;
+            color: #8b4513;
+            margin-bottom: 20px;
+        }
+        .title {
+            font-size: 2rem;
+            color: #654321;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #8b6c58;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+        .launch-btn {
+            background: linear-gradient(135deg, #8b4513, #a0522d);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .launch-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 69, 19, 0.3);
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 0.9rem;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🏥</div>
+        <h1 class="title">VitaFuel</h1>
+        <p class="subtitle">Your Personal Health Tracking Companion</p>
+        
+        <div id="status" class="status">
+            <div>🔍 Checking system status...</div>
+        </div>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> Make sure you're using the correct URL to avoid errors.
+            <br>Always access VitaFuel through this launcher for the best experience.
+        </div>
+        
+        <a href="http://127.0.0.1:3000/dashboard.html" class="launch-btn" id="launchBtn">
+            🚀 Launch VitaFuel
+        </a>
+        
+        <div style="margin-top: 20px;">
+            <a href="http://127.0.0.1:3000/login.html" class="launch-btn" style="background: #6c757d;">
+                🔐 Login Page
+            </a>
+        </div>
+        
+        <div style="margin-top: 30px; font-size: 0.9rem; color: #666;">
+            <p><strong>System Requirements:</strong></p>
+            <p>• Backend: Port 8005 ✅</p>
+            <p>• Frontend: Port 3000 ✅</p>
+            <p>• Browser: Modern browser with JavaScript enabled</p>
+        </div>
+    </div>
+
+    <script>
+        // Check system status
+        async function checkSystemStatus() {
+            const statusDiv = document.getElementById('status');
+            
+            try {
+                // Check backend
+                const backendResponse = await fetch('http://127.0.0.1:8005/docs', { 
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                });
+                
+                // Check frontend
+                const frontendResponse = await fetch('http://127.0.0.1:3000', { 
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                });
+                
+                statusDiv.innerHTML = `
+                    <div>✅ Backend Server: Running (Port 8005)</div>
+                    <div>✅ Frontend Server: Running (Port 3000)</div>
+                    <div>🎉 System Ready!</div>
+                `;
+                statusDiv.className = 'status success';
+                
+            } catch (error) {
+                statusDiv.innerHTML = `
+                    <div>❌ System Check Failed</div>
+                    <div>Please ensure both servers are running</div>
+                `;
+                statusDiv.className = 'status error';
+            }
+        }
+        
+        // Auto-redirect if accessing from wrong port
+        if (window.location.port === '5502' || window.location.port === '8004') {
+            alert('⚠️ You are accessing VitaFuel from the wrong port!\n\nRedirecting to the correct URL...');
+            window.location.href = 'http://127.0.0.1:3000/dashboard.html';
+        }
+        
+        // Check status on load
+        checkSystemStatus();
+        
+        // Add click handler for launch button
+        document.getElementById('launchBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.open('http://127.0.0.1:3000/dashboard.html', '_blank');
+        });
+    </script>
+</body>
+</html>

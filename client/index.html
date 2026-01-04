@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VitaFuel | AI Health Tracker</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/commonstyles.css" />
+    <script src="js/user-auth.js"></script>
+    <script src="js/health-domain-common.js"></script>
+    <script src="js/mongodb-integration.js"></script>
+    <style>
+        /* ✨ Base Style */
+        body {
+            font-family: 'Georgia', serif;
+            background: #fdf6ec;
+            margin: 0;
+            padding: 0;
+            opacity: 1;
+            animation: fadeIn 0.3s ease-in;
+            display: flex;
+            flex-direction: column;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* 🧩 Main Section Layout */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 60px;
+        }
+
+        /* 📜 Text Section */
+        .content-left {
+            flex: 1;
+        }
+
+        .main-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #8c5e2a;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            text-shadow: 0 0 6px #d8b891, 0 0 10px #b3834c1a;
+        }
+
+        .main-subtitle {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+
+        /* ☕ Button Styling */
+        .start-btn {
+            background: #8c5e2a;
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .start-btn:hover {
+            background: #7a4f25;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(140, 94, 42, 0.3);
+        }
+
+        /* 🌿 Logo and Branding */
+        .content-right {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            /* reduce space between logo and text */
+            text-align: center;
+        }
+
+        .large-logo {
+            height: 620px;
+            width: auto;
+            margin-top: -100px;
+            margin-bottom: -150px;
+            transition: transform 0.3s ease;
+        }
+
+        .large-logo:hover {
+            transform: scale(1.03);
+        }
+
+        /* ✨ Brand Name + Glow */
+        .brand-name {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #8c5e2a;
+            margin-top: 0;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .brand-name:hover {
+            text-shadow: 0 0 6px #d6aa78, 0 0 12px #b3834c;
+            color: #a46c36;
+            transform: translateY(-2px)
+        }
+
+        /* 💫 Logo Text (e.g., Header Logo) */
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #8c5e2a;
+            font-style: italic;
+            text-shadow: 0 0 4px #c89b66, 0 0 8px #b3834c;
+            transition: text-shadow 0.3s ease;
+        }
+
+        .logo-text:hover {
+            text-shadow: 0 0 6px #d6aa78, 0 0 10px #b3834c;
+        }
+
+        /* 📱 Responsive Design */
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 40px;
+            }
+
+            .main-title {
+                font-size: 2.5rem;
+            }
+
+            .main-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .large-logo {
+                height: 300px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header class="navbar">
+        <div class="hero-img1">
+            <h1 class="logo-text">VitaFuel</h1>
+        </div>
+        <nav>
+            <a href="index.html" class="active">Home</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="health-insights.html">Wellness Hub</a>
+            <a href="recommendations.html">Recommendations</a>
+            <a href="chatbot.html">Chatbot</a>
+            <a href="shopping-list.html">Shopping List</a>
+            <div class="profile-container">
+                <div class="profile-circle" id="user-profile">V</div>
+                <div class="profile-dropdown" id="profileDropdown">
+                    <a href="profile.html">My Profile</a>
+                    <a href="settings.html">Settings</a>
+                    <a href="about.html">About</a>
+                    <a href="#" onclick="logout()">Logout</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="content-left">
+            <h1 class="main-title">AI-Enhanced Health Tracking</h1>
+            <p class="main-subtitle">Track your wellness across multiple domains — all in one place. ✨</p>
+            <a href="dashboard.html" class="start-btn">Start Tracking</a>
+        </div>
+        <div class="content-right">
+            <img src="logo/image.png" alt="VitaFuel Logo" class="large-logo">
+            <div class="brand-name">VitaFuel</div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 VitaFuel. Empowering Healthy Lives.</p>
+    </footer>
+
+    <script>
+        // Direct profile dropdown fix for Dashboard page
+        document.addEventListener('DOMContentLoaded', function () {
+            const profileCircle = document.getElementById('user-profile');
+            const profileDropdown = document.getElementById('profileDropdown');
+
+            if (profileCircle && profileDropdown) {
+                // Add click handler
+                profileCircle.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Toggle dropdown
+                    if (profileDropdown.style.display === 'block') {
+                        profileDropdown.style.display = 'none';
+                    } else {
+                        profileDropdown.style.display = 'block';
+                        profileDropdown.style.position = 'absolute';
+                        profileDropdown.style.right = '0';
+                        profileDropdown.style.top = '100%';
+                        profileDropdown.style.backgroundColor = '#fff';
+                        profileDropdown.style.zIndex = '9999';
+                        profileDropdown.style.minWidth = '150px';
+                        profileDropdown.style.border = '1px solid #ddd';
+                        profileDropdown.style.borderRadius = '10px';
+                        profileDropdown.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+                        profileDropdown.style.padding = '10px 0';
+                    }
+                });
+
+                // Hide dropdown when clicking outside
+                document.addEventListener('click', function (e) {
+                    if (!profileCircle.contains(e.target) && !profileDropdown.contains(e.target)) {
+                        profileDropdown.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="scripts/navigation.js"></script>
+</body>
+
+</html>

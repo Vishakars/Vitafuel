@@ -1,0 +1,14 @@
+# VitaFuel Backend Dependencies
+# Install with: pip install -r requirements.txt
+
+fastapi
+uvicorn[standard]
+pydantic[email]
+pydantic-settings
+motor
+python-multipart
+passlib[bcrypt]
+python-dotenv
+python-jose[cryptography]
+google-generativeai
+pymongo
